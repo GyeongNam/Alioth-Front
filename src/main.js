@@ -1,4 +1,3 @@
-// Firebase 관련 모듈 import
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { registerPlugins } from '@/plugins'
@@ -26,34 +25,33 @@ const messaging = getMessaging(firebaseApp);
 // 서비스 워커 등록
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker 등록 성공:', registration.scope);
-        }).catch((err) => {
-          console.log('Service Worker 등록 실패:', err);
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                console.log('서비스워커 등록 성공:', registration.scope);
+            }).catch((err) => {
+                console.log('서비스워크 등록 실패:', err);
+            });
         });
-    });
-  }
-  
+    }
+
 // Notification permission 요청 및 토큰 가져오기
 Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
-        console.log('Notification permission granted.');
+        console.log('알림 권한이 허용되었습니다.');
 
         // 토큰 가져오기
         getToken(messaging, { vapidKey: 'BMPifweL0hsWPF1VnGPjXL0S-myULnUgYoZCBhEd2bBNWaRcfegA6OlWd7ylNJq3wRz_cXlMwfcLZurfSVTPEXQ'
-         }).then((currentToken) => {
+            }).then((currentToken) => {
             if (currentToken) {
-                console.log('FCM Token:', currentToken);
-                // TODO: 토큰을 서버로 전송하여 저장하는 로직 구현
+                console.log('FCM 토큰:', currentToken);
             } else {
-                console.log('No Instance ID token available. Request permission to generate one.');
+                console.log('인스턴스 ID 토큰을 사용할 수 없습니다. 권한을 요청해 토큰을 생성하세요.');
             }
         }).catch((err) => {
-            console.log('An error occurred while retrieving token. ', err);
+            console.log('토큰을 받아오는 중에 문제가 발생했습니다. ', err);
         });
     } else {
-        console.log('Unable to get permission to notify.');
+        console.log('알림을 보낼 권한을 얻을 수 없습니다.');
     }
 });
 
