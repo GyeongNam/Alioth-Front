@@ -24,6 +24,7 @@ import ContractDetailPage from "@/pages/contract/ContractDetailPage.vue"
 import BoardDetailPage from "@/pages/board/BoardDetailPage.vue"
 import SuggestionBoardDetail from "@/pages/board/SuggestionBoardDetailPage.vue"
 
+
 const routes = [
   {
     path: '/',
@@ -142,5 +143,9 @@ const routes = [
     component: ContractDetailPage
   },
 ]
+
+/*const router = new VueRouter({
+  routes
+})*/
 
 export default routes
