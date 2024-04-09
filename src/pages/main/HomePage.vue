@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <h1>메인</h1>
-  </div>
+  <AppSidebar></AppSidebar>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h1>메인</h1>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
