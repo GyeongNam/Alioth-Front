@@ -1,12 +1,18 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>공지사항 상세조회</h2>
-    <v-divider></v-divider>
-    <p><button onclick="location.href=`/BoardList/Modify`">공지사항 수정</button></p>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <v-divider></v-divider>
+        <h2>공지사항 상세조회</h2>
+        <v-divider></v-divider>
+        <v-list-item v-if="role!= HQ" prepend-icon="mdi-calendar-check" title="공지사항 수정" value="starred" @click="this.$router.push(`/BoardList/Modify`);"></v-list-item>
+
+
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
