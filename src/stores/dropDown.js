@@ -7,13 +7,13 @@ export const useDropdownStore = defineStore('dropdown', {
 
   getters: {
     getDropdown() {
-      return this.isDropdown;
+      return this.$state.isDropdown;
     },
   },
 
   actions: {
     toggleDropdown() {
-      this.isDropdown = !this.isDropdown;
+      this.isDropdown = !this.$state.isDropdown;
     },
   },
 });

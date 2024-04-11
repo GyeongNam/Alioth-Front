@@ -53,8 +53,9 @@ export default {
       });
       this.$router.push(route);
     },
-    handleSubMenuClick() {
+    handleSubMenuClick(route) {
       useDropdownStore().toggleDropdown()
+      this.$router.push(route);
     }
   }
 }
