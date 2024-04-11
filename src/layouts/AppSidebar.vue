@@ -10,8 +10,8 @@
       <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
       <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  @click="handleSubMenuClick(`/Sales`);">
         <v-list-item-title v-for="(folder, index) in folders" :key="index">
-          <v-list-item-title @click="toggleFolder(index)">{{ folder.title }}</v-list-item-title>
-          <v-list v-if="folder.open">
+          <v-list-item-title>{{ folder.title }}</v-list-item-title>
+          <v-list v-if="dropDownStore.getDropdown">
             <v-list-item v-for="(subItem, subIndex) in folder.subItems" :key="subIndex" @click="this.$router.push(subItem.url)">
               <v-list-item-title>{{ subItem.title }}</v-list-item-title>
             </v-list-item>
@@ -28,57 +28,33 @@
 </template>
 
 <script>
+import { useDropdownStore } from '@/stores/dropDown'
 
 export default {
-  data: () => ({
-    // showDropdown: true,
-    folders: [
-      {
-        title:'매출',
-        open: false,
-        subItems: [
-          {title: '개인', url:'/Sales/Personal'},
-          {title: '팀', url:'/Sales/Team'},
-          {title: '전사', url:'/Sales/Total'},
-        ]
-      }
-    ]
-  }),
-  methods: {
-    toggleFolder(index) {
-      this.folders.forEach((folder, i) => {
-        if (i === index) {
-          folder.open = !folder.open;
-        } else {
-          folder.open = false;
+  data() {
+    return {
+      dropDownStore : useDropdownStore(),
+      folders: [
+        {
+          title: '매출',
+          subItems: [
+            {title: '개인', url: '/Sales/Personal'},
+            {title: '팀', url: '/Sales/Team'},
+            {title: '전사', url: '/Sales/Total'},
+          ]
         }
-      });
-    },
+      ]
+    };
+  },
+  methods: {
     handleMenuClick(route) {
       this.folders.forEach(folder => {
         folder.open = true;
       });
       this.$router.push(route);
     },
-    handleSubMenuClick(title) {
-      let path = title;
-      switch (title) {
-        case 'Personal':
-          path = 'Personal';
-          break;
-        case '팀':
-          path = 'Team';
-          break;
-        case '전사':
-          path = 'Total';
-          break;
-        default:
-          path = '';
-      }
-      this.$router.push(`/Sales/${path}`);
-    },
-    setup() {
-      return {}
+    handleSubMenuClick() {
+      useDropdownStore().toggleDropdown()
     }
   }
 }

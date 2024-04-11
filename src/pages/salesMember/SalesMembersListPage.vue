@@ -6,8 +6,8 @@
       <h2>사원 목록 조회(관리자)</h2>
       <v-divider></v-divider>
       <p><button onclick="location.href=`/SalesMembersList/Add`">사원추가</button></p>
-      <v-simple-table>
-        <template v-slot:default>
+
+
           <thead>
           <tr>
             <th class="text-left">이름</th>
@@ -24,8 +24,8 @@
             <td>{{ item.hireDate }}</td>
           </tr>
           </tbody>
-        </template>
-      </v-simple-table>
+
+
     </v-container>
   </v-main>
 </template>
