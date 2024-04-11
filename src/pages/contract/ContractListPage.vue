@@ -1,8 +1,7 @@
 <template>
-  <div>
+  <AppSidebar></AppSidebar>
+  <v-main>
     <AppHeader></AppHeader>
-    <AppSidebar></AppSidebar>
-    <div>
       <v-divider></v-divider>
       <h2>계약목록조회</h2>
       <v-divider></v-divider>
@@ -14,8 +13,7 @@
         @click:row="navigateToDetail"
       >
       </v-data-table>
-    </div>
-  </div>
+  </v-main>
 </template>
 
 <script>

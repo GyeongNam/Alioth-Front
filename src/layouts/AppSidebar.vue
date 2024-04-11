@@ -7,29 +7,21 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home" title="Dashboard" value="myfiles" @click="this.$router.push(`/`);"></v-list-item>
-<!--      <v-list-item prepend-icon="mdi-network-pos" title="매출" value="starred" @click="this.$router.push(`/Sales`)" id="parent"></v-list-item>-->
-<!--        <v-menu v-if="showDropdown" activator="parent">
-          <v-list>
-            <v-list-item v-for="(item, index) in items" :key="index" @click="navigateTo(item.title)">
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+      <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  @click="handleSubMenuClick(`/Sales`);">
+        <v-list-item-title v-for="(folder, index) in folders" :key="index">
+          <v-list-item-title @click="toggleFolder(index)">{{ folder.title }}</v-list-item-title>
+          <v-list v-if="folder.open">
+            <v-list-item v-for="(subItem, subIndex) in folder.subItems" :key="subIndex" @click="this.$router.push(subItem.url)">
+              <v-list-item-title>{{ subItem.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-menu>-->
-      <v-list-item prepend-icon="mdi-network-pos" title="매출" value="sales" @click="toggleSubMenu" id="parent">
-        <v-list-item-content @click="toggleSubMenu">
-<!--          <v-list-item-title>매출</v-list-item-title>-->
-        </v-list-item-content>
-        <v-list-item-group v-if="showSubMenu">
-          <v-list-item v-for="(item, index) in items" :key="index" @click="navigateTo(item.title)">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
+        </v-list-item-title>
       </v-list-item>
       <v-list-item prepend-icon="mdi-account-multiple" title="사원" value="shared"  @click="this.$router.push(`/SalesMembersList`);"></v-list-item>
-      <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="this.$router.push(`/BoardList`);"></v-list-item>
-      <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="this.$router.push(`/ContractList`);"></v-list-item>
-      <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="this.$router.push(`/Schedule`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
 <!--      <v-list-item prepend-icon="mdi-star" title="보험상품" value="starred"></v-list-item>-->
     </v-list>
   </v-navigation-drawer>
@@ -39,34 +31,55 @@
 
 export default {
   data: () => ({
-    items: [
-      { title: 'Personal' },
-      { title: 'Team' },
-      { title: 'Company' },
-
-    ],
+    // showDropdown: true,
+    folders: [
+      {
+        title:'매출',
+        open: false,
+        subItems: [
+          {title: '개인', url:'/Sales/Personal'},
+          {title: '팀', url:'/Sales/Team'},
+          {title: '전사', url:'/Sales/Total'},
+        ]
+      }
+    ]
   }),
   methods: {
-    navigateTo(title) {
+    toggleFolder(index) {
+      this.folders.forEach((folder, i) => {
+        if (i === index) {
+          folder.open = !folder.open;
+        } else {
+          folder.open = false;
+        }
+      });
+    },
+    handleMenuClick(route) {
+      this.folders.forEach(folder => {
+        folder.open = true;
+      });
+      this.$router.push(route);
+    },
+    handleSubMenuClick(title) {
       let path = title;
-      switch(title) {
+      switch (title) {
         case 'Personal':
           path = 'Personal';
           break;
-        case 'Team':
+        case '팀':
           path = 'Team';
           break;
-        case 'Company':
+        case '전사':
           path = 'Total';
           break;
         default:
           path = '';
       }
       this.$router.push(`/Sales/${path}`);
+    },
+    setup() {
+      return {}
     }
-  },
-  setup() {
-    return {}
   }
 }
 </script>
@@ -74,3 +87,12 @@ export default {
 <style scoped>
 
 </style>
+<!--
+<v-menu v-if="showDropdown" :activator="$refs.parent">
+<v-list>
+  <v-list-item v-for="(item, index) in items" :key="index" @click="navigateTo(item.title)">
+    <v-list-item-title>{{item.title}}</v-list-item-title>
+  </v-list-item>
+</v-list>
+</v-menu>
+-->

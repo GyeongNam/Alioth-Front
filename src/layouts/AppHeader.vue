@@ -1,8 +1,8 @@
 <template>
   <v-system-bar>
 
-    <v-icon icon="mdi-signal" class="ms-2"></v-icon>
-    <v-icon icon="mdi-battery" class="ms-2"></v-icon>
+<!--    <v-icon icon="mdi-signal" class="ms-2"></v-icon>-->
+<!--    <v-icon icon="mdi-battery" class="ms-2"></v-icon>-->
     <span class="ms-2">{{ currentDateTime }}</span>
 
 
@@ -19,7 +19,6 @@ export default {
   },
   mounted() {
     this.updateDateTime();
-    // 매 분마다 시간 업데이트
     setInterval(() => {
       this.updateDateTime();
     }, 60000);
