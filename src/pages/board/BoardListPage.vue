@@ -32,6 +32,7 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter } from 'vue-router';
+import { axiosInstance } from '@/boot/axios'
 
 export default {
   components: { AppHeader, AppSidebar },
@@ -62,7 +63,22 @@ export default {
     };
 
     return { model, navigateToWritePage, navigateToDetailPage, toggleBoard };
+  },
+  async created() {
+    console.log("클릭하자마자 나오는 게시판리스트 테스트용 로그")
+
+    await axiosInstance.get("localhost:8080/api/board/list")
+    .then(res => {
+      console.log("게시판 리스트 요청")
+      console.log(res)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+
   }
+
+
 };
 </script>
 
