@@ -64,12 +64,4 @@ export default {
 <style scoped>
 
 </style>
-<!--
-<v-menu v-if="showDropdown" :activator="$refs.parent">
-<v-list>
-  <v-list-item v-for="(item, index) in items" :key="index" @click="navigateTo(item.title)">
-    <v-list-item-title>{{item.title}}</v-list-item-title>
-  </v-list-item>
-</v-list>
-</v-menu>
--->
+

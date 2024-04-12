@@ -28,67 +28,109 @@ import SuggestionBoardDetail from "@/pages/board/SuggestionBoardDetailPage.vue"
 const routes = [
   {
     path: '/',
-    component: HomePage
+    component: HomePage,
+    meta: {
+      title: '대시보드'
+    }
   },
 
 // board
   {
     path: '/BoardList',
-    component: BoardListPage
+    component: BoardListPage,
+    meta: {
+      title: '게시판'
+    }
   },
   {
     path: '/BoardList/Detail',
-    component: BoardDetailPage
+    component: BoardDetailPage,
+    meta: {
+      title: '게시글 상세'
+    }
   },
   {
     path: '/BoardList/Add',
-    component: BoardAddPage
+    component: BoardAddPage,
+    meta: {
+      title: '게시글 작성'
+    }
   },
   {
     path: '/BoardList/Modify',
-    component: BoardModifyPage
+    component: BoardModifyPage,
+    meta: {
+      title: '게시글 수정'
+    }
   },
   {
     path: '/BoardList/SuggestionBoardDetail',
-    component: SuggestionBoardDetail
+    component: SuggestionBoardDetail,
+    meta: {
+      title: '건의사항 상세'
+    }
   },
   {
     path: '/BoardList/SuggestionBoardAdd',
-    component: SuggestionBoardAddPage
+    component: SuggestionBoardAddPage,
+    meta: {
+      title: '건의사항 작성'
+    }
   },
   {
     path: '/BoardList/SuggestionBoardModify',
-    component: SuggestionBoardModifyPage
+    component: SuggestionBoardModifyPage,
+    meta: {
+      title: '건의사항 수정'
+    }
   },
 
 // schedule
   {
     path: '/Schedule',
-    component: SchedulePage
+    component: SchedulePage,
+    meta: {
+      title: '일정'
+    }
   },
 
   // mypage
   {
     path: '/MyPage',
-    component: MyPage
+    component: MyPage,
+    meta: {
+      title: '마이페이지'
+    }
   },
 
   //salesMember
   {
     path: '/SalesMembersList',
-    component: SalesMembersListPage
+    component: SalesMembersListPage,
+    meta: {
+      title: '사원 목록'
+    }
   },
   {
     path: '/SalesMembersList/Add',
-    component: SalesMembersAddPage
+    component: SalesMembersAddPage,
+    meta: {
+      title: '사원 추가'
+    }
   },
   {
     path: '/SalesMembersList/Detail',
-    component: SalesMembersDetailPage
+    component: SalesMembersDetailPage,
+    meta: {
+      title: '사원 상세 정보'
+    }
   },
   {
     path: '/SalesMembersList/Modify',
-    component: SalesMembersModifyPage
+    component: SalesMembersModifyPage,
+    meta: {
+      title: '사원 정보 수정'
+    }
   },
 
   //login
@@ -105,47 +147,70 @@ const routes = [
   //sales
   {
     path: '/Sales',
-    component: SalesPage
+    component: SalesPage,
+    meta: {
+      title: '매출 메인'
+    }
   },
   {
     path: '/Sales/Personal',
-    component: SalesPersonal
+    component: SalesPersonal,
+    meta: {
+      title: '개인 매출'
+    }
   },
   {
     path: '/Sales/Ranking',
-    component: SalesRanking
+    component: SalesRanking,
+    meta: {
+      title: '순위'
+    }
   },
   {
     path: '/Sales/Team',
-    component: SalesTeam
+    component: SalesTeam,
+    meta: {
+      title: '팀 매출'
+    }
   },
   {
     path: '/Sales/Total',
-    component: SalesTotal
+    component: SalesTotal,
+    meta: {
+      title: '전사 매출'
+    }
   },
 
 
   //contract
   {
     path: '/ContractList',
-    component: ContractListPage
+    component: ContractListPage,
+    meta: {
+      title: '계약 목록'
+    }
   },
   {
     path: '/ContractList/AddModify',
-    component: ContractAddModifyPage
+    component: ContractAddModifyPage,
+    meta: {
+      title: '계약 수정'
+    }
   },
   {
     path: '/ContractList/Cancel',
-    component: ContractCancelPage
+    component: ContractCancelPage,
+    meta: {
+      title: '해약'
+    }
   },
   {
     path: '/ContractList/Detail',
-    component: ContractDetailPage
+    component: ContractDetailPage,
+    meta: {
+      title: '계약 상세정보'
+    }
   },
 ]
-
-/*const router = new VueRouter({
-  routes
-})*/
 
 export default routes

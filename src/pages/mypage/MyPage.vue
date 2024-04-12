@@ -17,9 +17,10 @@ import AppHeader from "@/layouts/AppHeader.vue";
 
 export default {
   components: {AppHeader, AppSidebar},
+  // metaInfo: {
+  //   title: '마이페이지'
+  // },
   setup() {
-
-
     return {}
   }
 }
