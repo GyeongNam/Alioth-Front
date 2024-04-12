@@ -36,7 +36,6 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter } from 'vue-router';
 import axiosInstance from "@/plugins/loginaxios";
 
-
 export default {
   components: { AppHeader, AppSidebar },
   setup() {
