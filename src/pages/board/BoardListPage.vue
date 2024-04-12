@@ -47,17 +47,17 @@ export default {
       if (model.value === '공지사항') {
         router.push('/BoardList/Add');
 
-        axiosInstance.get("/api/board/list")
-        .then(function (result) {
-          const products = result.data.products;
-          console.log(products)
-          setProducts(products);
+        axiosInstance.get("/api/contract/list")
+        .then(function (response) {
+          console.log("테스트 요청 결과 : " + response);
+          console.log(response)
+          // const products = response.data.products;
+          // console.log(products)
+          // setProducts(products);
         })
         .catch(function (error) {
           console.log(error);
         });
-
-
 
       } else {
         router.push('/BoardList/SuggestionBoardAdd');
