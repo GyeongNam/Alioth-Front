@@ -22,7 +22,6 @@
                     <v-btn :disabled="!phonePatternTest" color="primary" @click="sendVerificationCode">인증번호 발송</v-btn>
                   </v-col>
                 </v-row>
-                
                 <v-row v-if="verificationVisible">
                   <v-col cols="8">
                     <v-text-field v-model="verificationCode" :class="{'error--text': verificationError, 'success--text': verificationSuccess}" label="인증번호 확인" prepend-icon="mdi-checkbox-marked-circle-outline" type="text" placeholder="인증번호를 입력해주세요" required></v-text-field>
@@ -31,7 +30,6 @@
                     <v-btn :disabled="!verificationCode" color="success" @click="verifyCode">확인</v-btn>
                   </v-col>
                 </v-row>
-                
                 <transition name="slide-fade">
                   <div v-if="verified">
                     <v-text-field v-model="newPassword" label="새로운 비밀번호" prepend-icon="mdi-lock" type="password" placeholder="새로운 비밀번호를 입력해주세요" required></v-text-field>
@@ -51,8 +49,7 @@
 <script>
 import axios from 'axios';
 import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router'
-
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
@@ -66,7 +63,7 @@ export default {
     const verified = ref(false);
     const verificationSuccess = ref(false);
     const router = useRouter();
-    
+
     const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
     const phoneRules = [
@@ -82,32 +79,34 @@ export default {
         alert('연락처 형식을 확인해주세요.');
         return;
       }
-      try {
-        const response = await axios.post(`${baseUrl}/api/send-verification`, { phone: formattedPhoneNumber.value });
-        console.log(response.data);
-        alert(response.data.message);
-        verificationVisible.value = true;
-      } catch (error) {
-        console.error('Error sending verification code:', error);
-        alert('Failed to send verification code.');
-      }
+      await axios.post(`${baseUrl}/api/send-verification`, { phone: formattedPhoneNumber.value })
+        .then(response => {
+          console.log(response.data);
+          alert(response.data.message);
+          verificationVisible.value = true;
+        })
+        .catch(error => {
+          console.error('Error sending verification code:', error);
+          alert('Failed to send verification code.');
+        });
     };
 
     const verifyCode = async () => {
-      try {
-        const response = await axios.post(`${baseUrl}/api/verify-code`, { phone: formattedPhoneNumber.value, code: verificationCode.value });
-        if (response.data.message === "인증에 성공하였습니다.") {
-          verificationError.value = false;
-          verificationSuccess.value = true;
-          verified.value = true;
-        } else {
+      await axios.post(`${baseUrl}/api/verify-code`, { phone: formattedPhoneNumber.value, code: verificationCode.value })
+        .then(response => {
+          if (response.data.message === "인증에 성공하였습니다.") {
+            verificationError.value = false;
+            verificationSuccess.value = true;
+            verified.value = true;
+          } else {
+            verificationError.value = true;
+            verificationSuccess.value = false;
+          }
+        })
+        .catch(error => {
           verificationError.value = true;
           verificationSuccess.value = false;
-        }
-      } catch (error) {
-        verificationError.value = true;
-        verificationSuccess.value = false;
-      }
+        });
     };
 
     const clearVerification = () => {
@@ -123,15 +122,15 @@ export default {
         alert('새로운 비밀번호가 일치하지 않습니다.');
         return;
       }
-      const updateUrl = `${baseUrl}/api/members/${employeeNumber.value}/password`;
-      try {
-        const response = await axios.patch(updateUrl, { password: newPassword.value });
-        alert(response.data.message);
-        router.push("/Login");
-      } catch (error) {
-        console.error('비밀번호 변경 오류:', error.response || error.message);
-        alert('비밀번호 변경 실패.');
-      }
+      await axios.patch(`${baseUrl}/api/members/${employeeNumber.value}/password`, { password: newPassword.value })
+        .then(response => {
+          alert(response.data.message);
+          router.push("/Login");
+        })
+        .catch(error => {
+          console.error('비밀번호 변경 오류:', error.response || error.message);
+          alert('비밀번호 변경 실패.');
+        });
     };
 
     return {
@@ -156,44 +155,5 @@ export default {
 </script>
 
 <style scoped>
-/* Other styles from your code remain the same */
 
-.brand-container {
-  text-align: center;
-  color: #4A76A8; /* Adjust the color to match your branding */
-}
-
-.form-card {
-  background-color: #EBF1FA; /* Card background color */
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.form-title {
-  background-color: #A4B9D6; /* Title background color */
-  color: #FFF; /* Title text color */
-  text-align: center;
-  margin-bottom: 20px;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-}
-
-.v-text-field.solo input {
-  background-color: #FFF; /* Input background color */
-  border-radius: 15px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
-  padding-left: 20px; /* Adjust padding to match design */
-}
-
-.v-btn.verification-btn {
-  background-color: #A4B9D6; /* Button background color */
-  color: #FFF; /* Button text color */
-  border-radius: 10px;
-}
-
-.v-btn.confirm-btn {
-  background-color: #5C7C9D; /* Confirm button background color */
-  color: #FFF; /* Confirm button text color */
-  margin-top: 20px; /* Spacing between input and button */
-}
 </style>

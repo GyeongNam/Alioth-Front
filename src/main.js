@@ -6,13 +6,13 @@ import { registerPlugins } from '@/plugins';
 
 // Firebase 프로젝트 설정
 const firebaseConfig = {
-    apiKey: "AIzaSyDotC7-wC0ldRBzZtd0sbebSdqoejVy5XQ",
-    authDomain: "aliothfcm.firebaseapp.com",
-    projectId: "aliothfcm",
-    storageBucket: "aliothfcm.appspot.com",
-    messagingSenderId: "288820360562",
-    appId: "1:288820360562:web:5af754e082f1bc75aa99eb",
-    measurementId: "G-B47NJH51VZ"
+    apiKey: "AIzaSyDB5dyvXp-1ZOYFejptRE8FUWBIUY_YvEw",
+    authDomain: "alioth-fcm.firebaseapp.com",
+    projectId: "alioth-fcm",
+    storageBucket: "alioth-fcm.appspot.com",
+    messagingSenderId: "449895392026",
+    appId: "1:449895392026:web:fca3c50602be1e35b742a3",
+    measurementId: "G-9V311JSHBT"
 };
 
 // Firebase 초기화
@@ -41,7 +41,7 @@ if ('serviceWorker' in navigator) {
 Notification.requestPermission().then(permission => {
     if (permission === 'granted') {
         console.log('알림 권한이 허용되었습니다.');
-        getToken(messaging, { vapidKey: 'BEx0hikggX8gLrvs5mw_M4ieqUpjQ_mFN19Y2hFaw8n5yKAJ6M4AeyHXsSOKo94FHSaXrns_dCXvMuZiz1AmkJI' }).then(currentToken => {
+        getToken(messaging, { vapidKey: 'BLlTuHlScEMdKr_MVbESYvaPlaqlyL9jnjbwhUEPdTwBEHVidSbfzh73jqSmZf8ciMXuJc8Ic9jtzeYbA2S9zFs' }).then(currentToken => {
             if (currentToken) {
                 console.log('FCM 토큰:', currentToken);
             } else {
