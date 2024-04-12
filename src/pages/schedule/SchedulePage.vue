@@ -8,6 +8,11 @@
       </div>
       <div id="calendar" style="height: 40vw;"></div>
       <div id="clicked-event"></div>
+      <div>
+        <button @click="changeView('week')">주간</button>
+        <button @click="changeView('month')">월간</button>
+        <button @click="changeView('day')">일간</button>
+      </div>
     </v-container>
   </v-main>
 </template>
@@ -29,46 +34,67 @@ export default {
     onMounted(() => {
       const container = document.getElementById('calendar');
       const options = {
-        defaultView: 'month',
+        defaultView: 'week',
+        usageStatistics: false,
+        useFormPopup: true,
+        useDetailPopup: true,
         timezone: {
           zones: [
             {
               timezoneName: 'Asia/Seoul',
               displayLabel: 'Seoul',
             },
+            {
+              timezoneName: 'Europe/London',
+              displayLabel: 'London',
+            },
           ],
         },
+        calendars: [
+          {
+            id: 'cal1',
+            name: '개인',
+            backgroundColor: '#03bd9e',
+          },
+          {
+            id: 'cal2',
+            name: '직장',
+            backgroundColor: '#00a9ff',
+          },
+        ],
+        template: {
+          time(event) {
+            const { start, end, title } = event;
+            const formatTime = (time) => {
+              const hours = `${time.getHours()}`.padStart(2, '0');
+              const minutes = `${time.getMinutes()}`.padStart(2, '0');
+              return `${hours}:${minutes}`;
+            };
+            return `<span style="color: white;">${formatTime(start)}~${formatTime(end)} ${title}</span>`;
+          },
+          allday(event) {
+            return `<span style="color: gray;">${event.title}</span>`;
+          },
+        },
+        views: ['week', 'month', 'day'],
       };
       calendarInstance.value = new Calendar(container, options);
-      calendarInstance.value.createEvents([
-        {
-          id: 'event1',
-          calendarId: 'cal2',
-          title: '주간 회의',
-          start: '2024-04-12T09:00:00',
-          end: '2024-04-13T10:00:00',
-        },
-        {
-          id: 'event2',
-          calendarId: 'cal1',
-          title: '점심 약속',
-          start: '2024-04-12T12:00:00',
-          end: '2024-04-13T13:00:00',
-        },
-        {
-          id: 'event3',
-          calendarId: 'cal2',
-          title: '휴가',
-          start: '2024-04-12',
-          end: '2024-04-13',
-          isAllday: true,
-          category: 'allday',
-        },
-      ]);
     });
 
+    onMounted(() => {
+      calendarInstance.value.on('clickEvent', ({ event }) => {
+        const el = document.getElementById('clicked-event');
+        el.innerText = event.title;
+      });
+    });
+
+    const changeView = (view) => {
+      calendarInstance.value.changeView(view); // 선택한 뷰로 전환
+    };
+
     return {
-      calendarInstance
+      calendarInstance,
+      changeView
     };
   }
 }
