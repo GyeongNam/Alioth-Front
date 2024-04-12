@@ -34,8 +34,7 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter } from 'vue-router';
-import axios from "axios";
-import { loginaxios } from "@/plugins/loginaxios" 
+import axiosInstance from "@/plugins/loginaxios";
 
 
 export default {
@@ -48,8 +47,8 @@ export default {
       // model 값에 따라 적절한 경로로 이동
       if (model.value === '공지사항') {
         router.push('/BoardList/Add');
-        
-        loginaxios.get("/api/board/list")
+
+        axiosInstance.get("/api/board/list")
         .then(function (result) {
           const products = result.data.products;
           console.log(products)

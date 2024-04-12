@@ -6,7 +6,7 @@ export default {
     const axiosInstance = axios.create({
       baseURL: 'http://localhost:8080',
     });
-    
+
     axiosInstance.interceptors.request.use(
       config => {
         const accessToken = localStorage.getItem('accessToken');
@@ -19,7 +19,7 @@ export default {
         return Promise.reject(error);
       }
     );
-    
+
     axiosInstance.interceptors.response.use(
       response => {
         return response;
@@ -32,7 +32,7 @@ export default {
             && error.response.data.result === "로그인 만료"
           ){
             localStorage.removeItem('accessToken');
-            
+
           }
           else if(error.response.data.message === "토큰을 재발행 합니다."){
             localStorage.setItem('accessToken' ,error.response.data.result);
@@ -40,17 +40,17 @@ export default {
             return axiosInstance(originalRequest);
           }else{
             localStorage.removeItem('accessToken');
-            
+
           }
           originalRequest._retry = true;
           console.log(error);
-    
+
         }
         return Promise.reject(error);
       }
     );
-    
-    app.config.globalProperties.$axios = axios;
+
+    app.config.globalProperties.$axiosInstance = axiosInstance;
   }
 };
 

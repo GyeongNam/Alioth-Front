@@ -3,7 +3,6 @@ import App from './App.vue';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { registerPlugins } from '@/plugins';
-import { loginAxios } from '@/plugins/loginaxios'
 
 // Firebase 프로젝트 설정
 const firebaseConfig = {
@@ -22,7 +21,6 @@ const messaging = getMessaging(firebaseApp);
 
 // 애플리케이션 인스턴스 생성
 const app = createApp(App);
-app.use(loginAxios);
 
 // 환경 변수를 전역 프로퍼티로 설정
 app.config.globalProperties.$apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
