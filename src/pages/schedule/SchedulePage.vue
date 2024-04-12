@@ -1,11 +1,13 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>일정</h2>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h1>일정</h1>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

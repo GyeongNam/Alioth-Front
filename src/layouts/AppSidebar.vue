@@ -1,74 +1,62 @@
 <template>
-  <div>
-    <p>사이드 바</p>
-    <p><button onclick="location.href=`/Sales`"></button></p>
-  <!-- <div v-if="showDropdown">
-      <p><button @click="goToSales('개인')">개인</button></p>
-      <p><button @click="goToSales('팀')">팀</button></p>
-      <p><button @click="goToSales('전사')">전사</button></p>
-    </div> -->
+  <v-navigation-drawer location="left" permanent>
+    <v-list>
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" subtitle="sandra_a88@gmailcom" title="Sandra Adams" @click="this.$router.push(`/MyPage`);"></v-list-item>
+    </v-list>
 
-    <v-btn color="primary">
-  매출
-      <v-menu activator="parent">
-        <v-list>
-          <v-list-item
-            v-for="(item, index) in items"
-            :key="index"
-            @click="navigateTo(item.title)"
-          >
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-btn>
+    <v-divider></v-divider>
 
-
-    <p><button onclick="location.href=`/BoardList`">게시판</button></p>
-    <p><button onclick="location.href=`/MyPage`">마이페이지</button></p>
-    <p><button onclick="location.href=`/Login`">로그인</button></p>
-    <p><button onclick="location.href=`/Schedule`">일정</button></p>
-    <p><button onclick="location.href=`/SalesMembersList`">사원</button></p>
-    <p><button onclick="location.href=`/ContractList`">계약</button></p>
-    <p><button onclick="location.href=`/Sales`">매출</button></p>
-  </div>
+    <v-list density="compact" nav>
+      <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  @click="handleSubMenuClick(`/Sales`);">
+        <v-list-item-title v-for="(folder, index) in folders" :key="index">
+          <v-list-item-title>{{ folder.title }}</v-list-item-title>
+          <v-list v-if="dropDownStore.getDropdown">
+            <v-list-item v-for="(subItem, subIndex) in folder.subItems" :key="subIndex" @click="this.$router.push(subItem.url)">
+              <v-list-item-title>{{ subItem.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item prepend-icon="mdi-account-multiple" title="사원" value="shared"  @click="this.$router.push(`/SalesMembersList`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
+<!--      <v-list-item prepend-icon="mdi-star" title="보험상품" value="starred"></v-list-item>-->
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script>
+import { useDropdownStore } from '@/stores/dropDown'
 
 export default {
-  data: () => ({
-      items: [
-        { title: 'Personal' },
-        { title: 'Team' },
-        { title: 'Company' },
-        
-      ],
-    }),
-    methods: {
-    navigateTo(title) {
-      let path = title;
-      switch(title) {
-        case 'Personal':
-          path = 'Personal';
-          break;
-        case 'Team':
-          path = 'Team';
-          break;
-        case 'Company':
-          path = 'Total';
-          break;
-        default:
-          path = ''; 
-      }
-      // Vue Router를 사용한 페이지 이동
-      this.$router.push(`/Sales/${path}`);
-    }
+  data() {
+    return {
+      dropDownStore : useDropdownStore(),
+      folders: [
+        {
+          title: '매출',
+          subItems: [
+            {title: '개인', url: '/Sales/Personal'},
+            {title: '팀', url: '/Sales/Team'},
+            {title: '전사', url: '/Sales/Total'},
+          ]
+        }
+      ]
+    };
   },
-  setup() {
-
-
-    return {}
+  methods: {
+    handleMenuClick(route) {
+      this.folders.forEach(folder => {
+        folder.open = true;
+      });
+      this.$router.push(route);
+    },
+    handleSubMenuClick(route) {
+      useDropdownStore().toggleDropdown()
+      this.$router.push(route);
+    }
   }
 }
 </script>
@@ -76,3 +64,12 @@ export default {
 <style scoped>
 
 </style>
+<!--
+<v-menu v-if="showDropdown" :activator="$refs.parent">
+<v-list>
+  <v-list-item v-for="(item, index) in items" :key="index" @click="navigateTo(item.title)">
+    <v-list-item-title>{{item.title}}</v-list-item-title>
+  </v-list-item>
+</v-list>
+</v-menu>
+-->

@@ -1,11 +1,13 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>개인매출조회</h2>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h1>개인매출조회</h1>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

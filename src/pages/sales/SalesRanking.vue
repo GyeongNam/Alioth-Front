@@ -1,11 +1,12 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>개인 및 팀 매출 순위</h2>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <h2>개인 및 팀 매출 순위</h2>
+      <v-divider></v-divider>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

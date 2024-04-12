@@ -1,32 +1,33 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>사원 목록 조회(관리자)</h2>
-    <v-divider></v-divider>
-    <p><button onclick="location.href=`/SalesMembersList/Add`">사원추가</button></p>
-    <v-simple-table>
-      <template v-slot:default>
-        <thead>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <h2>사원 목록 조회(관리자)</h2>
+      <v-divider></v-divider>
+      <p><button onclick="location.href=`/SalesMembersList/Add`">사원추가</button></p>
+
+
+          <thead>
           <tr>
             <th class="text-left">이름</th>
             <th class="text-left">직급</th>
             <th class="text-left">소속</th>
             <th class="text-left">입사일</th>
           </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
           <tr v-for="item in employees" :key="item.name">
             <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
             <td>{{ item.position }}</td>
             <td>{{ item.department }}</td>
             <td>{{ item.hireDate }}</td>
           </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
-  </div>
+          </tbody>
+
+
+    </v-container>
+  </v-main>
 </template>
 
 <script>

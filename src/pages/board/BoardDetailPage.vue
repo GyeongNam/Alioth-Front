@@ -1,12 +1,15 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>공지사항 상세조회</h2>
-    <v-divider></v-divider>
-    <p><button onclick="location.href=`/BoardList/Modify`">공지사항 수정</button></p>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <v-divider></v-divider>
+        <h2>공지사항 상세조회</h2>
+        <v-divider></v-divider>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

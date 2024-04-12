@@ -1,12 +1,16 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>매출 메인 화면</h2>
-    <v-divider></v-divider>
-    <p><button onclick="location.href=`/Sales/Ranking`">매출순위</button></p>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <v-divider></v-divider>
+        <h2>매출 메인 화면</h2>
+        <v-divider></v-divider>
+        <p><button onclick="location.href=`/Sales/Ranking`">매출순위</button></p>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

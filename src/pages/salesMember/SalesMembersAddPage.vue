@@ -1,11 +1,11 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>사원 추가페이지(관리자)</h2>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <h2>사원 추가페이지(관리자)</h2>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

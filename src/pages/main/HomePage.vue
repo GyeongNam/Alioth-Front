@@ -1,19 +1,21 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h1>메인</h1>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h1>메인</h1>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
-import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
+import AppSidebar from "@/layouts/AppSidebar.vue";
 
 export default {
-  components: {AppHeader, AppSidebar},
+  components: {AppSidebar, AppHeader},
   setup() {
 
 
@@ -25,3 +27,4 @@ export default {
 <style scoped>
 
 </style>
+

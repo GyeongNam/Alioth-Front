@@ -1,11 +1,13 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <h2>계약 추가 수정 페이지</h2>
-    <v-divider></v-divider>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h2>계약 추가 수정 페이지</h2>
+      </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

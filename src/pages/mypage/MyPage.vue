@@ -1,11 +1,15 @@
 <template>
-  <AppHeader></AppHeader>
   <AppSidebar></AppSidebar>
-  <div>
-    <v-divider></v-divider>
-    <p>마이페이지</p>
-  </div>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <div>
+        <h1>마이페이지</h1>
+      </div>
+    </v-container>
+  </v-main>
 </template>
+
 
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
