@@ -26,8 +26,8 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
-import axios from 'axios';
 import router from "@/router";
+import axiosInstance from "@/plugins/loginaxios";
 
 export default {
   components: {AppSidebar, AppHeader, ListComponent},
@@ -42,7 +42,7 @@ export default {
     // 데이터 가져오는 함수
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axios.get(`${baseUrl}/api/contract/list`)
+      axiosInstance.get(`${baseUrl}/api/contract/list`)
         .then(response => {
           const data = response.data.result;
           // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.

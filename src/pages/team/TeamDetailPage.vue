@@ -3,12 +3,6 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-container fluid>
-
-
-
-
-
-
       <v-card flat>
         <v-card-title class="d-flex align-center pe-2">
           <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
@@ -45,8 +39,9 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import router from "@/router";
-import axios from "axios";
-import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
+
+import { ref, onMounted } from 'vue';
+import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
   props: ['teamId'],
@@ -65,9 +60,10 @@ export default {
 
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axios.get(`${baseUrl}/api/team/detail/${props.teamId}`)
+      axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamId}`)
         .then(response => {
           const data = response.data.result.list();
+          console.log(data)
           // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
           data.forEach((item, index) => {
             item.id = index + 1;
