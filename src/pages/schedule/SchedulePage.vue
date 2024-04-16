@@ -7,12 +7,12 @@
         <v-row no-gutters>
           <v-col>
             <v-sheet class="pa-2 ma-2">
-            <div style="width: 60vh; height: auto" id="calendarList"></div>
+              <div ref="firstCalendar" style="width: 50vh; height: auto; font-size: 80%" id="calendarList"></div>
             </v-sheet>
           </v-col>
           <v-col>
             <v-sheet class="pa-2 ma-2">
-            <FullCalendar style="width: 100vh" :options="calendarOptions"></FullCalendar>
+              <FullCalendar ref="secondCalendar" style="width: 100vh; font-size: 80%" :options="calendarOptions"></FullCalendar>
             </v-sheet>
           </v-col >
         </v-row>
@@ -32,32 +32,14 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list';
 
-let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
-
-export const INITIAL_EVENTS = [
-  {
-    id: 1,
-    title: 'All-day event',
-    start: todayStr
-  },
-  {
-    id: 2,
-    title: 'Timed event',
-    start: todayStr + 'T12:00:00'
-  }
-]
-
 export default {
   components: { AppHeader, AppSidebar, FullCalendar },
-  setup() {
-  },
   mounted() {
-    const calendarEl = document.getElementById('calendarList');
-    this.calendar = new Calendar(calendarEl, {
-      plugins: [ listPlugin ],
+    const calendarListEl = document.getElementById('calendarList');
+    const firstCalendar = new Calendar(calendarListEl, {
+      plugins: [listPlugin],
       locale: "ko",
       initialView: 'listDay',
-      initialEvents: INITIAL_EVENTS,
       buttonText: {
         today: '오늘',
         listDay: '일',
@@ -68,18 +50,20 @@ export default {
         left: 'prev,next today',
         center: 'title',
         right: 'listDay,listWeek,listMonth'
-      },
+      }
     });
-    this.calendar.render();
+    firstCalendar.render();
+    this.$refs.firstCalendar.calendar = firstCalendar;
   },
   data() {
     return {
+      eventList: [],
       calendarOptions: {
         locale: "ko",
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
-          interactionPlugin // needed for dateClick
+          interactionPlugin
         ],
         headerToolbar: {
           left: 'prev,next today',
@@ -88,12 +72,12 @@ export default {
         },
         buttonText: {
           today: '오늘',
-          day: '일',
-          week: '주',
-          month: '월',
+          dayGridMonth: '일',
+          timeGridWeek: '주',
+          timeGridDay: '월',
         },
-        initialEvents: INITIAL_EVENTS,
         initialView: 'dayGridMonth',
+        initialEvents: '',
         editable: true,
         selectable: true,
         selectMirror: true,
@@ -103,21 +87,41 @@ export default {
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents,
         eventDrop: this.handleEventDrop
-      },
+      }
     }
   },
   methods: {
     handleDateSelect(selectInfo) {
-      console.log(selectInfo);
+
+      const newEvent = {
+        id: this.eventList.length + 1,
+        title: 'New Event',
+        start: selectInfo.start,
+        end: new Date(selectInfo.start.getTime() + (8 * 60 * 60 * 1000)),
+        allDay: false
+      };
+
+      const firstCalendar = this.$refs.firstCalendar.calendar;
+      firstCalendar.addEvent(newEvent);
+
+      const secondCalendar = this.$refs.secondCalendar.calendar;
+      secondCalendar.addEvent(newEvent);
     },
     handleEventClick(clickInfo) {
       console.table(clickInfo)
     },
     handleEventDrop(dropInfo){
       console.table(dropInfo)
+      const updatedEvent = this.eventList.find(event => event.id === dropInfo.event.id);
+
+      if (updatedEvent) {
+        const firstCalendar = this.$refs.firstCalendar.calendar;
+        firstCalendar.getEventById(updatedEvent.id).setDates(dropInfo.event.start, dropInfo.event.end);
+      }
+
     },
     handleEvents(events) {
-      this.currentEvents = events
+      this.eventList = events
     },
   }
 }
