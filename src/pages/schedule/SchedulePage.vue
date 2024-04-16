@@ -72,9 +72,9 @@ export default {
         },
         buttonText: {
           today: '오늘',
-          dayGridMonth: '일',
+          dayGridMonth: '월',
           timeGridWeek: '주',
-          timeGridDay: '월',
+          timeGridDay: '일',
         },
         initialView: 'dayGridMonth',
         initialEvents: '',
@@ -91,8 +91,7 @@ export default {
     }
   },
   methods: {
-    handleDateSelect(selectInfo) {
-
+    calendarEventCreate(selectInfo){
       const newEvent = {
         id: this.eventList.length + 1,
         title: 'New Event',
@@ -106,6 +105,15 @@ export default {
 
       const secondCalendar = this.$refs.secondCalendar.calendar;
       secondCalendar.addEvent(newEvent);
+    },
+
+    handleDateSelect(selectInfo) {
+      
+
+      if(selectInfo == null){
+        this.calendarEventCreate(selectInfo)
+      }
+
     },
     handleEventClick(clickInfo) {
       console.table(clickInfo)
