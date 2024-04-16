@@ -24,7 +24,6 @@
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import { ref } from 'vue';
 
 import { Calendar } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/vue3'
@@ -33,48 +32,42 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list';
 
-let eventGuid = 0
 let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
 
 export const INITIAL_EVENTS = [
   {
-    id: createEventId(),
+    id: 1,
     title: 'All-day event',
     start: todayStr
   },
   {
-    id: createEventId(),
+    id: 2,
     title: 'Timed event',
     start: todayStr + 'T12:00:00'
   }
 ]
 
-export function createEventId() {
-  return String(eventGuid++)
-}
-
 export default {
   components: { AppHeader, AppSidebar, FullCalendar },
   setup() {
-    const currentEvents = ref(INITIAL_EVENTS);
-
-    return {
-      currentEvents, // setup 함수에서 반환되는 객체에 포함합니다.
-    };
   },
   mounted() {
-
-
     const calendarEl = document.getElementById('calendarList');
     this.calendar = new Calendar(calendarEl, {
       plugins: [ listPlugin ],
       locale: "ko",
       initialView: 'listDay',
-      initialEvents: this.currentEvents,
-      views: {
-        listDay: { buttonText: '일'},
-        listWeek: { buttonText: '주' },
-        listMonth: { buttonText: '월' }
+      initialEvents: INITIAL_EVENTS,
+      buttonText: {
+        today: '오늘',
+        listDay: '일',
+        listWeek: '주',
+        listMonth: '월',
+      },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'listDay,listWeek,listMonth'
       },
     });
     this.calendar.render();
@@ -93,7 +86,13 @@ export default {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        initialEvents: this.currentEvents,
+        buttonText: {
+          today: '오늘',
+          day: '일',
+          week: '주',
+          month: '월',
+        },
+        initialEvents: INITIAL_EVENTS,
         initialView: 'dayGridMonth',
         editable: true,
         selectable: true,
@@ -103,31 +102,19 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents,
+        eventDrop: this.handleEventDrop
       },
     }
   },
   methods: {
     handleDateSelect(selectInfo) {
-      let title = prompt('추가한다?')
-      this.calendarApi = selectInfo.view.calendar
-
-      this.calendarApi.unselect() // clear date selection
-
-      if (title) {
-        this.calendarApi.addEvent({
-          id: createEventId(),
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay
-        })
-      }
+      console.log(selectInfo);
     },
     handleEventClick(clickInfo) {
       console.table(clickInfo)
-      if (confirm(`삭제할거임? '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-      }
+    },
+    handleEventDrop(dropInfo){
+      console.table(dropInfo)
     },
     handleEvents(events) {
       this.currentEvents = events
