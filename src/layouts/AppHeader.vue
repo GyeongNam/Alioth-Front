@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar>
+  <v-toolbar color="white">
     <span class="ml-3"></span>
-    <v-app-bar-title class="ms-auto">{{ pageName }}</v-app-bar-title>
+    <v-toolbar-title class="ms-auto">{{ pageName }}</v-toolbar-title>
     <template v-slot:append>
       <span class="ms-2">{{ currentDateTime }}</span>
       <span class="ml-5"> </span>
@@ -10,7 +10,7 @@
         <v-badge color="red" dot v-if="hasUnreadAlarm"></v-badge>
     </template>
 
-  </v-app-bar>
+  </v-toolbar>
   <v-divider :thickness="4" class="border-opacity-50"></v-divider>
 
 </template>

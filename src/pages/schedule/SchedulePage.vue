@@ -24,6 +24,7 @@
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
+import { ref } from 'vue';
 
 import { Calendar } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/vue3'
@@ -54,33 +55,32 @@ export function createEventId() {
 
 export default {
   components: { AppHeader, AppSidebar, FullCalendar },
+  setup() {
+    const currentEvents = ref(INITIAL_EVENTS);
+
+    return {
+      currentEvents, // setup 함수에서 반환되는 객체에 포함합니다.
+    };
+  },
   mounted() {
+
+
     const calendarEl = document.getElementById('calendarList');
-    const calendar = new Calendar(calendarEl, {
+    this.calendar = new Calendar(calendarEl, {
       plugins: [ listPlugin ],
       locale: "ko",
       initialView: 'listDay',
+      initialEvents: this.currentEvents,
       views: {
-        listDay: { buttonText: 'list day' },
-        listWeek: { buttonText: 'list week' },
-        listMonth: { buttonText: 'list month' }
+        listDay: { buttonText: '일'},
+        listWeek: { buttonText: '주' },
+        listMonth: { buttonText: '월' }
       },
-
-      headerToolbar: {
-        left: 'title',
-        center: '',
-        right: 'listDay,listWeek,listMonth'
-      },
-      events: []
     });
-    calendar.render();
-  },
-  setup() {
+    this.calendar.render();
   },
   data() {
     return {
-      isLargeScreen: true,
-      currentEvents: [],
       calendarOptions: {
         locale: "ko",
         plugins: [
@@ -93,6 +93,7 @@ export default {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
+        initialEvents: this.currentEvents,
         initialView: 'dayGridMonth',
         editable: true,
         selectable: true,
@@ -101,19 +102,19 @@ export default {
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
       },
     }
   },
   methods: {
     handleDateSelect(selectInfo) {
-      let title = prompt('Please enter a new title for your event')
-      let calendarApi = selectInfo.view.calendar
+      let title = prompt('추가한다?')
+      this.calendarApi = selectInfo.view.calendar
 
-      calendarApi.unselect() // clear date selection
+      this.calendarApi.unselect() // clear date selection
 
       if (title) {
-        calendarApi.addEvent({
+        this.calendarApi.addEvent({
           id: createEventId(),
           title,
           start: selectInfo.startStr,
@@ -123,7 +124,8 @@ export default {
       }
     },
     handleEventClick(clickInfo) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+      console.table(clickInfo)
+      if (confirm(`삭제할거임? '${clickInfo.event.title}'`)) {
         clickInfo.event.remove()
       }
     },
