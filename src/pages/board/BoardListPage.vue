@@ -5,12 +5,7 @@
     <AppHeader></AppHeader>
     <v-divider></v-divider>
     <v-switch
-      v-model="model"
-      :label="`게시판을 선택하세요: ${model}`"
-      false-value="공지사항"
-      true-value="건의사항"
-      hide-details
-    ></v-switch>
+      v-model="model" :label="`게시판을 선택하세요: ${model}`" false-value="공지사항" true-value="건의사항" hide-details></v-switch>
     <p v-if="model === '공지사항'">공지사항 게시판</p>
     <p v-else>건의사항 게시판</p>
     <v-divider></v-divider>

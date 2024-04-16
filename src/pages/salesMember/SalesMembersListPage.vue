@@ -3,19 +3,23 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-container fluid>
-      <h2>사원 목록 조회(관리자)</h2>
-      <v-divider></v-divider>
-      <p><button onclick="location.href=`/SalesMembersList/Add`">사원추가</button></p>
+      <v-card flat>
+        <v-card-title class="d-flex align-center pe-2">
+          <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
+          사원 목록
+          <v-spacer></v-spacer>
+          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+          <v-row>
+            <v-col class="text-right">
+              <v-btn variant="outlined" @click="navigateToAdd">사원 추가</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-spacer></v-spacer>
+        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
+      </v-card>
+<!--
 
-
-          <thead>
-          <tr>
-            <th class="text-left">이름</th>
-            <th class="text-left">직급</th>
-            <th class="text-left">소속</th>
-            <th class="text-left">입사일</th>
-          </tr>
-          </thead>
           <tbody>
           <tr v-for="item in employees" :key="item.name">
             <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
@@ -25,7 +29,7 @@
           </tr>
           </tbody>
 
-
+-->
     </v-container>
   </v-main>
 </template>
@@ -33,22 +37,53 @@
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
+import ListComponent from "@/layouts/ListComponent.vue";
+import router from "@/router";
+import axios from "axios";
+import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
+
 
 export default {
-  components: {AppHeader, AppSidebar},
+  components: {ListComponent, AppHeader, AppSidebar},
   setup() {
-    const employees = [
-      {
-        name: '죠니',
-        position: '사장',
-        department: '마케팅영업',
-        hireDate: '1994년 12월 24일',
-      },
-      // 다른 사원 데이터도 이 배열에 추가할 수 있습니다.
+    const tableColumns = [
+      {title: "No", key: "id"},
+      {title: "보험상품", key: "insuranceProductName"},
+      {title: "고객", key: "customName"},
+      {title: "계약 일자", key: "contractPeriod"},
     ];
+    const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
 
-    return { employees }
-  }
+    const fetchData = () => {
+      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+      axios.get(`${baseUrl}/api/contract/list`)
+        .then(response => {
+          const data = response.data.result;
+          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
+          data.forEach((item, index) => {
+            item.id = index + 1;
+          });
+          // tableRows에 데이터를 할당합니다.
+          tableRows.value = data;
+        })
+        .catch(error => {
+          console.log('Error fetching data:', error);
+        });
+    };
+    function navigateToDetail(item) {
+      router.push({ path: `/SalesMembersList/Detail`, query: { id: item.id }});
+    }
+    function navigateToAdd() {
+      router.push(`/SalesMembersList/Add`);
+    }
+
+
+    return {
+
+
+    }
+  },
+
 }
 </script>
 

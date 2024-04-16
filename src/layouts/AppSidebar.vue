@@ -22,7 +22,7 @@
       <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
-<!--      <v-list-item prepend-icon="mdi-star" title="보험상품" value="starred"></v-list-item>-->
+      <v-list-item prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -60,7 +60,7 @@ export default {
   }
 }
 </script>
-
+<!--v-if="userRole===HQ"-->
 <style scoped>
 
 </style>

@@ -2,22 +2,41 @@
   <AppSidebar></AppSidebar>
   <v-main>
     <AppHeader></AppHeader>
-      <v-divider></v-divider>
+    <v-container fluid>
+
+
+
+
+
+
       <v-card flat>
         <v-card-title class="d-flex align-center pe-2">
-<!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
-          계약 목록
+          <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
+          팀원 목록
           <v-spacer></v-spacer>
           <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
           <v-row>
             <v-col class="text-right">
-              <v-btn variant="outlined" @click="navigateToAddModify">계약 추가</v-btn>
+              <v-btn variant="outlined" @click="navigateToAdd">팀원 추가</v-btn>
             </v-col>
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
         <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
       </v-card>
+<!--
+
+          <tbody>
+          <tr v-for="item in employees" :key="item.name">
+            <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
+            <td>{{ item.position }}</td>
+            <td>{{ item.department }}</td>
+            <td>{{ item.hireDate }}</td>
+          </tr>
+          </tbody>
+
+-->
+    </v-container>
   </v-main>
 </template>
 
@@ -25,26 +44,30 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
-import axios from 'axios';
 import router from "@/router";
-
+import axios from "axios";
+import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
 export default {
-  components: {AppSidebar, AppHeader, ListComponent},
-  setup() {
+  components: {ListComponent, AppHeader, AppSidebar},
+  props: ['teamId'],
+  setup(props) {
     const tableColumns = [
-      {title: "No", key: "id"},
-      {title: "보험상품", key: "insuranceProductName"},
-      {title: "고객", key: "customName"},
-      {title: "계약 일자", key: "contractPeriod"},
+      {title: "프로필사진", key: "profileImage"},
+      {title: "이름", key: "name"},
+      {title: "사원코드", key: "salesMemberCode"},
+      {title: "직급", key: "rank"},
+      {title: "이메일", key: "email"},
+      {title: "모바일", key: "phone"},
+      {title: "사무실", key: "officeAddress"},
+      {title: "내선 번호", key: "extensionNumber"},
     ];
     const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
-    // 데이터 가져오는 함수
+
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axios.get(`${baseUrl}/api/contract/list`)
+      axios.get(`${baseUrl}/api/team/detail/${props.teamId}`)
         .then(response => {
-          const data = response.data.result;
+          const data = response.data.result.list();
           // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
           data.forEach((item, index) => {
             item.id = index + 1;
@@ -56,27 +79,24 @@ export default {
           console.log('Error fetching data:', error);
         });
     };
-
-    function navigateToAddModify() {
-      router.push('/ContractList/AddModify');
-    }
     function navigateToDetail(item) {
-      router.push({ path: '/ContractList/Detail', query: { id: item.id }});
+      router.push({ path: `/SalesMembersList/Detail`, query: { id: item.id }});
     }
-    // 컴포넌트가 마운트되었을 때 데이터 가져오기
+    function navigateToAdd() {
+      router.push(`/Team/Add`);
+    }
     onMounted(() => {
       fetchData();
     });
-
-    // setup() 함수에서 반환해야 하는 객체
     return {
       tableColumns,
       tableRows,
-      navigateToAddModify,
+      navigateToAdd,
       navigateToDetail
-    };
+    }
   },
-};
+
+}
 </script>
 
 <style scoped>

@@ -23,6 +23,9 @@ import ContractCancelPage from "@/pages/contract/ContractCancelPage.vue"
 import ContractDetailPage from "@/pages/contract/ContractDetailPage.vue"
 import BoardDetailPage from "@/pages/board/BoardDetailPage.vue"
 import SuggestionBoardDetail from "@/pages/board/SuggestionBoardDetailPage.vue"
+import TeamListPage from "@/pages/team/TeamListPage.vue";
+import TeamDetailPage from "@/pages/team/TeamDetailPage.vue";
+import TeamAddPage from "@/pages/team/TeamAddPage.vue";
 
 
 const routes = [
@@ -209,6 +212,27 @@ const routes = [
     component: ContractDetailPage,
     meta: {
       title: '계약 상세정보'
+    }
+  },
+  {
+    path: '/Team/List',
+    component: TeamListPage,
+    meta: {
+      title: '팀 목록'
+    }
+  },
+  {
+    path: '/Team/Detail/:teamId',
+    component: TeamDetailPage,
+    meta: {
+      title: '팀 상세정보'
+    }
+  },
+  {
+    path: '/Team/Add',
+    component: TeamAddPage,
+    meta: {
+      title: '팀 추가'
     }
   },
 ]
