@@ -31,6 +31,10 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list';
+import axiosInstance from "@/plugins/loginaxios";
+import { ref, onMounted, watch  } from 'vue';
+
+const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
 export default {
   components: { AppHeader, AppSidebar, FullCalendar },
@@ -53,11 +57,22 @@ export default {
       }
     });
     firstCalendar.render();
+
     this.$refs.firstCalendar.calendar = firstCalendar;
+
+    axiosInstance.get(baseUrl+'/api/schedule/list')
+      .then(response => {
+        this.eventList.value = response.data.result;
+        this.calendarEventCreate(this.eventList.value)
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
   },
   data() {
     return {
-      eventList: [],
+      eventList: ref([]),
       calendarOptions: {
         locale: "ko",
         plugins: [
@@ -91,29 +106,33 @@ export default {
     }
   },
   methods: {
-    calendarEventCreate(selectInfo){
-      const newEvent = {
-        id: this.eventList.length + 1,
-        title: 'New Event',
-        start: selectInfo.start,
-        end: new Date(selectInfo.start.getTime() + (8 * 60 * 60 * 1000)),
-        allDay: false
-      };
+    calendarEventCreate(eventList){
+      eventList.forEach(event => {
+        const newEvent = {
+          id: event.scheduleId,
+          title: event.scheduleTitle,
+          content: event.scheduleNote,
+          start: event.scheduleStartTime,
+          end: event.scheduleEndTime,
+          allDay: (event.allDay === "1" ? true : false),
+          backgroundColor: '#dd00ff', // 배경색
+          borderColor: '#00ff48', // 테두리색
+          textColor: '#ffffff' // 텍스트색
+        };
 
-      const firstCalendar = this.$refs.firstCalendar.calendar;
-      firstCalendar.addEvent(newEvent);
+        const firstCalendar = this.$refs.firstCalendar.calendar;
+        firstCalendar.addEvent(newEvent);
 
-      const secondCalendar = this.$refs.secondCalendar.calendar;
-      secondCalendar.addEvent(newEvent);
+        const secondCalendar = this.$refs.secondCalendar.calendar;
+        secondCalendar.addEvent(newEvent);
+      });
     },
 
     handleDateSelect(selectInfo) {
-      
 
       if(selectInfo == null){
         this.calendarEventCreate(selectInfo)
       }
-
     },
     handleEventClick(clickInfo) {
       console.table(clickInfo)
