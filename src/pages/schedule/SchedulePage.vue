@@ -21,16 +21,21 @@
   <v-dialog v-model="modalOpen" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline">이벤트 등록</span>
+        <span class="headline">일정 등록</span>
       </v-card-title>
       <v-card-text>
         <!-- 모달 내용 -->
         <v-container>
           <v-row>
-            <!-- 이벤트명 입력 -->
+
             <v-col cols="12">
-              <v-text-field v-model="newEvent.title" label="이벤트명"></v-text-field>
+              <v-text-field v-model="newEvent.title" label="일정 제목"></v-text-field>
             </v-col>
+
+            <v-col cols="12">
+              <v-select v-model="newEvent.type" color="back" :items="eventTypes" item-title="text" item-value="value" label="일정 유형"></v-select>
+            </v-col>
+
             <v-col cols="12" sm="6">
               <VueDatePicker  locale="ko" v-model="newEvent.start" />
             </v-col>
@@ -38,6 +43,7 @@
             <v-col cols="12" sm="6">
               <VueDatePicker locale="ko" v-model="newEvent.end" />
             </v-col>
+
             <v-col cols="12">
               <v-checkbox v-model="newEvent.allDay" label="올데이"></v-checkbox>
             </v-col>
@@ -73,7 +79,6 @@ import {ref} from 'vue';
 
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import {th} from "vuetify/locale";
 
 const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
@@ -114,6 +119,16 @@ export default {
       newEvent: ref({}),
       updateEvent: ref({}),
       eventList: ref({}),
+      eventTypes: [
+        { text: "회의", value: "MEETING" },
+        { text: "고객 방문 일정", value: "CUSTOMER_VISIT" },
+        { text: "판매 활동", value: "SALES_ACTIVITY" },
+        { text: "업무 일정", value: "TASK" },
+        { text: "휴가 및 휴식", value: "LEAVE" },
+        { text: "행사 및 전시회", value: "EVENT" },
+        { text: "교육 및 트레이닝", value: "EDUCATION" },
+        { text: "마케팅 캠페인", value: "MARKETING_CAMPAIGN" }
+      ],
       calendarOptions: {
         locale: "ko",
         plugins: [
@@ -166,6 +181,7 @@ export default {
         start: event.scheduleStartTime,
         end: event.scheduleEndTime,
         allDay: event.allDay === "true",
+        scheduleType : event.scheduleType,
         backgroundColor: event.color, // 배경색
       };
 
@@ -217,13 +233,26 @@ export default {
       this.eventList = events
     },
     saveEvent() {
+      if(this.newEvent.title === undefined){
+        alert("일정 제목을 입력해 주세요.")
+        return
+      }
+      if(this.newEvent.type === undefined){
+        alert("일정 유형을 선택해 주세요.")
+        return
+      }
+      if(this.newEvent.content === undefined){
+        alert("일정 상세 내용을 입력해 주세요.")
+        return
+      }
+
       const newSchedule = {
         "scheduleTitle": this.newEvent.title,
         "scheduleStartTime":this.dateTimeFormat(this.newEvent.start),
         "scheduleEndTime": this.dateTimeFormat(this.newEvent.end),
         "color": this.newEvent.color!== undefined ? this.newEvent.color : "#000000",
         "scheduleNote": this.newEvent.content,
-        "scheduleType": "MEETING",
+        "scheduleType": this.newEvent.type,
         "allDay":  this.newEvent.allDay === undefined ? "false" : "true"
       }
 
