@@ -16,4 +16,7 @@ export const useLoginInfoStore = defineStore('loginInfo', {
       this.isDropdown = !this.$state.isDropdown;
     },
   },
+  persist: {
+    enabled: true
+  }
 });

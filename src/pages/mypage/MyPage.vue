@@ -185,6 +185,7 @@ export default {
     },
     closeMyPageModal() {
       this.isModalOpen = false;
+      window.location.reload(true);
     },
     getMyPage() {
       console.log("시작화면 겟 요청테스트");
@@ -192,12 +193,9 @@ export default {
       console.log("api/members/details/" + this.loginMemberCode);
       axiosInstance.get("api/members/details/" + this.loginMemberCode)
         .then(response => {
-          // 서버로부터 받은 게시물 데이터를 userPosts 배열에 저장
-          
+          // get 요청으로 받은 데이터를 화면에 출력
           const findMember = response.data.result;
           this.myPageUpdateStore.memberInfo = findMember;
-
-          console.log(findMember);
           this.memberName = findMember.name;
           this.memberCode = findMember.salesMemberCode;
           this.teamName = findMember.teamName;
