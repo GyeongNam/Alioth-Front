@@ -2,22 +2,18 @@
   <AppSidebar></AppSidebar>
   <v-main>
     <AppHeader></AppHeader>
-      <v-divider></v-divider>
-      <v-card flat>
-        <v-card-title class="d-flex align-center pe-2">
-<!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
-          계약 목록
-          <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-          <v-row>
-            <v-col class="text-right">
-              <v-btn variant="outlined" @click="navigateToAddModify">계약 추가</v-btn>
-            </v-col>
-          </v-row>
-        </v-card-title>
+    <v-divider></v-divider>
+    <v-card flat>
         <v-spacer></v-spacer>
-        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
-      </v-card>
+        <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+        <v-row>
+          <v-col class="text-right">
+            <v-btn variant="outlined" @click="navigateToAddModify">계약 추가</v-btn>
+          </v-col>
+        </v-row>
+      <v-spacer></v-spacer>
+      <ListComponent :columns="tableColumns" :rows="tableRows" @row-click="navigateToDetail" />
+    </v-card>
   </v-main>
 </template>
 
@@ -25,63 +21,58 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import router from "@/router"; //확인
+import router from "@/router";
 
 export default {
   components: {AppSidebar, AppHeader, ListComponent},
   setup() {
-    const tableColumns = [
+    const tableColumns = ref([
       {title: "No", key: "id"},
       {title: "보험상품", key: "insuranceProductName"},
       {title: "고객", key: "customName"},
       {title: "계약 일자", key: "contractPeriod"},
-    ];
-    const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
+      {title: '작성일자', key: 'contractDate'},
+    ]);
+    const tableRows = ref([]);
 
-
-    // 데이터 가져오는 함수
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axios.get(`${baseUrl}/api/contract/list`)
-        .then(response => {
-          const data = response.data.result;
-          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
-          data.forEach((item, index) => {
-            item.id = index + 1; // 인덱스를 이용하여 ID를 할당합니다. 인덱스 + 1을 사용하여 1부터 시작하도록 합니다.
-          });
-          // tableRows에 데이터를 할당합니다.
-          tableRows.value = data;
-        })
-        .catch(error => {
-          console.log('Error fetching data:', error);
+      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const accessToken = localStorage.getItem('accessToken');
+
+      axios.get(`${baseUrl}/api/contract/list`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      }).then(response => {
+        const data = response.data.result;
+        data.forEach((item, index) => {
+          item.id = index + 1;
         });
+        tableRows.value = data;
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
     };
 
-    function navigateToAddModify() {
-      console.log("Navigate to Add Modify");
+    const navigateToAddModify = () => {
       router.push('/ContractList/AddModify');
-    }
-    function navigateToDetail(item) {
-      router.push({ path: '/ContractList/Detail', query: { id: item.id }});
-    }
-    // 컴포넌트가 마운트되었을 때 데이터 가져오기
-    onMounted(() => {
-      fetchData();
-    });
+    };
 
-    // setup() 함수에서 반환해야 하는 객체
+    const navigateToDetail = (item) => {
+      router.push(`/ContractList/Detail/${item.item.id}`);
+    };
+
+    onMounted(fetchData);
+
     return {
       tableColumns,
       tableRows,
       navigateToAddModify,
       navigateToDetail
     };
-  },
+  }
 };
 </script>
 
 <style scoped>
-
 </style>
