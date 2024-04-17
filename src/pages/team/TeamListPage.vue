@@ -17,7 +17,7 @@
         </v-card-title>
         <v-spacer></v-spacer>
 <!--        <ListComponent :columns="tableColumns" :rows="tableRows"  @click="navigateToDetail" />-->
-        <ListComponent :columns="tableColumns" :rows="tableRows" @click="handleRowClick" />
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail" />
       </v-card>
     </v-container>
   </v-main>
@@ -59,15 +59,12 @@ export default {
           console.log('Error fetching data:', error);
         });
     };
-    function handleRowClick(row) {
-      console.log("Clicked row:", row);
-      // 클릭된 행의 데이터를 사용할 수 있습니다.
+
+    function navigateToDetail(event,{ item }) {
+      console.log(item)
+      console.log("items")
+      router.push({ path: `/Team/Detail/${item.teamCode}` });
     }
-    // function navigateToDetail(items) {
-    //   console.log(items)
-    //   console.log("items")
-    //   // router.push({ path: `/Team/Detail/${row.teamCode}` });
-    // }
     function navigateToAdd() {
       router.push(`/Team/Add`);
     }
@@ -80,8 +77,7 @@ export default {
       tableColumns,
       tableRows,
       navigateToAdd,
-      // navigateToDetail,
-      handleRowClick
+      navigateToDetail,
     }
   },
 

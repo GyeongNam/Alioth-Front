@@ -5,7 +5,6 @@
       :items="rows"
       :items-length="10"
       item-value="id"
-      @click:row="handleRowClick"
     ></v-data-table>
 </template>
 
@@ -21,20 +20,21 @@ export default {
       required: true
     }
   },
-  methods: {
-    handleRowClick(item) {
-      console.log(item.id)
-      this.$emit('row-click', item); // 이벤트를 발생시킵니다.
-    }
-  },
   /*
-  computed: {
-    getColumns() {
-      return this.columns;
-    },
-    getRows() {
-      return this.rows;
-    }
-  },*/
+ methods: {
+   handleRowClick(item) {
+     console.log(item.id)
+     this.$emit('row-click', item); // 이벤트를 발생시킵니다.
+   }
+ },
+
+ computed: {
+   getColumns() {
+     return this.columns;
+   },
+   getRows() {
+     return this.rows;
+   }
+ },*/
 };
 </script>

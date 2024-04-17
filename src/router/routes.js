@@ -222,7 +222,7 @@ const routes = [
     }
   },
   {
-    path: '/Team/Detail/:teamId',
+    path: '/Team/Detail/:teamCode',
     component: TeamDetailPage,
     meta: {
       title: '팀 상세정보'

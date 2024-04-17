@@ -40,12 +40,16 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import router from "@/router";
-
 import { ref, onMounted } from 'vue';
 import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
-  props: ['teamCode'],
+  props : {
+    teamCode: {
+      type: String,
+      required: true
+    }
+  },
   setup(props) {
     const tableColumns = [
       {title: "프로필사진", key: "profileImage"},
@@ -63,25 +67,23 @@ export default {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
       axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamCode}`)
         .then(response => {
-          const data1 = response.data.result;
-          const data2 = response.data.result.list();
-          // 팀명과 팀장 정보를 가져옵니다.
-          const { teamName, teamLeader } = data1;
-          // 팀명과 팀장 정보를 Vue 데이터에 할당합니다.
-          this.teamName = teamName;
-          this.teamLeader = teamLeader;
-          console.log(data2)
-          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
-          data2.forEach((item, index) => {
+          const data = response.data.result;
+          const { teamName, teamLeader, list } = data;
+          // 데이터를 Vue 데이터에 할당
+          teamName.value = teamName;
+          teamLeader.value = teamLeader;
+          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가
+          list.forEach((item, index) => {
             item.id = index + 1;
           });
-          // tableRows에 데이터를 할당합니다.
-          tableRows.value = data2;
+          tableRows.value = list;
         })
         .catch(error => {
           console.log('Error fetching data:', error);
         });
     };
+    const teamName = ref('');
+    const teamLeader = ref('');
     function navigateToDetail(item) {
       router.push({ path: `/SalesMembersList/Detail`, query: { id: item.id }});
     }
@@ -96,8 +98,8 @@ export default {
       tableRows,
       navigateToAdd,
       navigateToDetail,
-      teamName:'',
-      teamLeader:''
+      teamName,
+      teamLeader
     }
   },
 
