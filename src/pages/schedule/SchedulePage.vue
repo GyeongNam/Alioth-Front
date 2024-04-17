@@ -73,6 +73,7 @@ import {ref} from 'vue';
 
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import {th} from "vuetify/locale";
 
 const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
@@ -100,14 +101,7 @@ export default {
 
     this.$refs.firstCalendar.calendar = firstCalendar;
 
-    axiosInstance.get(baseUrl + '/api/schedule/list')
-      .then(response => {
-        this.eventList.value = response.data.result;
-        this.calendarEventCreate(this.eventList.value)
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    this.getList();
 
   },
   data() {
@@ -152,26 +146,35 @@ export default {
     }
   },
   methods: {
+    calendarEventRemove(){
+      const firstCalendar = this.$refs.firstCalendar.calendar;
+      firstCalendar.removeAllEvents();
+      const secondCalendar = this.$refs.secondCalendar.calendar;
+      secondCalendar.removeAllEvents();
+    },
     calendarEventCreate(eventList) {
       eventList.forEach(event => {
-        console.log(event);
-        const newEvent = {
-          id: event.scheduleId,
-          title: event.scheduleTitle,
-          content: event.scheduleNote,
-          start: event.scheduleStartTime,
-          end: event.scheduleEndTime,
-          allDay: event.allDay === "ture",
-          backgroundColor: event.color, // 배경색
-        };
-
-        const firstCalendar = this.$refs.firstCalendar.calendar;
-        firstCalendar.addEvent(newEvent);
-
-        const secondCalendar = this.$refs.secondCalendar.calendar;
-        secondCalendar.addEvent(newEvent);
+        this.eventCreate(event)
       });
     },
+    eventCreate(event){
+      const newEvent = {
+        id: event.scheduleId,
+        title: event.scheduleTitle,
+        content: event.scheduleNote,
+        start: event.scheduleStartTime,
+        end: event.scheduleEndTime,
+        allDay: event.allDay === "true",
+        backgroundColor: event.color, // 배경색
+      };
+
+      const firstCalendar = this.$refs.firstCalendar.calendar;
+      firstCalendar.addEvent(newEvent);
+
+      const secondCalendar = this.$refs.secondCalendar.calendar;
+      secondCalendar.addEvent(newEvent);
+    },
+
 
     handleDateSelect(selectInfo) {
       if (selectInfo) {
@@ -201,22 +204,45 @@ export default {
     },
     saveEvent() {
       console.log(this.newEvent)
-      console.log(this.dateTimeFormat(this.newEvent.start))
-      console.log(this.dateTimeFormat(this.newEvent.end))
-      // this.modalOpen = false; // 모달 닫기
+
+      const newSchedule = {
+        "scheduleTitle": this.newEvent.title,
+        "scheduleStartTime":this.dateTimeFormat(this.newEvent.start),
+        "scheduleEndTime": this.dateTimeFormat(this.newEvent.end),
+        "color": this.newEvent.color!== undefined ? this.newEvent.color : "#000000",
+        "scheduleNote": this.newEvent.content,
+        "scheduleType": "MEETING",
+        "allDay":  this.newEvent.allDay === undefined ? "false" : "true"
+      }
+
+      console.log(newSchedule)
+      axiosInstance.post(baseUrl + '/api/schedule/create',newSchedule)
+        .then(response => {
+          console.log(response)
+          alert("일정이 추가 되었습니다.")
+          this.calendarEventRemove()
+          this.getList()
+          this.modalOpen = false; // 모달 닫기
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     closeModal() {
       this.modalOpen = false; // 모달 닫기
     },
     dateTimeFormat(dateTime){
-      const originalDate = new Date(dateTime);
-      const year = originalDate.getFullYear();
-      const month = String(originalDate.getMonth() + 1).padStart(2, '0');
-      const day = String(originalDate.getDate()).padStart(2, '0');
-      const hours = String(originalDate.getHours()).padStart(2, '0');
-      const minutes = String(originalDate.getMinutes()).padStart(2, '0');
-      const seconds = String(originalDate.getSeconds()).padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return new Date(dateTime).toISOString().slice(0, 19);
+    },
+    getList(){
+      axiosInstance.get(baseUrl + '/api/schedule/list')
+        .then(response => {
+          this.eventList.value = response.data.result;
+          this.calendarEventCreate(this.eventList.value)
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
   }
 }
