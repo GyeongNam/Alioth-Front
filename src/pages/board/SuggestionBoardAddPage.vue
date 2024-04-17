@@ -34,6 +34,10 @@ import { useRouter } from 'vue-router';
 
 export default {
   components: {AppHeader, AppSidebar},
+  setup() {
+    const router = useRouter(); // 여기로 이동
+    return { router };
+  },
   data() {
     return {
       valid: true,
@@ -52,7 +56,6 @@ export default {
   },
   methods: {
     submitSuggestion() {
-      const router = useRouter();
       if (this.$refs.form.validate()) {
         const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
         const apiUrl = `${baseUrl}/api/board/create`;
@@ -71,7 +74,7 @@ export default {
         }).then(() => {
           alert('건의사항이 추가되었습니다.');
           this.resetForm();
-          router.push('/BoardList');
+          this.router.push('/BoardList'); // this.router 사용
         }).catch(error => {
           console.error('건의사항 추가에 실패했습니다:', error);
           alert('오류가 발생했습니다: ' + (error.response && error.response.data.message ? error.response.data.message : '서버 응답 없음'));
@@ -86,6 +89,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .text-center {
