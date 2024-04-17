@@ -57,7 +57,8 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click="saveEvent">Save</v-btn>
+        <v-btn color="primary" v-if="!isUpdate" @click="saveEvent">Save</v-btn>
+        <v-btn color="primary" v-if="isUpdate" @click="updateEvent">update</v-btn>
         <v-btn color="grey" @click="closeModal">Close</v-btn>
       </v-card-actions>
     </v-card>
@@ -111,13 +112,13 @@ export default {
   },
   data() {
     return {
+      isUpdate: true,
       newStart: new Date,
       newEnd: new Date,
       startDatePicker: false,
       endDatePicker: false,
       modalOpen: false,
       newEvent: ref({}),
-      updateEvent: ref({}),
       eventList: ref({}),
       eventTypes: [
         { text: "회의", value: "MEETING" },
@@ -182,7 +183,7 @@ export default {
         end: event.scheduleEndTime,
         allDay: event.allDay === "true",
         scheduleType : event.scheduleType,
-        backgroundColor: event.color, // 배경색
+        backgroundColor: event.color,
       };
 
       const firstCalendar = this.$refs.firstCalendar.calendar;
@@ -192,33 +193,32 @@ export default {
       secondCalendar.addEvent(newEvent);
     },
 
-
     handleDateSelect(selectInfo) {
       if (selectInfo) {
+        this.newEvent = {};
+        this.isUpdate = false
         this.newEvent.start = selectInfo.startStr;
         this.newEvent.end = selectInfo.endStr;
-        this.modalOpen = true; // 모달 열기
-      }
-      if (selectInfo == null) {
-        this.calendarEventCreate(selectInfo)
+        this.modalOpen = true;
       }
     },
+
     handleEventClick(clickInfo) {
+      this.newEvent = {};
+      this.isUpdate = true
 
-      console.log(clickInfo)
-      console.log(clickInfo.event._def.publicId)
+      this.newEvent.id = clickInfo.event._def.publicId
+      this.newEvent.title = clickInfo.event._def.title
+      this.newEvent.start = clickInfo.event._instance.range.start
+      this.newEvent.end = clickInfo.event._instance.range.end
+      this.newEvent.color = clickInfo.event._def.ui.backgroundColor
+      this.newEvent.content = clickInfo.event._def.extendedProps.content
+      this.newEvent.type = clickInfo.event._def.extendedProps.scheduleType
+      this.newEvent.allDay = clickInfo.event._def.allDay
 
-      this.updateEvent = {
-        title: clickInfo.event._def.title,
-        start: this.dateTimeFormat(clickInfo.event._instance.range.start),
-        end: this.dateTimeFormat(clickInfo.event._instance.range.end),
-        allDay: clickInfo.event._def.allDay,
-        color: clickInfo.event._def.ui.backgroundColor,
-        content: clickInfo.event._def.extendedProps.content // 내용이 extendedProps에 저장되어 있다고 가정합니다.
-      };
-      console.log(this.updateEvent)
-      console.log("이벤트 클릭입니다.")
+      this.modalOpen = true;
     },
+
     handleEventDrop(dropInfo) {
       console.table(dropInfo)
       const updatedEvent = this.eventList.find(event => event.id === dropInfo.event.id);
@@ -229,10 +229,12 @@ export default {
       }
 
     },
+
     handleEvents(events) {
       this.eventList = events
     },
-    saveEvent() {
+
+    scheduleAddEvent(){
       if(this.newEvent.title === undefined){
         alert("일정 제목을 입력해 주세요.")
         return
@@ -245,20 +247,38 @@ export default {
         alert("일정 상세 내용을 입력해 주세요.")
         return
       }
-
-      const newSchedule = {
+      return {
         "scheduleTitle": this.newEvent.title,
-        "scheduleStartTime":this.dateTimeFormat(this.newEvent.start),
+        "scheduleStartTime": this.dateTimeFormat(this.newEvent.start),
         "scheduleEndTime": this.dateTimeFormat(this.newEvent.end),
-        "color": this.newEvent.color!== undefined ? this.newEvent.color : "#000000",
+        "color": this.newEvent.color !== undefined ? this.newEvent.color : "#000000",
         "scheduleNote": this.newEvent.content,
         "scheduleType": this.newEvent.type,
-        "allDay":  this.newEvent.allDay === undefined ? "false" : "true"
+        "allDay": this.newEvent.allDay === undefined ? "false" : "true"
       }
+    },
 
-      axiosInstance.post(baseUrl + '/api/schedule/create',newSchedule)
+    updateEvent(){
+      console.log(this.scheduleAddEvent())
+      axiosInstance.patch(baseUrl + '/api/schedule/update/'+this.newEvent.id ,this.scheduleAddEvent())
+        .then((res) => {
+          console.log(res)
+          alert("일정이 수정 되었습니다.")
+          this.calendarEventRemove()
+          this.getList()
+          this.closeModal()
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+
+    saveEvent() {
+      axiosInstance.post(baseUrl + '/api/schedule/create',this.scheduleAddEvent())
         .then(() => {
           alert("일정이 추가 되었습니다.")
+          this.calendarEventRemove()
+          this.getList()
           this.closeModal()
         })
         .catch(error => {
@@ -266,9 +286,6 @@ export default {
         });
     },
     closeModal() {
-      this.calendarEventRemove()
-      this.getList()
-      this.newEvent = {};
       this.modalOpen = false;
     },
     dateTimeFormat(dateTime){
