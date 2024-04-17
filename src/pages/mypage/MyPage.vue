@@ -28,19 +28,19 @@
         <v-col cols="2" class="myprofilebox mt-12 ml-12">
           <div>
             <h5>이름</h5>
-            <h3>박성준</h3>
+            <h3>{{ this.memberName }}</h3>
           </div>
         </v-col>
         <v-col cols="2" class="myprofilebox mt-12 ml-12">
           <div>
             <h5>소속</h5>
-            <h3>영업부</h3>
+            <h3>{{ this.teamName }}</h3>
           </div>
         </v-col>
         <v-col cols="2" class="myprofilebox mt-12 ml-12">
           <div>
             <h5>사번</h5>
-            <h3>202441</h3>
+            <h3>{{ this.memberCode }}</h3>
           </div>
         </v-col>
 
@@ -83,42 +83,42 @@
             <div class="d-flex">
               <h3 class="ma-2 pa-2">회사 주소</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">서울특별시 동작구</h4>
+              <h4 class="ma-2 pa-2">{{ this.officeAddress }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
             <div class="d-flex">
               <h3 class="ma-2 pa-2">집 주소</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">서울특별시 금천구</h4>
+              <h4 class="ma-2 pa-2">{{ this.address }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
             <div class="d-flex">
               <h3 class="ma-2 pa-2">이메일</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">asdjoiqwe@google.com</h4>
+              <h4 class="ma-2 pa-2">{{ this.email }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
             <div class="d-flex">
               <h3 class="ma-2 pa-2">연락처</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">020-3123-5142</h4>
+              <h4 class="ma-2 pa-2">{{ this.phoneNumber }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
             <div class="d-flex">
               <h3 class="ma-2 pa-2">내선번호</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">020-3123-5142</h4>
+              <h4 class="ma-2 pa-2">{{ this.extensionNumber }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
             <div class="d-flex">
               <h3 class="ma-2 pa-2">생년월일</h3>
               <div class="flex-grow-1"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
-              <h4 class="ma-2 pa-2">020-3123-5142</h4>
+              <h4 class="ma-2 pa-2">{{ this.birthDay }}</h4>
               <h4 class="ma-2 pa-2"></h4>
             </div>
 
@@ -138,6 +138,8 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import ModalMypage from "@/pages/mypage/ModalMyPage.vue"
 import axiosInstance from "@/plugins/loginaxios";
 import { useLoginInfoStore } from '@/stores/loginInfo';
+import { useMyPageUpdateStore } from '@/stores/myPageUpdate';
+
 
 export default {
   components: { AppHeader, AppSidebar, ModalMypage },
@@ -156,6 +158,19 @@ export default {
       isDetailModalOpen: false,
       loginMemberCode: "",
       loginStore: useLoginInfoStore(),
+      myPageUpdateStore: useMyPageUpdateStore(),
+      /* 출력정보들 수정시 이야기좀해주세요 by.JunStiN */ 
+      prefileImage: null,
+      memberName: "",
+      memberCode: "",
+      teamName: "",
+      // 직급, 직책, 직무 추가해야함
+      officeAddress: "",
+      address: "",
+      email: "",
+      phoneNumber: "",
+      extensionNumber: "",
+      birthDay: "",
     };
   },
   methods: {
@@ -174,10 +189,25 @@ export default {
     getMyPage() {
       console.log("시작화면 겟 요청테스트");
       this.loginMemberCode = this.loginStore.getMemberCode;
+      console.log("api/members/details/" + this.loginMemberCode);
       axiosInstance.get("api/members/details/" + this.loginMemberCode)
         .then(response => {
           // 서버로부터 받은 게시물 데이터를 userPosts 배열에 저장
-          console.log(response.data)
+          
+          const findMember = response.data.result;
+          this.myPageUpdateStore.memberInfo = findMember;
+
+          console.log(findMember);
+          this.memberName = findMember.name;
+          this.memberCode = findMember.salesMemberCode;
+          this.teamName = findMember.teamName;
+          this.address = findMember.address;
+          this.officeAddress = findMember.officeAddress;
+          this.email = findMember.email;
+          this.phoneNumber = findMember.phone;
+          this.extensionNumber = findMember.extensionNumber;
+          this.birthDay = findMember.birthDay;
+          // // 직급, 직책, 직무 추가해야함
 
         })
         .catch(error => {
