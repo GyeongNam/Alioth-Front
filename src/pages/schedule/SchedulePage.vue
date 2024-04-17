@@ -112,6 +112,7 @@ export default {
       endDatePicker: false,
       modalOpen: false,
       newEvent: ref({}),
+      updateEvent: ref({}),
       eventList: ref({}),
       calendarOptions: {
         locale: "ko",
@@ -187,7 +188,20 @@ export default {
       }
     },
     handleEventClick(clickInfo) {
-      console.table(clickInfo)
+
+      console.log(clickInfo)
+      console.log(clickInfo.event._def.publicId)
+
+      this.updateEvent = {
+        title: clickInfo.event._def.title,
+        start: this.dateTimeFormat(clickInfo.event._instance.range.start),
+        end: this.dateTimeFormat(clickInfo.event._instance.range.end),
+        allDay: clickInfo.event._def.allDay,
+        color: clickInfo.event._def.ui.backgroundColor,
+        content: clickInfo.event._def.extendedProps.content // 내용이 extendedProps에 저장되어 있다고 가정합니다.
+      };
+      console.log(this.updateEvent)
+      console.log("이벤트 클릭입니다.")
     },
     handleEventDrop(dropInfo) {
       console.table(dropInfo)
@@ -203,8 +217,6 @@ export default {
       this.eventList = events
     },
     saveEvent() {
-      console.log(this.newEvent)
-
       const newSchedule = {
         "scheduleTitle": this.newEvent.title,
         "scheduleStartTime":this.dateTimeFormat(this.newEvent.start),
@@ -215,21 +227,20 @@ export default {
         "allDay":  this.newEvent.allDay === undefined ? "false" : "true"
       }
 
-      console.log(newSchedule)
       axiosInstance.post(baseUrl + '/api/schedule/create',newSchedule)
-        .then(response => {
-          console.log(response)
+        .then(() => {
           alert("일정이 추가 되었습니다.")
-          this.calendarEventRemove()
-          this.getList()
-          this.modalOpen = false; // 모달 닫기
+          this.closeModal()
         })
         .catch(error => {
           console.error(error);
         });
     },
     closeModal() {
-      this.modalOpen = false; // 모달 닫기
+      this.calendarEventRemove()
+      this.getList()
+      this.newEvent = {};
+      this.modalOpen = false;
     },
     dateTimeFormat(dateTime){
       return new Date(dateTime).toISOString().slice(0, 19);
