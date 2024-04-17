@@ -33,13 +33,15 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';// 수정된 import 
 import { errorMessages } from 'vue/compiler-sfc';
+import { useLoginInfoStore } from '@/stores/loginInfo';
 
 export default {
   data() {
     return {
       memberCode: '',
       password: '',
-      fcmToken: 'OPTIONAL_FCM_TOKEN' // 필요한 경우 사용
+      fcmToken: 'OPTIONAL_FCM_TOKEN', // 필요한 경우 사용
+      loginStore: useLoginInfoStore(),
     };
   },
   methods: {
@@ -55,6 +57,9 @@ export default {
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
           alert("성공적으로 로그인 되었습니다.")
+
+          this.loginStore.memberCode = this.memberCode;
+
           this.$router.push("/")
         })
         .catch(error => {
