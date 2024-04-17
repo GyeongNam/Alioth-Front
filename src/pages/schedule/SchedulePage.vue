@@ -31,50 +31,16 @@
             <v-col cols="12">
               <v-text-field v-model="newEvent.title" label="이벤트명"></v-text-field>
             </v-col>
-            <!-- 시작 날짜 -->
-              <!-- 시작 날짜 -->
-              <v-col cols="12" sm="6">
-                <v-menu
-                  v-model="startDatePicker"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="newEvent.start"
-                      label="시작 날짜 및 시간"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="newEvent.start" @input="startDatePicker = false"></v-date-picker>
-                </v-menu>
-              </v-col>
-              <!-- 종료 날짜 -->
-              <v-col cols="12" sm="6">
-                <v-menu
-                  v-model="endDatePicker"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="newEvent.end"
-                      label="종료 날짜 및 시간"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="newEvent.end" @input="endDatePicker = false"></v-date-picker>
-                </v-menu>
-                <v-checkbox v-model="newEvent.allDay" label="올데이"></v-checkbox>
-              </v-col>
+            <v-col cols="12" sm="6">
+              <VueDatePicker  locale="ko" v-model="newEvent.start" />
+            </v-col>
+
+            <v-col cols="12" sm="6">
+              <VueDatePicker locale="ko" v-model="newEvent.end" />
+            </v-col>
+            <v-col cols="12">
+              <v-checkbox v-model="newEvent.allDay" label="올데이"></v-checkbox>
+            </v-col>
             <v-col cols="12" class="d-flex justify-center">
               <v-color-picker v-model="newEvent.color"> </v-color-picker>
             </v-col>
@@ -105,10 +71,13 @@ import listPlugin from '@fullcalendar/list';
 import axiosInstance from "@/plugins/loginaxios";
 import {ref} from 'vue';
 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
 export default {
-  components: {AppHeader, AppSidebar, FullCalendar},
+  components: {AppHeader, AppSidebar, FullCalendar, VueDatePicker},
   mounted() {
     const calendarListEl = document.getElementById('calendarList');
     const firstCalendar = new Calendar(calendarListEl, {
@@ -143,9 +112,13 @@ export default {
   },
   data() {
     return {
+      newStart: new Date,
+      newEnd: new Date,
+      startDatePicker: false,
+      endDatePicker: false,
       modalOpen: false,
       newEvent: ref({}),
-      eventList: ref([]),
+      eventList: ref({}),
       calendarOptions: {
         locale: "ko",
         plugins: [
@@ -181,16 +154,15 @@ export default {
   methods: {
     calendarEventCreate(eventList) {
       eventList.forEach(event => {
+        console.log(event);
         const newEvent = {
           id: event.scheduleId,
           title: event.scheduleTitle,
           content: event.scheduleNote,
           start: event.scheduleStartTime,
           end: event.scheduleEndTime,
-          allDay: event.allDay === "1",
-          backgroundColor: '#dd00ff', // 배경색
-          borderColor: '#00ff48', // 테두리색
-          textColor: '#ffffff' // 텍스트색
+          allDay: event.allDay === "ture",
+          backgroundColor: event.color, // 배경색
         };
 
         const firstCalendar = this.$refs.firstCalendar.calendar;
@@ -229,11 +201,22 @@ export default {
     },
     saveEvent() {
       console.log(this.newEvent)
-      console.log(this.newEvent.start)
+      console.log(this.dateTimeFormat(this.newEvent.start))
+      console.log(this.dateTimeFormat(this.newEvent.end))
       // this.modalOpen = false; // 모달 닫기
     },
     closeModal() {
       this.modalOpen = false; // 모달 닫기
+    },
+    dateTimeFormat(dateTime){
+      const originalDate = new Date(dateTime);
+      const year = originalDate.getFullYear();
+      const month = String(originalDate.getMonth() + 1).padStart(2, '0');
+      const day = String(originalDate.getDate()).padStart(2, '0');
+      const hours = String(originalDate.getHours()).padStart(2, '0');
+      const minutes = String(originalDate.getMinutes()).padStart(2, '0');
+      const seconds = String(originalDate.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
   }
 }
