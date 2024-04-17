@@ -16,18 +16,9 @@
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
-        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
+<!--        <ListComponent :columns="tableColumns" :rows="tableRows"  @click="navigateToDetail" />-->
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click="handleRowClick" />
       </v-card>
-<!--
-          <tbody>
-          <tr v-for="item in employees" :key="item.name">
-            <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
-            <td>{{ item.position }}</td>
-            <td>{{ item.department }}</td>
-            <td>{{ item.hireDate }}</td>
-          </tr>
-          </tbody>
--->
     </v-container>
   </v-main>
 </template>
@@ -56,6 +47,7 @@ export default {
       axiosInstance.get(`${baseUrl}/api/team/list`)
         .then(response => {
           const data = response.data.result;
+          console.log('팀 목록 데이터:', data);
           // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
           data.forEach((item, index) => {
             item.id = index + 1;
@@ -67,9 +59,15 @@ export default {
           console.log('Error fetching data:', error);
         });
     };
-    function navigateToDetail(item) {
-      router.push({ path: `/Team/Detail`, query: { id: item.id }});
+    function handleRowClick(row) {
+      console.log("Clicked row:", row);
+      // 클릭된 행의 데이터를 사용할 수 있습니다.
     }
+    // function navigateToDetail(items) {
+    //   console.log(items)
+    //   console.log("items")
+    //   // router.push({ path: `/Team/Detail/${row.teamCode}` });
+    // }
     function navigateToAdd() {
       router.push(`/Team/Add`);
     }
@@ -82,7 +80,8 @@ export default {
       tableColumns,
       tableRows,
       navigateToAdd,
-      navigateToDetail
+      // navigateToDetail,
+      handleRowClick
     }
   },
 

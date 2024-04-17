@@ -1,11 +1,12 @@
 <template>
 
-    <v-data-table-virtual
+    <v-data-table
       :headers="columns"
       :items="rows"
       :items-length="10"
-      item-value="name"
-    ></v-data-table-virtual>
+      item-value="id"
+      @click:row="handleRowClick"
+    ></v-data-table>
 </template>
 
 <script>
@@ -20,11 +21,13 @@ export default {
       required: true
     }
   },
-/*  methods: {
-    handleRowClick(row) {
-      this.$emit('row-click', row); // 이벤트를 발생시킵니다.
+  methods: {
+    handleRowClick(item) {
+      console.log(item.id)
+      this.$emit('row-click', item); // 이벤트를 발생시킵니다.
     }
   },
+  /*
   computed: {
     getColumns() {
       return this.columns;

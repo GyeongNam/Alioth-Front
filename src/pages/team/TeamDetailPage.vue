@@ -4,6 +4,19 @@
     <AppHeader></AppHeader>
     <v-container fluid>
       <v-card flat>
+        <v-row>
+          <v-col cols="4" offset="3"> <!-- 팀 명 -->
+            <v-card text="팀명" variant="outlined" > {{ teamName }} </v-card>
+          </v-col>
+          <v-col cols="4" offset="1" > <!-- 팀장 -->
+            <v-card text="팀장" variant="outlined"> {{ teamLeader }} </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <div style="margin-bottom: 16px;"></div>
+
+      <v-card>
         <v-card-title class="d-flex align-center pe-2">
           <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
           팀원 목록
@@ -18,18 +31,6 @@
         <v-spacer></v-spacer>
         <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
       </v-card>
-<!--
-
-          <tbody>
-          <tr v-for="item in employees" :key="item.name">
-            <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
-            <td>{{ item.position }}</td>
-            <td>{{ item.department }}</td>
-            <td>{{ item.hireDate }}</td>
-          </tr>
-          </tbody>
-
--->
     </v-container>
   </v-main>
 </template>
@@ -44,7 +45,7 @@ import { ref, onMounted } from 'vue';
 import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
-  props: ['teamId'],
+  props: ['teamCode'],
   setup(props) {
     const tableColumns = [
       {title: "프로필사진", key: "profileImage"},
@@ -60,16 +61,22 @@ export default {
 
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamId}`)
+      axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamCode}`)
         .then(response => {
-          const data = response.data.result.list();
-          console.log(data)
+          const data1 = response.data.result;
+          const data2 = response.data.result.list();
+          // 팀명과 팀장 정보를 가져옵니다.
+          const { teamName, teamLeader } = data1;
+          // 팀명과 팀장 정보를 Vue 데이터에 할당합니다.
+          this.teamName = teamName;
+          this.teamLeader = teamLeader;
+          console.log(data2)
           // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
-          data.forEach((item, index) => {
+          data2.forEach((item, index) => {
             item.id = index + 1;
           });
           // tableRows에 데이터를 할당합니다.
-          tableRows.value = data;
+          tableRows.value = data2;
         })
         .catch(error => {
           console.log('Error fetching data:', error);
@@ -88,7 +95,9 @@ export default {
       tableColumns,
       tableRows,
       navigateToAdd,
-      navigateToDetail
+      navigateToDetail,
+      teamName:'',
+      teamLeader:''
     }
   },
 
