@@ -53,12 +53,14 @@ export default {
         // 경로가 /api/login이 되도록 수정
         await axios.post(`${baseUrl}/api/login`, loginData)
         .then(response => {
-          const data = response.data.result
+          console.log(response);
+          const data = response.data.result;
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
-          alert("성공적으로 로그인 되었습니다.")
+          alert("성공적으로 로그인 되었습니다.");
 
-          this.loginStore.memberCode = this.memberCode;
+          this.loginStore.memberCode = data.memberCode;
+          this.loginStore.memberRank = data.memberRank;
 
           this.$router.push("/")
         })
