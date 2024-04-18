@@ -1,6 +1,6 @@
 <template>
 
-  <v-app-bar>
+  <v-toolbar color="white">
     <v-app-bar-title class="ms-auto">{{ pageName }}</v-app-bar-title>
     <template v-slot:append>
       <span class="ms-2">{{ currentDateTime }}</span>
@@ -25,13 +25,13 @@
         </v-list>
       </v-menu>
     </template>
-  </v-app-bar>
+  </v-toolbar>
   <v-divider :thickness="4" class="border-opacity-50"></v-divider>
 </template>
 
 <script>
 import { computed, onBeforeUnmount, watch } from 'vue';
-import { useNotificationStore } from '../stores/notificationStore';
+import { useNotificationStore } from '@/stores/notificationStore';
 import { useRoute, useRouter } from 'vue-router';
 
 export default {

@@ -10,11 +10,11 @@
 
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
-      <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  @click="handleSubMenuClick(`/Sales`);">
+      <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  >
         <v-list-item-title v-for="(folder, index) in folders" :key="index">
-          <v-list-item-title>{{ folder.title }}</v-list-item-title>
+          <v-list-item-title @click="handleSubMenuClick(`/Sales`);">{{ folder.title }}</v-list-item-title>
           <v-list v-if="dropDownStore.getDropdown">
-            <v-list-item v-for="(subItem, subIndex) in folder.subItems" :key="subIndex" @click="this.$router.push(subItem.url)">
+            <v-list-item v-for="(subItem, subIndex) in folder.subItems" :key="subIndex" @click="this.$router.push(subItem.url.toString())">
               <v-list-item-title>{{ subItem.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -51,12 +51,10 @@ export default {
   },
   methods: {
     handleMenuClick(route) {
-      this.folders.forEach(folder => {
-        folder.open = true;
-      });
       this.$router.push(route);
     },
     handleSubMenuClick(route) {
+      console.log("눌리니?")
       this.dropDownStore.toggleDropdown()
       this.$router.push(route);
     },
