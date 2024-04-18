@@ -5,10 +5,10 @@
     <v-container fluid>
       <v-card flat>
         <v-card-title class="d-flex align-center pe-2">
-          <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
           사원 목록
           <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                        variant="solo-filled" flat hide-details single-line></v-text-field>
           <v-row>
             <v-col class="text-right">
               <v-btn variant="outlined" @click="navigateToAdd">사원 추가</v-btn>
@@ -16,20 +16,8 @@
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
-        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
-<!--
-
-          <tbody>
-          <tr v-for="item in employees" :key="item.name">
-            <td><router-link :to="{ path: '/SalesMembersList/Detail', query: { name: item.name } }">{{ item.name }}</router-link></td>
-            <td>{{ item.position }}</td>
-            <td>{{ item.department }}</td>
-            <td>{{ item.hireDate }}</td>
-          </tr>
-          </tbody>
-
--->
     </v-container>
   </v-main>
 </template>
@@ -39,27 +27,34 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import router from "@/router";
-import axios from "axios";
-import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
+import {ref, onMounted} from 'vue';
+import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
 
 
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
+
   setup() {
+    const salesMemberCode = ref('salesMemberCode');
+
     const tableColumns = [
       {title: "No", key: "id"},
-      {title: "보험상품", key: "insuranceProductName"},
-      {title: "고객", key: "customName"},
-      {title: "계약 일자", key: "contractPeriod"},
+      {title: "이름", key: "name"},
+      {title: "사원코드", key: "salesMemberCode"},
+      {title: "직급", key: "rank"},
+      {title: "팀", key: "teamName"},
+      {title: "팀 코드", key: "teamCode"},
+      {title: "모바일", key: "phone"},
+      {title: "사무실", key: "officeAddress"},
+      {title: "내선 번호", key: "extensionNumber"},
     ];
-    const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
-
+    const tableRows = ref([]);
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axios.get(`${baseUrl}/api/contract/list`)
+      axiosInstance.get(`${baseUrl}/api/members/list`)
         .then(response => {
           const data = response.data.result;
-          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
+          console.log(data)
           data.forEach((item, index) => {
             item.id = index + 1;
           });
@@ -70,17 +65,24 @@ export default {
           console.log('Error fetching data:', error);
         });
     };
-    function navigateToDetail(item) {
-      router.push({ path: `/SalesMembersList/Detail`, query: { id: item.id }});
+
+    function navigateToDetail(event ,{ item }) {
+      router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
     }
+
     function navigateToAdd() {
       router.push(`/SalesMembersList/Add`);
     }
-
+    onMounted(() => {
+      fetchData();
+    });
 
     return {
-
-
+      navigateToDetail,
+      navigateToAdd,
+      tableColumns,
+      tableRows,
+      salesMemberCode
     }
   },
 

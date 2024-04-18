@@ -45,7 +45,7 @@ import {ref, onMounted} from 'vue';
 import axiosInstance from "@/plugins/loginaxios";
 
 export default {
-  components: {ListComponent, AppHeader, AppSidebar,},
+  components: {ListComponent, AppHeader, AppSidebar},
   props: {
     teamCode: {
       type: String,
@@ -58,6 +58,7 @@ export default {
     const salesMemberCode = ref('salesMemberCode');
 
     const tableColumns = [
+      {title: "No", key: "id"},
       {title: "프로필사진", key: "profileImage"},
       {title: "이름", key: "name"},
       {title: "사원코드", key: "salesMemberCode"},
@@ -101,7 +102,6 @@ export default {
     let teamMemberList;
 
     function navigateToDetail(event, {item}) {
-      console.log(item)
       router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
     }
 

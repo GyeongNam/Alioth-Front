@@ -3,32 +3,79 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-container fluid>
-      <h2>사원 상세 조회 페이지(관리자)</h2>
-      <v-divider></v-divider>
       <v-col class="text-right">
         <v-btn variant="outlined" @click="navigateToModify">사원정보 수정</v-btn>
       </v-col>
-
       <!--   이미지 들어오는지 확인 해봐야함-->
-      <v-img :width="300" aspect-ratio="16/9" cover :src="profile"></v-img>
+      <v-col cols="12" md="12">
+        <v-card>
+          <v-card-title>사진</v-card-title>
+          <v-img :width="300" aspect-ratio="16/9" cover :src="profile"></v-img>
+        </v-card>
+      </v-col>
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="4">
           <v-card>
-            <v-card-title>사원 코드</v-card-title>
-            <v-card-text>{{ salesMemberCode }}</v-card-text>
+            <v-card-title>이름</v-card-title>
+            <v-card-text>{{ name }}</v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>사원 코드</v-card-title>
+            <v-card-text>{{ salesMembersCode }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
           <v-card>
             <v-card-title>직급</v-card-title>
             <v-card-text>{{ rank }}</v-card-text>
           </v-card>
         </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>휴대전화</v-card-title>
+            <v-card-text>{{ phone }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>이메일</v-card-title>
+            <v-card-text>{{ email }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>생년월일</v-card-title>
+            <v-card-text>{{ birthDay }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>자택 주소</v-card-title>
+            <v-card-text>{{ address }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>사무실 위치</v-card-title>
+            <v-card-text>{{ officeAddress }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>내선 번호</v-card-title>
+            <v-card-text>{{ extensionNumber }}</v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card>
+            <v-card-title>고과평가</v-card-title>
+            <v-card-text>{{ performanceReview }}</v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
-
-
     </v-container>
-
   </v-main>
 </template>
 
@@ -41,19 +88,18 @@ import {onMounted, ref} from "vue";
 
 export default {
   components: {AppHeader, AppSidebar},
-  props: {
-    salesMembersCode: {
-      type: -1,
-      required: true
-    }
-  },
-
+  props: ["salesMembersCode"],
   setup(props) {
-    // console.log(props.salesMembersCode)
-
     const profile = ref('');
-    const salesMemberCode = ref('salesMemberCode');
     const rank = ref('');
+    const name = ref('');
+    const phone = ref('');
+    const email = ref('');
+    const birthDay = ref('');
+    const extensionNumber = ref('');
+    const address = ref('');
+    const officeAddress = ref('');
+    const performanceReview = ref('');
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
@@ -61,25 +107,27 @@ export default {
           if (response.data && response.data.result) {
             const {
               profile: profileImageUrl,
-              salesMemberCode: memberCode,
               rank: memberRank,
-
+              birthDay: birthday,
+              name: memberName,
+              phone: mobile,
+              email: emailAddress,
+              extensionNumber: extensionN,
+              address: homeAddress,
+              officeAddress: office,
+              performanceReview: pr,
             } = response.data.result;
+
             profile.value = profileImageUrl
-            salesMemberCode.value = memberCode
             rank.value = memberRank
-            /* .rank(member.getRank())
-                 .salesMemberCode(member.getSalesMemberCode())
-                 .birthDay(member.getBirthDay())
-                 .performanceReview(member.getPerformanceReview())
-                 .teamCode(member.getTeam() == null ? null : member.getTeam().getTeamCode())
-                 .teamName(member.getTeam() == null ? null : member.getTeam().getTeamName())
-                 .address(member.getAddress())
-                 .officeAddress(member.getOfficeAddress())
-                 .extensionNumber(member.getExtensionNumber())
-                 .phone(member.getPhone())
-                 .name(member.getName())
-                 .email(member.getEmail())*/
+            birthDay.value = birthday
+            name.value = memberName
+            phone.value = mobile
+            email.value = emailAddress
+            address.value = homeAddress
+            extensionNumber.value = extensionN
+            officeAddress.value = office
+            performanceReview.value = pr
 
           } else {
             console.error('Empty response or missing result data');
@@ -105,8 +153,15 @@ export default {
     return {
       navigateToModify,
       profile,
-      // salesMemberCode,
-      rank
+      rank,
+      birthDay,
+      name,
+      phone,
+      email,
+      address,
+      extensionNumber,
+      officeAddress,
+      performanceReview
     }
   },
 
