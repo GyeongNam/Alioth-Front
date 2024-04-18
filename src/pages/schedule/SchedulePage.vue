@@ -21,7 +21,8 @@
   <v-dialog v-model="modalOpen" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline">일정 등록</span>
+        <span class="headline"  v-if="!isUpdate">일정 등록</span>
+        <span class="headline"  v-if="isUpdate">일정 수정</span>
       </v-card-title>
       <v-card-text>
         <!-- 모달 내용 -->
@@ -45,7 +46,7 @@
             </v-col>
 
             <v-col cols="12">
-              <v-checkbox v-model="newEvent.allDay" label="올데이"></v-checkbox>
+              <v-checkbox v-model="newEvent.allDay" label="하루종일"></v-checkbox>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
               <v-color-picker v-model="newEvent.color"> </v-color-picker>
@@ -59,6 +60,7 @@
       <v-card-actions>
         <v-btn color="primary" v-if="!isUpdate" @click="saveEvent">Save</v-btn>
         <v-btn color="primary" v-if="isUpdate" @click="updateEvent">update</v-btn>
+        <v-btn color="grey" v-if="isUpdate" @click="deleteEvent">delete</v-btn>
         <v-btn color="grey" @click="closeModal">Close</v-btn>
       </v-card-actions>
     </v-card>
@@ -291,8 +293,7 @@ export default {
       }
       axiosInstance.patch(baseUrl + '/api/schedule/update/'+this.newEvent.id , data)
         .then((res) => {
-          console.log(res)
-          alert("일정이 수정 되었습니다.")
+          alert(res.data.message)
           this.calendarEventRemove()
           this.getList()
           this.closeModal()
@@ -308,8 +309,8 @@ export default {
         return
       }
       axiosInstance.post(baseUrl + '/api/schedule/create',data)
-        .then(() => {
-          alert("일정이 추가 되었습니다.")
+        .then((res) => {
+          alert(res.data.message)
           this.calendarEventRemove()
           this.getList()
           this.closeModal()
@@ -318,9 +319,26 @@ export default {
           console.error(error);
         });
     },
+
+    deleteEvent(){
+      if(confirm("진짜 일정을 삭제하시겠습니다?")){
+        axiosInstance.delete(baseUrl + '/api/schedule/delete/'+this.newEvent.id)
+          .then((res) => {
+            alert(res.data.message)
+            this.calendarEventRemove()
+            this.getList()
+            this.closeModal()
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    },
+
     closeModal() {
       this.modalOpen = false;
     },
+
     dateTimeFormat(dateTime){
       const dTime =  new Date(dateTime);
       const offset = dTime.getTimezoneOffset();
