@@ -30,6 +30,7 @@
 import axios from 'axios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppHeader, AppSidebar},
@@ -62,11 +63,7 @@ export default {
           boardType: 'ANNOUNCEMENT'
         };
 
-        axios.post(apiUrl, payload, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
+        axiosInstance.post(apiUrl, payload)
         .then(response => {
           alert('공지사항이 추가되었습니다.'); 
           this.resetForm();

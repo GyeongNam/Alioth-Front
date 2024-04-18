@@ -45,6 +45,7 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {
@@ -58,11 +59,9 @@ export default {
 
     const fetchContractDetail = () => {
       const contractId = route.params.id;
-      const accessToken = localStorage.getItem('accessToken');
+      
 
-      axios.get(`http://localhost:8080/api/contract/detail/${contractId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      })
+      axiosInstance.get(`http://localhost:8080/api/contract/detail/${contractId}`)
       .then(response => {
         contract.value = response.data.result;
       })

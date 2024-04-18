@@ -67,6 +67,7 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import axios from 'axios';
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from 'vue-router';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: { AppHeader, AppSidebar },
@@ -85,12 +86,11 @@ export default {
       totalPremium: "0원",
       actualPayment: "0원"
     });
-    const accessToken = localStorage.getItem('accessToken');
+    
 
     const loadContractDetails = () => {
-      axios.get(`http://localhost:8080/api/contract/detail/${contractId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      axiosInstance.get(`http://localhost:8080/api/contract/detail/${contractId}`)
+        .then(response => {
         contract.value = response.data.result;
         refundDetails.value.monthlyPremium = parseInt(contract.value.contractPaymentAmount).toLocaleString() + "원";
         calculateRefundDetails(new Date(contract.value.contractDate), new Date());
@@ -100,11 +100,10 @@ export default {
     };
 
     const cancelContract = () => {
-      axios.post(`http://localhost:8080/api/contract/cancel/${contractId}`, {
+      axiosInstance.post(`http://localhost:8080/api/contract/cancel/${contractId}`), {
         reason: cancellationReason.value
-      }, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(() => {
+      }
+      .then(() => {
         alert("해약이 완료되었습니다.");
         router.push('/ContractList');
       }).catch(error => {

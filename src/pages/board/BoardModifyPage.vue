@@ -26,6 +26,7 @@ import axios from 'axios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRoute, useRouter } from 'vue-router';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppHeader, AppSidebar},
@@ -51,12 +52,11 @@ export default {
 
     const updateBoard = () => {
       const boardId = route.params.boardId;
-      axios.patch(`${baseUrl}/api/board/update/${boardId}`, {
+      axiosInstance.patch(`${baseUrl}/api/board/update/${boardId}`, {
         title: board.value.title,
         content: board.value.content
-      }, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      })
+      .then(response => {
         alert('공지사항이 수정되었습니다.');
         router.push('/BoardList');
       }).catch(error => {

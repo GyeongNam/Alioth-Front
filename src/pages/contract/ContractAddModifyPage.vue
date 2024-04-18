@@ -40,6 +40,7 @@ import AppSidebar from '@/layouts/AppSidebar.vue';
 import AppHeader from '@/layouts/AppHeader.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {
@@ -77,15 +78,14 @@ export default {
     submitForm() {
       const router = this.$router;
       if (this.$refs.form.validate()) {
-        const accessToken = localStorage.getItem('accessToken');
+        
         const formData = {
           ...this.form,
           contractDate: this.formatDateTime(this.form.contractDate),
           contractExpireDate: this.formatDateTime(this.form.contractExpireDate)
         };
-        axios.post('http://localhost:8080/api/contract/create', formData, {
-          headers: { 'Authorization': `Bearer ${accessToken}` }
-        }).then(response => {
+        axiosInstance.post('http://localhost:8080/api/contract/create', formData)
+          .then(response => {
           alert('계약이 성공적으로 생성되었습니다.');
           router.push('/ContractList');
         }).catch(error => {

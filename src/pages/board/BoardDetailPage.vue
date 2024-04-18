@@ -27,6 +27,7 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppHeader, AppSidebar},
@@ -36,13 +37,12 @@ export default {
     const router = useRouter();
     const currentUser = ref(localStorage.getItem('userId')); // Assuming user ID is stored in localStorage
     const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-    const accessToken = localStorage.getItem('accessToken');
+    
 
     const fetchBoardDetail = () => {
       const boardId = route.params.boardId;
-      axios.get(`${baseUrl}/api/board/detail/${boardId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      axiosInstance.get(`${baseUrl}/api/board/detail/${boardId}`)
+        .then(response => {
         board.value = response.data.result;
       }).catch(error => {
         console.error('Error fetching board details:', error);

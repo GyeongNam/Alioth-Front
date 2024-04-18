@@ -31,6 +31,7 @@ import axios from 'axios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter } from 'vue-router';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppHeader, AppSidebar},
@@ -60,7 +61,7 @@ export default {
       if (this.$refs.form.validate()) {
         const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
         const apiUrl = `${baseUrl}/api/board/create`;
-        const accessToken = localStorage.getItem('accessToken');
+        
         
         const payload = {
           title: this.suggestion.title,
@@ -68,11 +69,8 @@ export default {
           boardType: 'SUGGESTION'
         };
 
-        axios.post(apiUrl, payload, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }).then(() => {
+        axiosInstance.post(apiUrl, payload)
+        .then(() => {
           alert('건의사항이 추가되었습니다.');
           this.resetForm();
           this.router.push('/BoardList'); // this.router 사용

@@ -6,10 +6,20 @@ export const useNotificationStore = defineStore('notification', {
       notifications: [],
       hasNewNotifications: false
     }),
+    getters: {
+      getNotificationIndexById: (state) => (messageId) => {
+        return state.notifications.findIndex(
+          (notification) => notification.messageId === messageId
+        );
+      }
+    },
     actions: {
       addNotification(notification) {
-        this.notifications.push(notification);
-        this.hasNewNotifications = true; // 새 알림이 추가될 때 true로 설정
+        const index = this.getNotificationIndexById(notification.messageId);
+        if (index === -1) {
+          this.notifications.push(notification);
+          this.hasNewNotifications = true;
+        }
       },
       clearNotifications() {
         this.notifications = [];

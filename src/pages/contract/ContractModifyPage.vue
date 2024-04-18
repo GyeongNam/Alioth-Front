@@ -35,6 +35,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: { AppHeader, AppSidebar },
@@ -54,7 +55,6 @@ export default {
     const paymentFrequencies = ['Monthly', 'Quarter', 'Yearly'];
     const contractStatuses = ['New', 'Renewal', 'Cancellation'];
 
-    const accessToken = localStorage.getItem('accessToken');
 
     const fetchContractDetail = () => {
       const contractId = route.params.id;
@@ -63,9 +63,8 @@ export default {
         return;
       }
 
-      axios.get(`http://localhost:8080/api/contract/detail/${contractId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      axiosInstance.get(`http://localhost:8080/api/contract/detail/${contractId}`)
+      .then(response => {
         const data = response.data.result;
         contract.value.contractPeriod = data.contractPeriod;
         contract.value.contractPaymentFrequency = data.contractPaymentFrequency;

@@ -37,6 +37,7 @@ import ListComponent from "@/layouts/ListComponent.vue";
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import router from "@/router";
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppSidebar, AppHeader, ListComponent},
@@ -61,10 +62,8 @@ export default {
         status: selectedStatus.value,
       };
 
-      axios.get(`${baseUrl}/api/contract/list`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params
-      }).then(response => {
+      axiosInstance.get(`${baseUrl}/api/contract/list`, {params})
+      .then(response => {
         const data = response.data.result;
         console.log("Loaded data:", data);
         data.forEach((item, index) => {

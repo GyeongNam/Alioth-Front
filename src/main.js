@@ -60,11 +60,13 @@ Notification.requestPermission().then(permission => {
 onMessage(messaging, (payload) => {
         console.log('Message received. ', payload);
         const notificationStore = useNotificationStore();
-        notificationStore.addNotification({
-        title: payload.notification.title,
-        body: payload.notification.body,
-        url: payload.data.url
+        const notification = {
+            messageId: payload.data.messageId, // 서버에서 발송한 고유 ID
+            title: payload.notification.title,
+            body: payload.notification.body,
+            url: payload.data.url
+            };
+            notificationStore.addNotification(notification);
         });
-    });
 // 애플리케이션 마운트
 app.mount('#app');

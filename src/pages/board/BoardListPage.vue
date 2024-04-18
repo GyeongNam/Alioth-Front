@@ -33,9 +33,10 @@ import { useRouter } from 'vue-router';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue"; // ListComponent를 임포트하세요.
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
-  
+
   components: {
     AppHeader,
     AppSidebar,
@@ -83,11 +84,9 @@ export default {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       const apiEndpoint = this.model === 'Announcement' ? 'list' : 'suggestions-list';
       const apiURL = `${baseUrl}/api/board/${apiEndpoint}`;
-      const accessToken = localStorage.getItem('accessToken');
 
-      axios.get(apiURL, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      axiosInstance.get(apiURL) 
+      .then(response => {
         this.items = response.data.result || [];
       }).catch(error => {
         console.error('HTTP 데이터를 가져오는 중 에러 발생:', error);
