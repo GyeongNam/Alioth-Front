@@ -47,7 +47,7 @@
 
             <v-col cols="12">
               <v-checkbox v-model="newEvent.allDay" label="하루 종일"></v-checkbox>
-              <v-checkbox v-if="this.LoginInfoStore.getMemberRank === 'MANAGER'" v-model="newEvent.allDay" label="팀원 공유"></v-checkbox>
+              <v-checkbox v-model="newEvent.share" v-if="this.LoginInfoStore.getMemberRank === 'MANAGER'" label="팀원 공유"></v-checkbox>
             </v-col>
 
             <v-col cols="12" class="d-flex justify-center">
@@ -191,6 +191,7 @@ export default {
         end: event.scheduleEndTime,
         allDay: event.allDay === "true",
         scheduleType : event.scheduleType,
+        share: event.share,
         backgroundColor: event.color,
       };
 
@@ -220,6 +221,7 @@ export default {
       this.newEvent.start = clickInfo.event.start
       this.newEvent.end = clickInfo.event.end === null ? clickInfo.event.start : clickInfo.event.end
       this.newEvent.color = clickInfo.event._def.ui.backgroundColor
+      this.newEvent.share = clickInfo.event._def.extendedProps.share
       this.newEvent.content = clickInfo.event._def.extendedProps.content
       this.newEvent.type = clickInfo.event._def.extendedProps.scheduleType
       this.newEvent.allDay = clickInfo.event._def.allDay
@@ -237,6 +239,7 @@ export default {
       this.newEvent.start = dropInfo.event.start
       this.newEvent.end = dropInfo.event.end === null ? dropInfo.event.start : dropInfo.event.end
       this.newEvent.color = dropInfo.event._def.ui.backgroundColor
+      this.newEvent.share = dropInfo.event._def.extendedProps.share
       this.newEvent.content = dropInfo.event._def.extendedProps.content
       this.newEvent.type = dropInfo.event._def.extendedProps.scheduleType
       this.newEvent.allDay = dropInfo.event._def.allDay
@@ -279,11 +282,18 @@ export default {
         alert("일정 상세 내용을 입력해 주세요.")
         return false
       }
+      let shareData = false;
+      if(this.newEvent.share !== null && this.newEvent.share !== undefined){
+        shareData = this.newEvent.share
+      }
+      console.log("share")
+      console.log(this.newEvent.share)
       return {
         "scheduleTitle": this.newEvent.title,
         "scheduleStartTime": this.dateTimeFormat(this.newEvent.start),
         "scheduleEndTime": this.dateTimeFormat(this.newEvent.end),
         "color": this.newEvent.color !== undefined ? this.newEvent.color : "#000000",
+        "share": shareData,
         "scheduleNote": this.newEvent.content,
         "scheduleType": this.newEvent.type,
         "allDay": this.newEvent.allDay === undefined ? "false" : this.newEvent.allDay === true ?  "true" : "false"
