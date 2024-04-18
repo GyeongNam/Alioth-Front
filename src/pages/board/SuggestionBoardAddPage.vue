@@ -38,6 +38,7 @@ export default {
     const router = useRouter(); // 여기로 이동
     return { router };
   },
+
   data() {
     return {
       valid: true,
@@ -89,7 +90,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .text-center {

@@ -1,13 +1,13 @@
 import {defineStore} from 'pinia';
 
-export const useDropdownStore = defineStore('dropdown', {
+export const useMyPageUpdateStore = defineStore('myPageUpdate', {
   state: () => ({
-    isDropdown: false,
+    memberInfo: null,
   }),
 
   getters: {
-    getDropdown() {
-      return this.$state.isDropdown;
+    getMemberInfo() {
+      return this.$state.memberInfo;
     },
   },
 
@@ -16,7 +16,4 @@ export const useDropdownStore = defineStore('dropdown', {
       this.isDropdown = !this.$state.isDropdown;
     },
   },
-  persist: {
-    enabled: true
-  }
 });
