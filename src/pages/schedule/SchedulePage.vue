@@ -37,7 +37,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <VueDatePicker  locale="ko" v-model="newEvent.start" />
+              <VueDatePicker locale="ko" v-model="newEvent.start" />
             </v-col>
 
             <v-col cols="12" sm="6">
@@ -90,6 +90,7 @@ export default {
     const firstCalendar = new Calendar(calendarListEl, {
       plugins: [listPlugin],
       locale: "ko",
+      timeZone: "local",
       initialView: 'listDay',
       buttonText: {
         today: '오늘',
@@ -132,6 +133,7 @@ export default {
       ],
       calendarOptions: {
         locale: "ko",
+        timeZone: "local",
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
@@ -209,8 +211,8 @@ export default {
 
       this.newEvent.id = clickInfo.event._def.publicId
       this.newEvent.title = clickInfo.event._def.title
-      this.newEvent.start = clickInfo.event._instance.range.start
-      this.newEvent.end = clickInfo.event._instance.range.end
+      this.newEvent.start = clickInfo.event.start
+      this.newEvent.end = clickInfo.event.end === null ? clickInfo.event.start : clickInfo.event.end
       this.newEvent.color = clickInfo.event._def.ui.backgroundColor
       this.newEvent.content = clickInfo.event._def.extendedProps.content
       this.newEvent.type = clickInfo.event._def.extendedProps.scheduleType
@@ -220,14 +222,20 @@ export default {
     },
 
     handleEventDrop(dropInfo) {
-      console.table(dropInfo)
-      const updatedEvent = this.eventList.find(event => event.id === dropInfo.event.id);
 
-      if (updatedEvent) {
-        const firstCalendar = this.$refs.firstCalendar.calendar;
-        firstCalendar.getEventById(updatedEvent.id).setDates(dropInfo.event.start, dropInfo.event.end);
-      }
+      this.newEvent = {};
+      this.isUpdate = true
 
+      this.newEvent.id = dropInfo.event._def.publicId
+      this.newEvent.title = dropInfo.event._def.title
+      this.newEvent.start = dropInfo.event.start
+      this.newEvent.end = dropInfo.event.end === null ? dropInfo.event.start : dropInfo.event.end
+      this.newEvent.color = dropInfo.event._def.ui.backgroundColor
+      this.newEvent.content = dropInfo.event._def.extendedProps.content
+      this.newEvent.type = dropInfo.event._def.extendedProps.scheduleType
+      this.newEvent.allDay = dropInfo.event._def.allDay
+
+      this.updateEvent()
     },
 
     handleEvents(events) {
@@ -235,17 +243,35 @@ export default {
     },
 
     scheduleAddEvent(){
+      console.log(this.newEvent)
+
       if(this.newEvent.title === undefined){
         alert("일정 제목을 입력해 주세요.")
-        return
+        return false
       }
       if(this.newEvent.type === undefined){
         alert("일정 유형을 선택해 주세요.")
-        return
+        return false
       }
+
+      if(this.newEvent.start === null){
+        alert("시작날을 입력해 주세요.")
+        return false
+      }
+
+      if(this.newEvent.end === null){
+        alert("종료날을 입력해 주세요.")
+        return false
+      }
+
+      if(new Date(this.newEvent.start) > new Date(this.newEvent.end)){
+        alert("시작 시간이 더 늦을 수 없습니다.")
+        return false
+      }
+
       if(this.newEvent.content === undefined){
         alert("일정 상세 내용을 입력해 주세요.")
-        return
+        return false
       }
       return {
         "scheduleTitle": this.newEvent.title,
@@ -254,13 +280,16 @@ export default {
         "color": this.newEvent.color !== undefined ? this.newEvent.color : "#000000",
         "scheduleNote": this.newEvent.content,
         "scheduleType": this.newEvent.type,
-        "allDay": this.newEvent.allDay === undefined ? "false" : "true"
+        "allDay": this.newEvent.allDay === undefined ? "false" : this.newEvent.allDay === true ?  "true" : "false"
       }
     },
 
     updateEvent(){
-      console.log(this.scheduleAddEvent())
-      axiosInstance.patch(baseUrl + '/api/schedule/update/'+this.newEvent.id ,this.scheduleAddEvent())
+      const data = this.scheduleAddEvent()
+      if(data === false){
+        return
+      }
+      axiosInstance.patch(baseUrl + '/api/schedule/update/'+this.newEvent.id , data)
         .then((res) => {
           console.log(res)
           alert("일정이 수정 되었습니다.")
@@ -274,7 +303,11 @@ export default {
     },
 
     saveEvent() {
-      axiosInstance.post(baseUrl + '/api/schedule/create',this.scheduleAddEvent())
+      const data = this.scheduleAddEvent()
+      if(data === false){
+        return
+      }
+      axiosInstance.post(baseUrl + '/api/schedule/create',data)
         .then(() => {
           alert("일정이 추가 되었습니다.")
           this.calendarEventRemove()
@@ -289,7 +322,10 @@ export default {
       this.modalOpen = false;
     },
     dateTimeFormat(dateTime){
-      return new Date(dateTime).toISOString().slice(0, 19);
+      const dTime =  new Date(dateTime);
+      const offset = dTime.getTimezoneOffset();
+      const localDateTime = new Date(dTime.getTime() - (offset * 60000));
+      return localDateTime.toISOString().slice(0, 19);
     },
     getList(){
       axiosInstance.get(baseUrl + '/api/schedule/list')
