@@ -1,13 +1,13 @@
 import {defineStore} from 'pinia';
 
-export const useDropdownStore = defineStore('dropdown', {
+export const useLoginInfoStore = defineStore('loginInfo', {
   state: () => ({
-    isDropdown: false,
+    memberCode: -1,
   }),
 
   getters: {
-    getDropdown() {
-      return this.$state.isDropdown;
+    getMemberCode() {
+      return this.$state.memberCode;
     },
   },
 
