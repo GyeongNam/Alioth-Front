@@ -1,11 +1,10 @@
 <template>
-
-    <v-data-table
-      :headers="columns"
-      :items="rows"
-      :items-length="10"
-      item-value="id"
-    ></v-data-table>
+  <v-data-table
+    :headers="columns"
+    :items="rows"
+    :items-length="rows.length"
+    item-value="id"
+  ></v-data-table>
 </template>
 
 <script>

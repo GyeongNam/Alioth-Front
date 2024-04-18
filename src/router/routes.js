@@ -21,6 +21,7 @@ import SalesTotal from "@/pages/sales/SalesTotal.vue"
 import ContractAddModifyPage from "@/pages/contract/ContractAddModifyPage.vue"
 import ContractCancelPage from "@/pages/contract/ContractCancelPage.vue"
 import ContractDetailPage from "@/pages/contract/ContractDetailPage.vue"
+import ContractModifyPage from "@/pages/contract/ContractModifyPage.vue"
 import BoardDetailPage from "@/pages/board/BoardDetailPage.vue"
 import SuggestionBoardDetail from "@/pages/board/SuggestionBoardDetailPage.vue"
 import TeamListPage from "@/pages/team/TeamListPage.vue";
@@ -46,7 +47,7 @@ const routes = [
     }
   },
   {
-    path: '/BoardList/Detail',
+    path: '/BoardList/Detail/:boardId',
     component: BoardDetailPage,
     meta: {
       title: '게시글 상세'
@@ -60,7 +61,7 @@ const routes = [
     }
   },
   {
-    path: '/BoardList/Modify',
+    path: '/BoardList/Modify/:boardId',
     component: BoardModifyPage,
     meta: {
       title: '게시글 수정'
@@ -107,13 +108,13 @@ const routes = [
   },
 
   //salesMember
- /* {
+  {
     path: '/SalesMembersList',
     component: SalesMembersListPage,
     meta: {
       title: '사원 목록'
     }
-  },*/
+  },
   {
     path: '/SalesMembersList/Add',
     component: SalesMembersAddPage,
@@ -198,21 +199,28 @@ const routes = [
     path: '/ContractList/AddModify',
     component: ContractAddModifyPage,
     meta: {
-      title: '계약 수정'
+      title: '계약 추가'
     }
   },
   {
-    path: '/ContractList/Cancel',
+    path: '/ContractList/Cancel/:id',
     component: ContractCancelPage,
     meta: {
-      title: '해약'
+      title: '계약 해지'
     }
   },
   {
-    path: '/ContractList/Detail',
+    path: '/ContractList/Detail/:id',
     component: ContractDetailPage,
     meta: {
       title: '계약 상세정보'
+    }
+  },
+  {
+    path: '/ContractList/Modify/:id',
+    component: ContractModifyPage,
+    meta: {
+      title: '계약 수정'
     }
   },
   {

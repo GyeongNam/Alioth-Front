@@ -31,37 +31,42 @@
 </template>
 <script>
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';// 수정된 import 
-import { errorMessages } from 'vue/compiler-sfc';
+import { useLoginInfoStore } from '@/stores/loginInfo';
 
 export default {
   data() {
     return {
       memberCode: '',
       password: '',
-      fcmToken: 'OPTIONAL_FCM_TOKEN' // 필요한 경우 사용
+      fcmToken: 'OPTIONAL_FCM_TOKEN', // 필요한 경우 사용
+      loginStore: useLoginInfoStore(),
     };
   },
   methods: {
     async login() {
       // 수정된 URL 참조 방식
       const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-      
+
         const loginData = { memberCode: this.memberCode, password: this.password }
         // 경로가 /api/login이 되도록 수정
         await axios.post(`${baseUrl}/api/login`, loginData)
         .then(response => {
-          const data = response.data.result
+          console.log(response);
+          const data = response.data.result;
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
-          alert("성공적으로 로그인 되었습니다.")
+          alert("성공적으로 로그인 되었습니다.");
+
+          this.loginStore.memberCode = data.memberCode;
+          this.loginStore.memberRank = data.memberRank;
+
           this.$router.push("/")
         })
         .catch(error => {
           alert(error.response.data.message)
         });
       },
-    
+
     goToFindPassword() {
       this.$router.push("/Login/PasswordFind");
     },

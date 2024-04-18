@@ -2,83 +2,113 @@
   <AppSidebar></AppSidebar>
   <v-main>
     <AppHeader></AppHeader>
-      <v-divider></v-divider>
-      <v-card flat>
-        <v-card-title class="d-flex align-center pe-2">
-<!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
-          계약 목록
-          <v-spacer></v-spacer>
+    <v-divider></v-divider>
+    <v-card flat>
+      <v-spacer></v-spacer>
+      <v-row>
+        <v-col cols="12" sm="6">
           <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
-          <v-row>
-            <v-col class="text-right">
-              <v-btn variant="outlined" @click="navigateToAddModify">계약 추가</v-btn>
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-spacer></v-spacer>
-        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
-      </v-card>
+        </v-col>
+      </v-row>
+      <v-row align="center" class="my-2">
+        <v-col cols="auto">
+          <v-select v-model="selectedStatus" :items="statusOptions" label="Filter by Status" dense class="status-select"></v-select>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn color="blue" @click="fetchData">해당 조건으로 검색</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="text-right">
+          <v-btn variant="outlined" @click="navigateToAddModify">계약 추가</v-btn>
+        </v-col>
+      </v-row>
+      <v-spacer></v-spacer>
+      <ListComponent :columns="tableColumns" :rows="tableRows" @row-click="navigateToDetail" />
+    </v-card>
   </v-main>
 </template>
+
 
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import { ref, onMounted } from 'vue'; // Composition API의 ref와 onMounted 임포트
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import router from "@/router";
-import axiosInstance from "@/plugins/loginaxios";
+import axiosInstance from '@/plugins/loginaxios';
 
 export default {
   components: {AppSidebar, AppHeader, ListComponent},
   setup() {
-    const tableColumns = [
+    const tableColumns = ref([
       {title: "No", key: "id"},
       {title: "보험상품", key: "insuranceProductName"},
       {title: "고객", key: "customName"},
-      {title: "계약 일자", key: "contractPeriod"},
-    ];
-    const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
-    // 데이터 가져오는 함수
+      {title: "계약 기간(년)", key: "contractPeriod"},
+      {title: '계약일자', key: 'contractDate'},
+      {title: '계약상태', key: 'contractStatus'}
+    ]);
+    const tableRows = ref([]);
+    const search = ref('');
+    const selectedStatus = ref(null);
+    const statusOptions = ref(['New', 'Renewal', 'Cancellation']);
+
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
-      axiosInstance.get(`${baseUrl}/api/contract/list`)
-        .then(response => {
-          const data = response.data.result;
-          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가합니다.
-          data.forEach((item, index) => {
-            item.id = index + 1;
-          });
-          // tableRows에 데이터를 할당합니다.
-          tableRows.value = data;
-        })
-        .catch(error => {
-          console.log('Error fetching data:', error);
+      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const accessToken = localStorage.getItem('accessToken');
+      const params = {
+        status: selectedStatus.value,
+      };
+
+      axiosInstance.get(`${baseUrl}/api/contract/list`, {params})
+      .then(response => {
+        const data = response.data.result;
+        console.log("Loaded data:", data);
+        data.forEach((item, index) => {
+          item.id = index + 1;
         });
+        tableRows.value = data;
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
     };
 
-    function navigateToAddModify() {
+    const navigateToAddModify = () => {
       router.push('/ContractList/AddModify');
-    }
-    function navigateToDetail(item) {
-      router.push({ path: '/ContractList/Detail', query: { id: item.id }});
-    }
-    // 컴포넌트가 마운트되었을 때 데이터 가져오기
-    onMounted(() => {
-      fetchData();
-    });
+    };
 
-    // setup() 함수에서 반환해야 하는 객체
+    const navigateToDetail = (item) => {
+      router.push(`/ContractList/Detail/${item.item.id}`);
+    };
+
+    onMounted(fetchData);
+
     return {
       tableColumns,
       tableRows,
+      search,
+      selectedStatus,
+      statusOptions,
+      fetchData,
       navigateToAddModify,
       navigateToDetail
     };
-  },
+  }
 };
 </script>
 
-<style scoped>
 
+<style scoped>
+.status-select {
+  width: 250px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.my-2 {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
 </style>
