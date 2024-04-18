@@ -75,7 +75,7 @@ export default {
       return `${date}T00:00:00`;
     },
     submitForm() {
-      const router = useRouter();
+      const router = this.$router;
       if (this.$refs.form.validate()) {
         const accessToken = localStorage.getItem('accessToken');
         const formData = {
