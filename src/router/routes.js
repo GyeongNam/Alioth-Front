@@ -107,13 +107,13 @@ const routes = [
   },
 
   //salesMember
-  {
+ /* {
     path: '/SalesMembersList',
     component: SalesMembersListPage,
     meta: {
       title: '사원 목록'
     }
-  },
+  },*/
   {
     path: '/SalesMembersList/Add',
     component: SalesMembersAddPage,
@@ -122,8 +122,9 @@ const routes = [
     }
   },
   {
-    path: '/SalesMembersList/Detail',
+    path: '/SalesMembersList/Detail/:salesMembersCode',
     component: SalesMembersDetailPage,
+    props:true,
     meta: {
       title: '사원 상세 정보'
     }
@@ -224,6 +225,7 @@ const routes = [
   {
     path: '/Team/Detail/:teamCode',
     component: TeamDetailPage,
+    props: true,
     meta: {
       title: '팀 상세정보'
     }

@@ -6,10 +6,10 @@
       <v-card flat>
         <v-row>
           <v-col cols="4" offset="3"> <!-- 팀 명 -->
-            <v-card text="팀명" variant="outlined" > {{ teamName }} </v-card>
+            <v-card text="팀명" variant="outlined"> {{ teamName }}</v-card>
           </v-col>
-          <v-col cols="4" offset="1" > <!-- 팀장 -->
-            <v-card text="팀장" variant="outlined"> {{ teamLeader }} </v-card>
+          <v-col cols="4" offset="1"> <!-- 팀장 -->
+            <v-card text="팀장" variant="outlined"> {{ teamManagerName }}</v-card>
           </v-col>
         </v-row>
       </v-card>
@@ -21,7 +21,8 @@
           <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
           팀원 목록
           <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                        variant="solo-filled" flat hide-details single-line></v-text-field>
           <v-row>
             <v-col class="text-right">
               <v-btn variant="outlined" @click="navigateToAdd">팀원 추가</v-btn>
@@ -29,7 +30,7 @@
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
-        <ListComponent :columns="tableColumns" :rows="tableRows"  @click:row="navigateToDetail" />
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
     </v-container>
   </v-main>
@@ -40,17 +41,22 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import router from "@/router";
-import { ref, onMounted } from 'vue';
-import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
+import {ref, onMounted} from 'vue';
+import axiosInstance from "@/plugins/loginaxios";
+
 export default {
-  components: {ListComponent, AppHeader, AppSidebar},
-  props : {
+  components: {ListComponent, AppHeader, AppSidebar,},
+  props: {
     teamCode: {
       type: String,
       required: true
     }
   },
   setup(props) {
+    const teamName = ref(''); // 초기값을 빈 문자열로 설정
+    const teamManagerName = ref('');
+    const salesMemberCode = ref('salesMemberCode');
+
     const tableColumns = [
       {title: "프로필사진", key: "profileImage"},
       {title: "이름", key: "name"},
@@ -64,42 +70,58 @@ export default {
     const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
 
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+
       axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamCode}`)
         .then(response => {
-          const data = response.data.result;
-          const { teamName, teamLeader, list } = data;
-          // 데이터를 Vue 데이터에 할당
-          teamName.value = teamName;
-          teamLeader.value = teamLeader;
-          // 데이터를 가져온 후에 각 항목에 대한 ID를 추가
-          list.forEach((item, index) => {
-            item.id = index + 1;
-          });
-          tableRows.value = list;
+          if (response.data && response.data.result) {
+            const {
+              teamName: fetchedTeamName,
+              teamManagerName: fetchedTeamManagerName,
+              teamMemberList
+            } = response.data.result;
+            // 데이터를 Vue 데이터에 할당
+            teamName.value = fetchedTeamName; // API 응답에서 받은 값으로 할당
+            teamManagerName.value = fetchedTeamManagerName;
+            // 데이터를 가져온 후에 각 항목에 대한 ID를 추가
+            teamMemberList.forEach((item, index) => {
+              item.id = index + 1;
+            });
+            tableRows.value = teamMemberList;
+          } else {
+            console.error('Empty response or missing result data');
+          }
         })
         .catch(error => {
-          console.log('Error fetching data:', error);
+          console.error('Error fetching data:', error);
         });
     };
-    const teamName = ref('');
-    const teamLeader = ref('');
-    function navigateToDetail(item) {
-      router.push({ path: `/SalesMembersList/Detail`, query: { id: item.id }});
+
+
+    let teamMemberList;
+
+    function navigateToDetail(event, {item}) {
+      console.log(item)
+      router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
     }
+
     function navigateToAdd() {
-      router.push(`/Team/Add`);
+      router.push(`/SalesMembersList/Add`);
     }
+
     onMounted(() => {
       fetchData();
     });
+
     return {
       tableColumns,
       tableRows,
       navigateToAdd,
       navigateToDetail,
       teamName,
-      teamLeader
+      teamManagerName,
+      teamMemberList,
+      salesMemberCode
     }
   },
 

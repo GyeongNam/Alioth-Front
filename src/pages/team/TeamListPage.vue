@@ -1,14 +1,14 @@
 <template>
   <AppSidebar></AppSidebar>
   <v-main>
-    <AppHeader></AppHeader>
     <v-container fluid>
+      <AppHeader></AppHeader>
       <v-card flat>
         <v-card-title class="d-flex align-center pe-2">
-          <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
           팀 목록
           <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify" variant="solo-filled" flat hide-details single-line></v-text-field>
+          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                        variant="solo-filled" flat hide-details single-line></v-text-field>
           <v-row>
             <v-col class="text-right">
               <v-btn variant="outlined" @click="navigateToAdd">팀 추가</v-btn>
@@ -16,11 +16,11 @@
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
-<!--        <ListComponent :columns="tableColumns" :rows="tableRows"  @click="navigateToDetail" />-->
-        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail" />
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
     </v-container>
   </v-main>
+  <!--  <TeamDetailPage :team-code="teamCode"/>-->
 </template>
 
 <script>
@@ -32,7 +32,7 @@ import {ref, onMounted} from "vue";
 import axiosInstance from "@/plugins/loginaxios";
 
 export default {
-  components: {ListComponent, AppHeader, AppSidebar},
+  components: {ListComponent, AppHeader, AppSidebar,},
   setup() {
     const tableColumns = [
       {title: "No", key: "id"},
@@ -41,7 +41,7 @@ export default {
       {title: "팀장", key: "teamManagerName"},
     ];
     const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
-
+    const teamCode = ref('teamCode');
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
       axiosInstance.get(`${baseUrl}/api/team/list`)
@@ -60,11 +60,10 @@ export default {
         });
     };
 
-    function navigateToDetail(event,{ item }) {
-      console.log(item)
-      console.log("items")
-      router.push({ path: `/Team/Detail/${item.teamCode}` });
+    function navigateToDetail(event, {item}) {
+      router.push({path: `/Team/Detail/${item.teamCode}`});
     }
+
     function navigateToAdd() {
       router.push(`/Team/Add`);
     }
@@ -78,6 +77,7 @@ export default {
       tableRows,
       navigateToAdd,
       navigateToDetail,
+      teamCode
     }
   },
 
