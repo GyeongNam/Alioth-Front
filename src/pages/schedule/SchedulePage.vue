@@ -313,7 +313,9 @@ export default {
           this.closeModal()
         })
         .catch(error => {
-          console.error(error);
+          alert(error.response.data.message)
+          this.calendarEventRemove()
+          this.getList()
         });
     },
 
@@ -330,7 +332,9 @@ export default {
           this.closeModal()
         })
         .catch(error => {
-          console.error(error);
+          alert(error.response.data.message)
+          this.calendarEventRemove()
+          this.getList()
         });
     },
 
@@ -344,7 +348,9 @@ export default {
             this.closeModal()
           })
           .catch(error => {
-            console.error(error);
+            alert(error.response.data.message)
+            this.calendarEventRemove()
+            this.getList()
           });
       }
     },
