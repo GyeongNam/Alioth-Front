@@ -21,8 +21,8 @@
   <v-dialog v-model="modalOpen" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline"  v-if="!isUpdate">일정 등록</span>
-        <span class="headline"  v-if="isUpdate">일정 수정</span>
+        <span class="headline" v-if="!isUpdate">일정 등록</span>
+        <span class="headline" v-if="isUpdate">일정 수정</span>
       </v-card-title>
       <v-card-text>
         <!-- 모달 내용 -->
@@ -46,8 +46,10 @@
             </v-col>
 
             <v-col cols="12">
-              <v-checkbox v-model="newEvent.allDay" label="하루종일"></v-checkbox>
+              <v-checkbox v-model="newEvent.allDay" label="하루 종일"></v-checkbox>
+              <v-checkbox v-if="this.LoginInfoStore.getMemberRank === 'MANAGER'" v-model="newEvent.allDay" label="팀원 공유"></v-checkbox>
             </v-col>
+
             <v-col cols="12" class="d-flex justify-center">
               <v-color-picker v-model="newEvent.color"> </v-color-picker>
             </v-col>
@@ -82,8 +84,10 @@ import {ref} from 'vue';
 
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { useLoginInfoStore } from '@/stores/loginInfo';
 
 const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+console.log("확인")
 
 export default {
   components: {AppHeader, AppSidebar, FullCalendar, VueDatePicker},
@@ -109,12 +113,12 @@ export default {
     firstCalendar.render();
 
     this.$refs.firstCalendar.calendar = firstCalendar;
-
     this.getList();
 
   },
   data() {
     return {
+      LoginInfoStore : useLoginInfoStore(),
       isUpdate: true,
       newStart: new Date,
       newEnd: new Date,
