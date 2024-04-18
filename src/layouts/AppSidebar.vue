@@ -1,8 +1,10 @@
 <template>
   <v-navigation-drawer location="left" permanent>
     <v-list>
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" subtitle="sandra_a88@gmailcom" title="Sandra Adams" @click="this.$router.push(`/MyPage`);"></v-list-item>
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" subtitle="sandra_a88@gmail.com" title="Sandra Adams" @click="this.$router.push(`/MyPage`);"></v-list-item>
     </v-list>
+    <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
+      </v-list-item>
 
     <v-divider></v-divider>
 
@@ -22,7 +24,8 @@
       <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
-<!--      <v-list-item prepend-icon="mdi-star" title="보험상품" value="starred"></v-list-item>-->
+      <!-- 로그아웃 버튼 -->
+
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -54,8 +57,15 @@ export default {
       this.$router.push(route);
     },
     handleSubMenuClick(route) {
-      useDropdownStore().toggleDropdown()
+      this.dropDownStore.toggleDropdown()
       this.$router.push(route);
+    },
+    confirmLogout() {
+      if (confirm('로그아웃하시겠습니까?')) {
+        alert('로그아웃 되었습니다.');
+        localStorage.removeItem('accessToken'); // 토큰 삭제
+        this.$router.push('/Login');
+      }
     }
   }
 }
@@ -64,4 +74,3 @@ export default {
 <style scoped>
 
 </style>
-
