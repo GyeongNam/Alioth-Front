@@ -38,8 +38,6 @@
 <script>
 import AppSidebar from '@/layouts/AppSidebar.vue';
 import AppHeader from '@/layouts/AppHeader.vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
 import axiosInstance from '@/plugins/loginaxios';
 
 export default {
@@ -78,7 +76,7 @@ export default {
     submitForm() {
       const router = this.$router;
       if (this.$refs.form.validate()) {
-        
+
         const formData = {
           ...this.form,
           contractDate: this.formatDateTime(this.form.contractDate),
