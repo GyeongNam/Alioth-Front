@@ -144,6 +144,7 @@ export default {
     });
   };
 
+  
     const fetchSalesMembers = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/members/list`)
