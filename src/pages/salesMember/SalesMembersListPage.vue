@@ -58,7 +58,7 @@ export default {
           data.forEach((item, index) => {
             item.id = index + 1;
           });
-          // tableRows에 데이터를 할당합니다.
+          // tableRows에 데이터를 할당합니u다.
           tableRows.value = data;
         })
         .catch(error => {
