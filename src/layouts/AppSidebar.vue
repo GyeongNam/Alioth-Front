@@ -26,14 +26,14 @@
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
 
       <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
-      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.getMemberTeamCode);"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
 import { useDropdownStore } from '@/stores/dropDown'
-import {useLoginInfoStore} from "@/stores/loginInfo";
+import { useLoginInfoStore } from "@/stores/loginInfo";
 
 export default {
   data() {
