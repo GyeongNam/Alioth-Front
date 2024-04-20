@@ -11,9 +11,14 @@
                 <v-spacer></v-spacer>
                 <span>팀명</span>
                 <v-text-field v-model="form.teamName" label="팀명을 입력하세요" required></v-text-field>
-                <span>팀장 사원번호</span>
-
-
+                <span>팀장</span>
+                <v-btn id="postcode" type="button" @click="openPostCode" value="우편번호 찾기">우편번호 찾기</v-btn>
+                <span>팀장 이름</span>
+                <v-text-field type="text" v-model="teamManagerName" label="팀장 이름" placeholder="이름" readonly/>
+                <span>사원번호</span>
+                <v-text-field type="text" v-model="teamManagerCode" placeholder="사원번호" label="사원번호" readonly/>
+                <span>직급</span>
+                <v-text-field type="text" v-model="rank" placeholder="사원번호" label="직급" readonly/>
 
                 <span>팀장 이름</span>
                 <v-text-field v-model="form.birthDay" label="업무개시일" type="date"  required></v-text-field>
@@ -51,6 +56,7 @@ export default {
         {title: "팀", key: "teamName"},
         {title: "팀 코드", key: "teamCode"},
         {title: "모바일", key: "phone"},
+        {title: "이메일", key: "email"}
       ],
       tableRows: [],
     });
