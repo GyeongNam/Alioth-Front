@@ -4,7 +4,9 @@
     <AppHeader></AppHeader>
     <v-container fluid>
       <v-col class="text-right">
-        <v-btn variant="outlined" @click="navigateToModify">사원정보 수정</v-btn>
+        <v-btn variant="outlined" @click="isModify" v-if="!modify">수정</v-btn>
+        <v-btn variant="outlined" @click="submitChange" v-if="modify"> 완료</v-btn>
+        <v-btn variant="outlined" @click="deleteMember" v-if="!modify" >삭제</v-btn>
       </v-col>
       <!--   이미지 들어오는지 확인 해봐야함-->
       <v-col cols="12" md="12">
@@ -29,7 +31,24 @@
         <v-col cols="12" md="4">
           <v-card>
             <v-card-title>직급</v-card-title>
-            <v-card-text>{{ rank }}</v-card-text>
+            <v-col cols="12" md="4" class="text-right">
+<!--              <v-btn variant="outlined" @click="isModify" v-if="!modify">수정</v-btn>-->
+<!--              <v-btn variant="outlined" @click="modifyInfo" v-if="modify">완료</v-btn>-->
+            </v-col>
+            <v-card-text v-if="!modify">{{ rank }}</v-card-text>
+            <v-select v-if="modify" v-model="rank" :items="['FP', 'MANAGER', 'HQ']"></v-select>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="4">
+          <v-card-title>팀</v-card-title>
+          <v-col cols="12" md="4" class="text-right">
+            <v-btn variant="outlined" @click="navigateToChangeTeam"> 팀 목록 </v-btn>
+          </v-col>
+          <v-card>
+            <v-card-title>팀 명</v-card-title>
+            <v-card-text>{{ teamName }}</v-card-text>
+            <v-card-title>팀 코드</v-card-title>
+            <v-card-text>{{ teamCode }}</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
@@ -68,15 +87,40 @@
             <v-card-text>{{ extensionNumber }}</v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="12" md="4">
+      </v-row>
+      <v-row>
+        <v-col cols="12">
           <v-card>
             <v-card-title>고과평가</v-card-title>
-            <v-card-text>{{ performanceReview }}</v-card-text>
+            <v-col cols="12" md="4" class="text-right">
+<!--              <v-btn variant="outlined" @click="isModify" v-if="!modify">평가 입력</v-btn>-->
+<!--              <v-btn variant="outlined" @click="modifyInfo" v-if="modify">평가 완료</v-btn>-->
+            </v-col>
+            <v-card-text v-if="!modify">{{ performanceReview }}</v-card-text>
+            <v-select v-if="modify" v-model="performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
   </v-main>
+  <v-dialog v-model="modalOpen" width="auto">
+    <v-card>
+      <v-card-title>
+      </v-card-title>
+      <v-card-text>
+        <v-container>
+          <div>
+            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                          variant="solo-filled" flat hide-details single-line></v-text-field>
+            <ListComponent :columns="tableColumns" :rows="rows" @click:row="selectTeam"></ListComponent>
+          </div>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="" @click="closeModal">닫기</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -85,9 +129,10 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
 import {onMounted, ref} from "vue";
+import ListComponent from "@/layouts/ListComponent.vue";
 
 export default {
-  components: {AppHeader, AppSidebar},
+  components: {ListComponent, AppHeader, AppSidebar},
   props: ["salesMembersCode"],
   setup(props) {
     const profile = ref('');
@@ -100,10 +145,23 @@ export default {
     const address = ref('');
     const officeAddress = ref('');
     const performanceReview = ref('');
+    const teamName = ref('');
+    const teamCode = ref('');
+    const modify = ref(false);
+    const modalOpen = ref(false);
+    const rows = ref([]);
+    const tableColumns = [
+      {title: "팀", key: "teamName"},
+      {title: "팀 코드", key: "teamCode"},
+      {title: "팀장", key: "teamManagerName"},
+    ];
+
+    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
         .then(response => {
+          console.log(response.data.result)
           if (response.data && response.data.result) {
             const {
               profile: profileImageUrl,
@@ -116,7 +174,12 @@ export default {
               address: homeAddress,
               officeAddress: office,
               performanceReview: pr,
+              teamName: teamNames,
+              teamCode: teamCodes
             } = response.data.result;
+
+            console.log(teamName)
+            console.log(teamCode)
 
             profile.value = profileImageUrl
             rank.value = memberRank
@@ -128,7 +191,8 @@ export default {
             extensionNumber.value = extensionN
             officeAddress.value = office
             performanceReview.value = pr
-
+            teamName.value = teamNames
+            teamCode.value = teamCodes
           } else {
             console.error('Empty response or missing result data');
           }
@@ -136,22 +200,98 @@ export default {
         .catch(error => {
           console.error('Error fetching data:', error);
         });
+      //팀 목록
+      axiosInstance.get(`${baseUrl}/api/team/list`)
+        .then(response => {
+          const data = response.data.result;
+          console.log(data)
+          data.forEach((item, index) => {
+            item.id = index + 1;
+          });
+          // tableRows에 데이터를 할당합니다.
+          rows.value = data;
+        })
+        .catch(error => {
+          console.log('Error fetching data:', error);
+        });
     };
+    const data = {};
 
-    function navigateToModify(event, {item}) {
-      console.log(item)
-      router.push({path: `/SalesMembersList/Modify/${item.salesMemberCode}`});
+    const submitChange = () => {
+      let isUpdated = false;
+      if (teamCode.value !== teamCode.value) {
+        data.teamCode = teamCode.value;
+        isUpdated = true;
+      }
+      if (teamName.value !== teamName.value) {
+        data.teamName = teamName.value;
+        isUpdated = true;
+      }
+      if (performanceReview.value !== performanceReview.value) {
+        data.performanceReview = performanceReview.value;
+        isUpdated = true;
+      }
+      if (isUpdated) {
+        const confirmed = confirm("수정하시겠습니까?");
+
+        if (confirmed) {
+          axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMemberCode}`, data)
+            .then(() => {
+              alert("수정되었습니다.");
+              router.push({path: `/SalesMembersList/Detail/:salesMembersCode`});
+            })
+            .catch(error => {
+              console.error('Error updating data:', error);
+            });
+        }
+      } else {
+        alert("변경된 내용이 없습니다.");
+      }
     }
 
-    /* function navigateToAdd() {
-       router.push(`/SalesMembersList/Add`);
-     }*/
+    function isModify() {
+      modify.value = !modify.value
+    }
+
+    function modifyInfo() {
+      submitChange();
+      modify.value = false
+    }
+
+    function navigateToChangeTeam() {
+      modalOpen.value = !modalOpen.value
+    }
+
+    function selectTeam(event, {item}) {
+      teamName.value = item.teamName
+      teamCode.value = item.teamCode
+      closeModal();
+    }
+
+    function closeModal() {
+      modalOpen.value = false
+    }
+
+    function deleteMember(event, {item}) {
+      console.log(item)
+      router.push({path: `/SalesMembersList`});
+    }
+
     onMounted(() => {
       fetchData();
     });
 
     return {
-      navigateToModify,
+      modifyInfo,
+      isModify,
+      closeModal,
+      deleteMember,
+      submitChange,
+      navigateToChangeTeam,
+      selectTeam,
+      tableColumns,
+      rows,
+      modalOpen,
       profile,
       rank,
       birthDay,
@@ -161,7 +301,10 @@ export default {
       address,
       extensionNumber,
       officeAddress,
-      performanceReview
+      performanceReview,
+      teamName,
+      teamCode,
+      modify,
     }
   },
 
