@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 import { useRouter } from 'vue-router';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import ListComponent from "@/layouts/ListComponent.vue"; // ListComponent를 임포트하세요.
+import ListComponent from "@/layouts/ListComponent.vue";
 import axiosInstance from '@/plugins/loginaxios';
 
 export default {
@@ -65,12 +65,17 @@ export default {
       return this.items.map(item => ({
         ...item,
         memberId: item.memberId ? item.memberId.toString() : 'N/A',
+        content: item.content ? this.stripHtml(item.content) : '', // HTML 태그 제거
         created_at: item.created_at ? new Date(item.created_at).toLocaleString() : 'N/A',
         updated_at: item.updated_at ? new Date(item.updated_at).toLocaleString() : 'N/A',
       }));
     }
   },
   methods: {
+    stripHtml(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+    },
     handleRowClick({ item }) {
       console.log('상세 게시물 데이터:', item);
       if (!item || !item.boardId) {
@@ -84,6 +89,7 @@ export default {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       const apiEndpoint = this.model === 'Announcement' ? 'list' : 'suggestions-list';
       const apiURL = `${baseUrl}/api/board/${apiEndpoint}`;
+
 
       axiosInstance.get(apiURL) 
       .then(response => {

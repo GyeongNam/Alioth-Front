@@ -29,6 +29,7 @@
     </v-container>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';// 수정된 import 

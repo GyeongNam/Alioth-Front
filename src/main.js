@@ -5,6 +5,10 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { registerPlugins } from '@/plugins';
 import { useNotificationStore } from './stores/notificationStore';
 import { createPinia } from 'pinia';
+import { quillEditor } from 'vue3-quill'
+import 'quill/dist/quill.snow.css'; // for snow theme
+
+
 
 
 
@@ -23,7 +27,6 @@ const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
 const app = createApp(App);
 const pinia = createPinia();
-
 app.use(pinia);
 
 

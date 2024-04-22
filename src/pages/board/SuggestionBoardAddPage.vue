@@ -11,12 +11,8 @@
             label="제목"
             required
           ></v-text-field>
-          <v-textarea
-            v-model="suggestion.content"
-            :rules="contentRules"
-            label="내용"
-            required
-          ></v-textarea>
+          <!-- Editor 컴포넌트 사용 -->
+          <Editor :initialContent="suggestion.content" @update:content="updateContent" />
           <v-btn :disabled="!valid" @click="submitSuggestion">
             건의사항 추가
           </v-btn>
@@ -27,14 +23,15 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter } from 'vue-router';
 import axiosInstance from '@/plugins/loginaxios';
+import Editor from "@/layouts/Editor.vue";
 
 export default {
-  components: {AppHeader, AppSidebar},
+  components: {AppHeader, AppSidebar, Editor},
   setup() {
     const router = useRouter(); // 여기로 이동
     return { router };
@@ -57,6 +54,9 @@ export default {
     };
   },
   methods: {
+    updateContent(content) {
+      this.suggestion.content = content; // Editor에서 내용이 업데이트 될 때 실행
+    },
     submitSuggestion() {
       if (this.$refs.form.validate()) {
         const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
