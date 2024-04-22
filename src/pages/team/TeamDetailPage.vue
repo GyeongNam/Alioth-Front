@@ -46,23 +46,32 @@
           <div>
             <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
                           variant="solo-filled" flat hide-details single-line></v-text-field>
-            <v-data-table :headers="state.tableColumns" :items="state.rows" item-value="name" v-model="state.selectedItems"  show-select @click:row="selectCheck">
+            <v-data-table :headers="state.tableColumns" :items="state.rows" item-value="name"
+                          v-model="state.selectedItems">
+              <template v-slot:headers="">
+                <tr>
+                  <th>
+                    <v-checkbox @click="toggleAll"></v-checkbox>
+                  </th>
+                  <th v-for="header in state.tableColumns" :key="header.title">{{ header.title }}</th>
+                </tr>
+              </template>
+
               <template v-slot:item="{ item }">
                 <tr @click="toggleCheckbox(item)">
-                  <!-- 체크박스에 v-model을 사용하여 선택 상태를 연결합니다. -->
                   <td>
                     <v-checkbox v-model="item.isSelected"></v-checkbox>
                   </td>
-                  <!-- 나머지 열의 데이터 -->
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.profileImage }}</td>
                   <td>{{ item.name }}</td>
+                  <td>{{ item.salesMemberCode }}</td>
+                  <td>{{ item.rank }}</td>
+                  <td>{{ item.teamName }}</td>
+                  <td>{{ item.teamCode }}</td>
                   <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
-                  <td>{{ item.email }}</td>
+                  <td>{{ item.phone }}</td>
+                  <td>{{ item.officeAddress }}</td>
                 </tr>
               </template>
             </v-data-table>
@@ -83,7 +92,7 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import { ref, onMounted, reactive} from 'vue';
+import {ref, onMounted, reactive} from 'vue';
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
 
@@ -110,7 +119,7 @@ export default {
         {title: "팀", key: "teamName"},
         {title: "팀 코드", key: "teamCode"},
         {title: "이메일", key: "email"},
-        {title: "모바일", key: "phone"},
+        {title: "전화번호", key: "phone"},
         {title: "사무실", key: "officeAddress"},
       ],
       tableRows: [], // ref를 사용하여 반응형 데이터 생성
@@ -161,46 +170,50 @@ export default {
     let teamMemberList;
 
     function navigateToAdd() {
-      state.modalOpen = true ;
+      state.modalOpen = true;
     }
 
     function closeModal() {
       state.modalOpen = false;
     }
 
-    function selectCheck(event, {item}){
-      console.log("클릭")
-      console.log(item)
-      item.isSelected = !item.isSelected;
-      console.log(item.isSelected)
-    }
-
     function toggleCheckbox(item) {
-      // 체크박스의 선택 상태를 토글
       item.isSelected = !item.isSelected;
     }
 
     function navigateToDetail(event, {item}) {
       router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
     }
-    function selectMembers(){
 
-
- /*     if(confirm("선택하신 사원들을 추가하시겠습니까?")){
-        selectedItems.forEach(item => {
-          item.teamCode = props.teamCode;
-          axiosInstance.post(`${baseUrl}/api/members/addMembers/${props.teamCode}`)
-            .then(response => {
-
-            })
-            .catch(error => {
-              console.log('Error fetching data:', error);
-            });
+    function toggleAll() {
+      if (state.selectedItems.length === state.rows.length) {
+        state.selectedItems = [];
+        state.rows.forEach(item => {
+          item.isSelected = false;
         });
-        closeModal();
-      }*/
-
+      } else {
+        state.selectedItems = state.rows.slice();
+        state.rows.forEach(item => {
+          item.isSelected = true;
+        });
+      }
     }
+
+    function selectMembers() {
+      const selectedEmployeeCodes = state.rows
+        .filter(item => item.isSelected) //
+        .map(item => item.salesMemberCode);
+      if (confirm("선택하신 사원들을 추가하시겠습니까?")) {
+        axiosInstance.post(`${baseUrl}/api/team/addMembers/${props.teamCode}`,selectedEmployeeCodes)
+          .then(() => {
+            alert("추가되었습니다.")
+            closeModal();
+          })
+          .catch(error => {
+            console.log('Error fetching data:', error);
+          });
+        }
+      }
 
     onMounted(() => {
       fetchData();
@@ -209,8 +222,8 @@ export default {
     return {
       state,
       teamMemberList,
+      toggleAll,
       navigateToDetail,
-      selectCheck,
       toggleCheckbox,
       selectMembers,
       navigateToAdd,
@@ -222,6 +235,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.v-input__details {
+  display: none;
+}
 </style>
