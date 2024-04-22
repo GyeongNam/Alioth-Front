@@ -54,7 +54,6 @@ export default {
       this.$router.push(route);
     },
     handleSubMenuClick(route) {
-      console.log("눌리니?")
       this.dropDownStore.toggleDropdown()
       this.$router.push(route);
     },
