@@ -34,7 +34,6 @@
               <v-text-field type="text" v-model="roadAddress" placeholder="도로명주소" readonly/>
               <span id="guide" style="color:#999;display:none"></span>
               <v-text-field type="text" v-model="detailAddress" placeholder="상세주소"/>
-              <!--                <v-select v-model="form.address" label="주소" required></v-select>-->
               <v-spacer></v-spacer>
               <v-btn color="primary" type="submit">사원 추가</v-btn>
               </v-form>
@@ -90,8 +89,6 @@ export default {
           jibunAddress.value = data.jibunAddress
         },
       }).open();
-
-
     }
 
     const submitForm = () => {

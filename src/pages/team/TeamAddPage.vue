@@ -57,8 +57,8 @@ export default {
   setup() {
     const form = ref({
       teamName: '',
-      teamManagerCode:'',
-      name:'',
+      teamManagerCode: '',
+      name: '',
     });
     const tableColumns = [
       {title: "이름", key: "name"},
@@ -68,7 +68,6 @@ export default {
     const teamName = ref('');
     const teamManagerCode = ref('');
     const name = ref('');
-
     const modalOpen = ref(false);
 
     function navigateToList() {
@@ -109,7 +108,6 @@ export default {
         const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
         axiosInstance.post(`${baseUrl}/api/team/create`, formData)
           .then(response => {
-            // alert('계약이 성공적으로 생성되었습니다.');
             alert(response.data.message)
             router.push('/Team/List');
           }).catch(error => {
@@ -122,7 +120,6 @@ export default {
     function closeModal() {
       modalOpen.value = false
     }
-
 
     return {
       teamName,

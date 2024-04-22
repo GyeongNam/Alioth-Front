@@ -66,13 +66,14 @@ export default {
         });
     };
 
-    function navigateToDetail(event ,{ item }) {
+    function navigateToDetail(event, {item}) {
       router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
     }
 
     function navigateToAdd() {
       router.push(`/SalesMembersList/Add`);
     }
+
     onMounted(() => {
       fetchData();
     });
