@@ -35,6 +35,9 @@
         <v-spacer></v-spacer>
         <ListComponent :columns="state.tableColumns" :rows="state.tableRows" @click:row="navigateToDetail"/>
       </v-card>
+      <v-col class="text-right">
+        <v-btn variant="outlined" @click="deleteTeam">팀 삭제</v-btn>
+      </v-col>
     </v-container>
   </v-main>
   <v-dialog v-model="state.modalOpen" width="auto">
@@ -212,8 +215,21 @@ export default {
           .catch(error => {
             console.log('Error fetching data:', error);
           });
-        }
       }
+    }
+
+    function deleteTeam(){
+      if(confirm("팀을 삭제하시겠습니까?")){
+        axiosInstance.delete(`${baseUrl}/api/team/delete/${props.teamCode}`)
+          .then(() => {
+            alert("삭제되었습니다.")
+            router.push('/Team/List');
+          })
+          .catch(error => {
+            console.log('Error fetching data:', error);
+          });
+      }
+    }
 
     onMounted(() => {
       fetchData();
@@ -228,7 +244,7 @@ export default {
       selectMembers,
       navigateToAdd,
       closeModal,
-
+      deleteTeam
     }
   },
 

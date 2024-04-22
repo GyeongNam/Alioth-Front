@@ -257,9 +257,17 @@ export default {
       modalOpen.value = false
     }
 
-    function deleteMember(event, {item}) {
-      console.log(item)
-      router.push({path: `/SalesMembersList`});
+    function deleteMember() {
+      if (confirm("퇴사 처리하시겠습니까?")) {
+        axiosInstance.delete(`${baseUrl}/api/members/delete/${props.salesMembersCode}`)
+          .then(() => {
+            alert("퇴사처리 되었습니다.")
+            router.push({path: `/SalesMembersList`});
+          })
+          .catch(error => {
+            console.log('Error fetching data:', error);
+          });
+      }
     }
 
     onMounted(() => {
@@ -291,9 +299,9 @@ export default {
       teamCode,
       modify,
     }
-  },
-
+  }
 }
+
 </script>
 
 <style scoped>
