@@ -9,11 +9,11 @@
             <v-card-text>
               <v-form @submit.prevent="submitForm">
                 <span>팀 명</span>
-                <v-text-field v-model="form.name" label="이름을 입력하세요" required></v-text-field>
+                <v-text-field v-model="form.teamName" label="이름을 입력하세요" required></v-text-field>
                 <span>팀장</span>
                 <v-spacer></v-spacer>
                 <v-btn id="postcode" type="button" @click="navigateToList" value="매니저 목록">조회</v-btn>
-                <v-text-field type="text" v-model="form.teamManagerName" placeholder="이름" readonly/>
+                <v-text-field type="text" v-model="form.name" placeholder="이름" readonly/>
                 <v-text-field type="text" v-model="form.teamManagerCode" placeholder="사원번호" readonly/>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" type="submit">등록</v-btn>
@@ -56,32 +56,28 @@ export default {
   components: {ListComponent, AppHeader, AppSidebar},
   setup() {
     const form = ref({
-      name: '',
+      teamName: '',
       teamManagerCode:'',
-      teamManagerName:'',
+      name:'',
     });
     const tableColumns = [
-      {title: "이름", key: "teamManagerName"},
-      {title: "사원번호", key: "teamManagerCode"},
+      {title: "이름", key: "name"},
+      {title: "사원번호", key: "salesMemberCode"},
     ];
     const rows = ref([]);
+    const teamName = ref('');
     const teamManagerCode = ref('');
-    const teamManagerName = ref('');
+    const name = ref('');
 
     const modalOpen = ref(false);
-
-    const handleFileUpload = (event) => {
-      const file = event.target.files[0];
-      form.value.imageUrl = URL.createObjectURL(file);
-    };
 
     function navigateToList() {
       modalOpen.value = !modalOpen.value
     }
 
     function select(event, {item}) {
-      teamManagerName.value = item.teamManagerName
-      teamManagerCode.value = item.teamManagerCode
+      form.value.name = item.name
+      form.value.teamManagerCode = item.salesMemberCode
       closeModal();
     }
 
@@ -94,7 +90,6 @@ export default {
           data.forEach((item, index) => {
             item.id = index + 1;
           });
-          // tableRows에 데이터를 할당합니다.
           rows.value = data;
         })
         .catch(error => {
@@ -110,12 +105,13 @@ export default {
         const formData = {
           ...form.value,
         };
+        console.log(formData)
         const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
         axiosInstance.post(`${baseUrl}/api/team/create`, formData)
           .then(response => {
             // alert('계약이 성공적으로 생성되었습니다.');
             alert(response.data.message)
-            router.push('/TeamList');
+            router.push('/Team/List');
           }).catch(error => {
           console.error(error.response.data.message);
           alert(error.response.data.message)
@@ -129,15 +125,15 @@ export default {
 
 
     return {
+      teamName,
       modalOpen,
       tableColumns,
       rows,
-      teamManagerName,
+      name,
       teamManagerCode,
       select,
       closeModal,
       form,
-      handleFileUpload,
       navigateToList,
       submitForm,
     };
