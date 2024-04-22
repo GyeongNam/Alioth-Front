@@ -89,8 +89,6 @@ export default {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       const apiEndpoint = this.model === 'Announcement' ? 'list' : 'suggestions-list';
       const apiURL = `${baseUrl}/api/board/${apiEndpoint}`;
-
-
       axiosInstance.get(apiURL) 
       .then(response => {
         this.items = response.data.result || [];

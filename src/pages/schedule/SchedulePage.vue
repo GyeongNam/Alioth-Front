@@ -21,8 +21,8 @@
   <v-dialog v-model="modalOpen" max-width="600">
     <v-card>
       <v-card-title>
-        <span class="headline"  v-if="!isUpdate">일정 등록</span>
-        <span class="headline"  v-if="isUpdate">일정 수정</span>
+        <span class="headline" v-if="!isUpdate">일정 등록</span>
+        <span class="headline" v-if="isUpdate">일정 수정</span>
       </v-card-title>
       <v-card-text>
         <!-- 모달 내용 -->
@@ -46,8 +46,10 @@
             </v-col>
 
             <v-col cols="12">
-              <v-checkbox v-model="newEvent.allDay" label="하루종일"></v-checkbox>
+              <v-checkbox v-model="newEvent.allDay" label="하루 종일"></v-checkbox>
+              <v-checkbox v-model="newEvent.share" v-if="this.LoginInfoStore.getMemberRank === 'MANAGER'" label="팀원 공유"></v-checkbox>
             </v-col>
+
             <v-col cols="12" class="d-flex justify-center">
               <v-color-picker v-model="newEvent.color"> </v-color-picker>
             </v-col>
@@ -82,8 +84,10 @@ import {ref} from 'vue';
 
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { useLoginInfoStore } from '@/stores/loginInfo';
 
 const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+console.log("확인")
 
 export default {
   components: {AppHeader, AppSidebar, FullCalendar, VueDatePicker},
@@ -109,12 +113,12 @@ export default {
     firstCalendar.render();
 
     this.$refs.firstCalendar.calendar = firstCalendar;
-
     this.getList();
 
   },
   data() {
     return {
+      LoginInfoStore : useLoginInfoStore(),
       isUpdate: true,
       newStart: new Date,
       newEnd: new Date,
@@ -187,6 +191,7 @@ export default {
         end: event.scheduleEndTime,
         allDay: event.allDay === "true",
         scheduleType : event.scheduleType,
+        share: event.share,
         backgroundColor: event.color,
       };
 
@@ -216,6 +221,7 @@ export default {
       this.newEvent.start = clickInfo.event.start
       this.newEvent.end = clickInfo.event.end === null ? clickInfo.event.start : clickInfo.event.end
       this.newEvent.color = clickInfo.event._def.ui.backgroundColor
+      this.newEvent.share = clickInfo.event._def.extendedProps.share
       this.newEvent.content = clickInfo.event._def.extendedProps.content
       this.newEvent.type = clickInfo.event._def.extendedProps.scheduleType
       this.newEvent.allDay = clickInfo.event._def.allDay
@@ -233,6 +239,7 @@ export default {
       this.newEvent.start = dropInfo.event.start
       this.newEvent.end = dropInfo.event.end === null ? dropInfo.event.start : dropInfo.event.end
       this.newEvent.color = dropInfo.event._def.ui.backgroundColor
+      this.newEvent.share = dropInfo.event._def.extendedProps.share
       this.newEvent.content = dropInfo.event._def.extendedProps.content
       this.newEvent.type = dropInfo.event._def.extendedProps.scheduleType
       this.newEvent.allDay = dropInfo.event._def.allDay
@@ -275,11 +282,18 @@ export default {
         alert("일정 상세 내용을 입력해 주세요.")
         return false
       }
+      let shareData = false;
+      if(this.newEvent.share !== null && this.newEvent.share !== undefined){
+        shareData = this.newEvent.share
+      }
+      console.log("share")
+      console.log(this.newEvent.share)
       return {
         "scheduleTitle": this.newEvent.title,
         "scheduleStartTime": this.dateTimeFormat(this.newEvent.start),
         "scheduleEndTime": this.dateTimeFormat(this.newEvent.end),
         "color": this.newEvent.color !== undefined ? this.newEvent.color : "#000000",
+        "share": shareData,
         "scheduleNote": this.newEvent.content,
         "scheduleType": this.newEvent.type,
         "allDay": this.newEvent.allDay === undefined ? "false" : this.newEvent.allDay === true ?  "true" : "false"
@@ -299,7 +313,9 @@ export default {
           this.closeModal()
         })
         .catch(error => {
-          console.error(error);
+          alert(error.response.data.message)
+          this.calendarEventRemove()
+          this.getList()
         });
     },
 
@@ -316,7 +332,9 @@ export default {
           this.closeModal()
         })
         .catch(error => {
-          console.error(error);
+          alert(error.response.data.message)
+          this.calendarEventRemove()
+          this.getList()
         });
     },
 
@@ -330,7 +348,9 @@ export default {
             this.closeModal()
           })
           .catch(error => {
-            console.error(error);
+            alert(error.response.data.message)
+            this.calendarEventRemove()
+            this.getList()
           });
       }
     },

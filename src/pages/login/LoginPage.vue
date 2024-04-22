@@ -32,8 +32,6 @@
 
 <script>
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';// 수정된 import 
-import { errorMessages } from 'vue/compiler-sfc';
 import { useLoginInfoStore } from '@/stores/loginInfo';
 
 export default {
@@ -49,7 +47,7 @@ export default {
     async login() {
       // 수정된 URL 참조 방식
       const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-      
+
         const loginData = { memberCode: this.memberCode, password: this.password }
         // 경로가 /api/login이 되도록 수정
         await axios.post(`${baseUrl}/api/login`, loginData)
@@ -62,6 +60,7 @@ export default {
 
           this.loginStore.memberCode = data.memberCode;
           this.loginStore.memberRank = data.memberRank;
+          this.loginStore.memberTeamCode = data.memberTeam;
 
           this.$router.push("/")
         })
@@ -69,7 +68,7 @@ export default {
           alert(error.response.data.message)
         });
       },
-    
+
     goToFindPassword() {
       this.$router.push("/Login/PasswordFind");
     },

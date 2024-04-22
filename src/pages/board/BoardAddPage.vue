@@ -57,7 +57,9 @@ export default {
         return;
       }
       if (this.$refs.form.validate()) {
+
         const apiUrl = `${this.baseUrl}/api/board/create`;
+
         const payload = {
           title: this.announcement.title,
           content: this.announcement.content,
