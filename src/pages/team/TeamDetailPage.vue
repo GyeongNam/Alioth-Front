@@ -46,12 +46,32 @@
           <div>
             <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
                           variant="solo-filled" flat hide-details single-line></v-text-field>
-            <ListComponent :columns="state.tableColumns" :rows="state.rows" :showCheckbox="true" :isTeamMember="isTeamMember" @selected-items="handleSelectedItems" @click:row="toggleSelection"></ListComponent>
+            <v-data-table :headers="state.tableColumns" :items="state.rows" item-value="name" v-model="state.selectedItems"  show-select @click:row="selectCheck">
+              <template v-slot:item="{ item }">
+                <tr @click="toggleCheckbox(item)">
+                  <!-- 체크박스에 v-model을 사용하여 선택 상태를 연결합니다. -->
+                  <td>
+                    <v-checkbox v-model="item.isSelected"></v-checkbox>
+                  </td>
+                  <!-- 나머지 열의 데이터 -->
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                  <td>{{ item.email }}</td>
+                </tr>
+              </template>
+            </v-data-table>
+
           </div>
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="" @click="save">확인</v-btn>
+        <v-btn color="" @click="selectMembers">확인</v-btn>
         <v-btn color="" @click="closeModal">닫기</v-btn>
       </v-card-actions>
     </v-card>
@@ -63,9 +83,9 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import router from "@/router";
 import { ref, onMounted, reactive} from 'vue';
 import axiosInstance from "@/plugins/loginaxios";
+import router from "@/router";
 
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
@@ -95,10 +115,10 @@ export default {
       ],
       tableRows: [], // ref를 사용하여 반응형 데이터 생성
       rows: [],
-      selectedItems: ref()
+      selectedItems: ref([])
     });
+    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
       axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamCode}`)
         .then(response => {
@@ -130,8 +150,8 @@ export default {
           console.log(data)
           data.forEach((item, index) => {
             item.id = index + 1;
+            item.isSelected = false; // isSelected 속성을 추가하고 초기값을 false로 설정합니다.
           });
-          // tableRows에 데이터를 할당합니다.
           state.rows = data;
         })
         .catch(error => {
@@ -139,30 +159,6 @@ export default {
         });
     };
     let teamMemberList;
-
-    function handleSelectedItems(selectedItems) {
-      if(selectedItems.length>0){
-        this.selectedItems.teamCode = props.teamCode
-      }
-    }
-
-    function isTeamMember(selectedItems){
-      console.log("selectedItems :", selectedItems)
-      // return selectedItems.some(item => item.teamCode === props.teamCode);
-    }
-
-    function toggleSelection(event, {item}) {
-      console.log(item)
-      console.log(item.selected)
-
-      // if (!isTeamMember(item)) { // 팀원이 아닌 경우에만 선택 토글을 수행합니다.
-      //   item.selected = !item.selected;
-      // }
-    }
-
-    function navigateToDetail(event, {item}) {
-      router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
-    }
 
     function navigateToAdd() {
       state.modalOpen = true ;
@@ -172,15 +168,38 @@ export default {
       state.modalOpen = false;
     }
 
-    function save(){
-      console.log(this.selectedItems)
-      // try {
-      //
-      //   // localStorage.setItem('myData', JSON.stringify(this.selectedItems));
-      //   console.log('등록 완료됐습니다.');
-      // } catch (error) {
-      //   console.error('저장에 실패했습니다:', error);
-      // }
+    function selectCheck(event, {item}){
+      console.log("클릭")
+      console.log(item)
+      item.isSelected = !item.isSelected;
+      console.log(item.isSelected)
+    }
+
+    function toggleCheckbox(item) {
+      // 체크박스의 선택 상태를 토글
+      item.isSelected = !item.isSelected;
+    }
+
+    function navigateToDetail(event, {item}) {
+      router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
+    }
+    function selectMembers(){
+
+
+ /*     if(confirm("선택하신 사원들을 추가하시겠습니까?")){
+        selectedItems.forEach(item => {
+          item.teamCode = props.teamCode;
+          axiosInstance.post(`${baseUrl}/api/members/addMembers/${props.teamCode}`)
+            .then(response => {
+
+            })
+            .catch(error => {
+              console.log('Error fetching data:', error);
+            });
+        });
+        closeModal();
+      }*/
+
     }
 
     onMounted(() => {
@@ -190,13 +209,12 @@ export default {
     return {
       state,
       teamMemberList,
-      handleSelectedItems,
-      navigateToAdd,
       navigateToDetail,
+      selectCheck,
+      toggleCheckbox,
+      selectMembers,
+      navigateToAdd,
       closeModal,
-      isTeamMember,
-      toggleSelection,
-      save
 
     }
   },
