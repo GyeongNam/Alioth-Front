@@ -18,10 +18,6 @@ export default {
       type: Array,
       required: true
     },
-    selectedItems: {
-      type: Array,
-      default: () => []
-    },
-  },
+  }
 };
 </script>
