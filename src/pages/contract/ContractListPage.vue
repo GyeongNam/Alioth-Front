@@ -165,9 +165,7 @@ export default {
       router.push(`/ContractList/Detail/${item.item.id}`);
     };
 
-
     watch([selectedStatus, selectedCMmember], fetchData);
-
 
     onMounted(() => {
       fetchData();
