@@ -24,7 +24,7 @@
             :items="statusOptions"
             item-title="key"
             item-value="val"
-            label="Status"
+            label="Team Code"
             outlined
             dense>
           </v-select>
@@ -100,11 +100,11 @@ export default {
 
     const selectedStatus = ref(null)
 
-    const statusOptions = ref();
+    let statusOptions = ref();
 
     const selectedSMmember = ref(null);
 
-    const salesMemberOptions = ref();
+    let salesMemberOptions = ref();
 
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
@@ -112,7 +112,6 @@ export default {
         .then(response => {
           let data = response.data.result;
           console.log("Initial loaded data:", data);
-
           statusOptions.value = [{ key: "ALL", val: null }];
           salesMemberOptions.value = [{ key: "ALL", val: null }];
 
@@ -124,7 +123,6 @@ export default {
               ...statusOptions.value,
               ...uniqueStatusOptions
             ];
-
             const newSalesMemberOptions = response.data.result
               .filter(contract => contract.salesMemberResDto.teamCode === selectedStatus.value)
               .map(contract => ({
@@ -140,7 +138,8 @@ export default {
           }
 
           if(useLoginInfoStore().memberRank === 'MANAGER'){
-            const newSalesMemberOptions = response.data.result.map(contract => ({ 'key': contract.salesMemberResDto.name, 'val': contract.salesMemberResDto.salesMemberCode }));
+            const newSalesMemberOptions = response.data.result
+              .map(contract => ({ 'key': contract.salesMemberResDto.name, 'val': contract.salesMemberResDto.salesMemberCode }));
             const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
 
             salesMemberOptions.value = [
@@ -159,7 +158,6 @@ export default {
       }
 
       tableRows.value = data.map((item, index) => ({ ...item, id: index + 1 }));
-      console.log("Filtered data:", tableRows.value);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -219,7 +217,14 @@ export default {
       router.push(`/ContractList/Detail/${item.item.id}`);
     };
 
-    watch([selectedStatus, selectedSMmember], fetchData);
+    watch(selectedStatus, () => {
+      selectedSMmember.value = null; // selectedStatus가 변경될 때 selectedSMmember 초기화
+      fetchData();
+    });
+
+    watch(selectedSMmember, () => {
+      fetchData();
+    });
 
     onMounted(() => {
       fetchData();
