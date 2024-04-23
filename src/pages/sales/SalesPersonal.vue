@@ -5,8 +5,13 @@
     <v-container fluid>
       <div>
         <h1>개인매출조회</h1>
+        <v-btn-toggle v-model="selectedPeriod" mandatory>
+          <v-btn @click="changePeriod('월')" :class="{ 'grey': selectedPeriod === '월' }">월</v-btn>
+          <v-btn @click="changePeriod('반기')" :class="{ 'grey': selectedPeriod === '반기' }">반기</v-btn>
+          <v-btn @click="changePeriod('년')" :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
+        </v-btn-toggle>
       </div>
-      <SalesPersonalTableChart></SalesPersonalTableChart>
+      <!-- <SalesPersonalTableChart :period="selectedPeriod"></SalesPersonalTableChart> -->
 
 
     </v-container>
@@ -26,10 +31,23 @@ export default {
 
 
     return {}
-  }
+  },
+  data() {
+    return {
+      selectedPeriod: '월' // 초기 선택값은 월로 설정
+    };
+  },
+  methods: {
+    changePeriod(period) {
+      this.selectedPeriod = period; // 선택된 기간을 업데이트
+    }
+  },
 }
 </script>
 
 <style scoped>
-
+  .grey {
+    background-color: grey !important; /* 회색 배경색 */
+    color: white !important; /* 흰색 텍스트색 */
+  }
 </style>

@@ -15,32 +15,33 @@ export const type = 'Table';
 // ];
 
 export let data = [ 
-  ['salesMemberName', 'salesMemberCode', 'contractPrice', 'contractCount', 'cancelPrice', 'cancelCount']
+  ['teamName', 'teamCode', 'contractPrice', 'contractCount', 'cancelPrice', 'cancelCount']
 ];
 
+export let selected = "월"
+export let url = "";
 
-function getSalesMemberData() {
-  let url = "";
-  this.selectedPeriod = this.salesStore.salesTeam;
-  console.log("자식컴포넌트 getSalesMemberData() 실행");
-  console.log(this.selectedPeriod);
-  if(selectedPeriod == "월") {
-    url = "http://localhost:8081/api/batch/sales-team/month";
-  }else if(selectedPeriod == "반기") {
-    url = "http://localhost:8081/api/batch/sales-team/quarter";
-  }else if(selectedPeriod == "년") {
-    url = "http://localhost:8081/api/batch/sales-team/year";
+export function getSalesMemberData() {
+  let temp = "";
+  selected = useSalesStore().salesTeam;
+
+  if(selected === '월') {
+    temp = "http://localhost:8081/api/batch/sales-team/month";
+  }else if(selected === "반기") {
+    temp = "http://localhost:8081/api/batch/sales-team/quarter";
+  }else if(selected === "년") {
+    temp = "http://localhost:8081/api/batch/sales-team/year";
   }
+  
+  console.log(temp);
 
-  axios.get(url)
+  axios.get(temp)
         .then(response => {
           console.log("응답결과 : ");
-          // console.log(response.data.result);
-          
           const valuesOnly = response.data.result.map(obj => Object.values(obj));
+          data.splice(1); // 이전 데이터 삭제
           data.push(...valuesOnly);
-          //console.log(data);
-          console.log(valuesOnly);
+          console.log(data);
         })
         .catch(error => {
           console.log("요청할 수 없습니다.1s : ", error);
@@ -58,11 +59,12 @@ export const options = {
 };
 
 export default defineComponent({
-  name: 'SalesPersonalTableChart',
+  name: 'SalesTeamTableChart',
   components: {
     GChart,
   },
   setup() {
+    
     getSalesMemberData();
     
     return () =>
@@ -74,15 +76,14 @@ export default defineComponent({
   },
   data() {
     return {
-      selectedPeriod: "월",
-      salesStore: useSalesStore(),
+      selected: '월',
+      url: '',
+      // salesStore: useSalesStore(),
     }
   },
   methods: {
     callTeamTable() {
-      console.log("응답받음");
       getSalesMemberData();
     }
   }
-  
 });
