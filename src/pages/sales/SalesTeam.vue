@@ -11,7 +11,7 @@
           <v-btn @click="changePeriod('년')" :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
       </v-btn-toggle>
 
-      <SalesTeamTableChart ref="childRef"></SalesTeamTableChart>
+      <SalesTeamTableChart :key="renderCount" ref="childRef"></SalesTeamTableChart>
 
     </v-container>
   </v-main>
@@ -35,16 +35,18 @@ export default {
     return {
       selectedPeriod: '월', // 초기 선택값은 월로 설정
       salesStore: useSalesStore(),
+      renderCount: 0,
     };
   },
   methods: {
     changePeriod(period) {
-      this.selectedPeriod = period; // 선택된 기간을 업데이트
-      this.salesStore.salesTeam = this.selectedPeriod;
+      //this.selectedPeriod = period; // 선택된 기간을 업데이트
+      // this.salesStore.salesTeam = this.selectedPeriod;
+      this.salesStore.salesTeam = period;
       this.$refs.childRef.callTeamTable();
-      router.go(0);
-      console.log("새로고침 후 실행")
-    }
+      this.renderCount += 1;
+
+    },
   },
 }
 </script>
