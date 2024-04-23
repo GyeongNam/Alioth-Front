@@ -67,7 +67,6 @@ export default {
           alert(error.response.data.message)
         });
       },
-
     goToFindPassword() {
       this.$router.push("/Login/PasswordFind");
     },

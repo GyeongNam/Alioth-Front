@@ -41,6 +41,7 @@ export default {
         {
           title: '매출',
           subItems: [
+            {title: '순위', url: '/Sales/Ranking'},
             {title: '개인', url: '/Sales/Personal'},
             {title: '팀', url: '/Sales/Team'},
             {title: '전사', url: '/Sales/Total'},
@@ -48,6 +49,9 @@ export default {
         }
       ]
     };
+  },
+  mounted() {
+    
   },
   methods: {
     handleMenuClick(route) {
