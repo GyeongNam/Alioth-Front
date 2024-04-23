@@ -59,6 +59,7 @@ export default {
 
           this.loginStore.memberCode = data.memberCode;
           this.loginStore.memberRank = data.memberRank;
+          this.loginStore.memberTeamCode = data.memberTeam;
 
           this.$router.push("/")
         })

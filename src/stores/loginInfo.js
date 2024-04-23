@@ -4,6 +4,7 @@ export const useLoginInfoStore = defineStore('loginInfo', {
   state: () => ({
     memberCode: -1,
     memberRank: "",
+    memberTeamCode: "",
   }),
 
   getters: {
@@ -12,6 +13,9 @@ export const useLoginInfoStore = defineStore('loginInfo', {
     },
     getMemberRank() {
       return this.$state.memberRank;
+    },
+    getMemberTeamCode() {
+      return this.$state.memberTeamCode;
     },
   },
 

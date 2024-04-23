@@ -20,24 +20,26 @@
           </v-list>
         </v-list-item-title>
       </v-list-item>
-      <v-list-item prepend-icon="mdi-account-multiple" title="사원" value="shared"  @click="this.$router.push(`/SalesMembersList`);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-account-multiple" title="사원" value="shared"  @click="this.$router.push(`/SalesMembersList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-star" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
-      <!-- 로그아웃 버튼 -->
 
-      <v-list-item prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.getMemberTeamCode);"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
 import { useDropdownStore } from '@/stores/dropDown'
+import { useLoginInfoStore } from "@/stores/loginInfo";
 
 export default {
   data() {
     return {
       dropDownStore : useDropdownStore(),
+      loginStore : useLoginInfoStore(),
       folders: [
         {
           title: '매출',
