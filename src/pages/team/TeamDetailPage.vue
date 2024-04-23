@@ -36,6 +36,7 @@
         <ListComponent :columns="state.tableColumns" :rows="state.tableRows" @click:row="navigateToDetail"/>
       </v-card>
       <v-col class="text-right">
+        <v-btn variant="outlined" @click="downloadExcel">엑셀다운로드</v-btn>
         <v-btn variant="outlined" @click="deleteTeam">팀 삭제</v-btn>
       </v-col>
     </v-container>
@@ -211,6 +212,7 @@ export default {
           .then(() => {
             alert("추가되었습니다.")
             closeModal();
+            window.location.reload()
           })
           .catch(error => {
             console.log('Error fetching data:', error);
@@ -230,7 +232,24 @@ export default {
           });
       }
     }
-
+    function downloadExcel() {
+      const requestData = {
+        startDate: null,
+        endDate: null
+      };
+      axiosInstance.post(`${baseUrl}/api/excel/export/salesMembers/${props.teamCode}`, requestData, {
+        responseType: 'blob'
+      })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '팀원목록.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(url);
+        })
+    }
     onMounted(() => {
       fetchData();
     });
@@ -244,10 +263,10 @@ export default {
       selectMembers,
       navigateToAdd,
       closeModal,
-      deleteTeam
+      deleteTeam,
+      downloadExcel
     }
   },
-
 }
 </script>
 

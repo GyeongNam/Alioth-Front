@@ -18,6 +18,7 @@
         <v-spacer></v-spacer>
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
+      <v-btn variant="outlined"  @click="downloadExcel">엑셀다운로드</v-btn>
     </v-container>
   </v-main>
 </template>
@@ -49,8 +50,9 @@ export default {
       {title: "내선 번호", key: "extensionNumber"},
     ];
     const tableRows = ref([]);
+    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
       axiosInstance.get(`${baseUrl}/api/members/list`)
         .then(response => {
           const data = response.data.result;
@@ -78,15 +80,33 @@ export default {
       fetchData();
     });
 
+    function downloadExcel() {
+      const requestData = {
+        startDate: null,
+        endDate: null
+      };
+      axiosInstance.post(`${baseUrl}/api/excel/export/salesMembers`, requestData, {
+        responseType: 'blob'
+      })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', '사원목록.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(url);
+        })
+    }
     return {
       navigateToDetail,
       navigateToAdd,
+      downloadExcel,
       tableColumns,
       tableRows,
       salesMemberCode
     }
   },
-
 }
 </script>
 
