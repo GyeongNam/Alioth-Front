@@ -10,11 +10,11 @@ export default defineComponent({
   },
   setup() {
     const data = ref([
-      ['teamName', 'teamCode', 'contractPrice', 'contractCount', 'cancelPrice', 'cancelCount']
+      ['contractPrice', 'contractCount', 'cancelPrice', 'cancelCount']
     ]);
     const selectedPeriod = ref("월");
     
-    watch(() => useSalesStore().salesTeam, (newValue, oldValue) => {
+    watch(() => useSalesStore().salesHQ, (newValue, oldValue) => {
       if (newValue !== oldValue) {
         selectedPeriod.value = newValue;
         updateChartData();
@@ -26,11 +26,11 @@ export default defineComponent({
         let temp = "";
         
         if (selectedPeriod.value === '월') {
-          temp = "http://localhost:8081/api/batch/sales-team/month";
+          temp = "http://localhost:8081/api/batch/sales-hq/month";
         } else if (selectedPeriod.value === "반기") {
-          temp = "http://localhost:8081/api/batch/sales-team/quarter";
+          temp = "http://localhost:8081/api/batch/sales-hq/quarter";
         } else if (selectedPeriod.value === "년") {
-          temp = "http://localhost:8081/api/batch/sales-team/year";
+          temp = "http://localhost:8081/api/batch/sales-hq/year";
         }
 
         const response = await axios.get(temp);
@@ -60,9 +60,4 @@ export default defineComponent({
         type: 'Table',
       });
   },
-  methods: {
-    callTeamTable() {
-      
-    }
-  }
 });

@@ -4,6 +4,13 @@
     <AppHeader></AppHeader>
     <v-container fluid>
       <h2>전사매출조회</h2>
+      <v-divider></v-divider>
+      <v-btn-toggle v-model="selectedPeriod" mandatory>
+          <v-btn @click="changePeriod('월')" :class="{ 'grey': selectedPeriod === '월' }">월</v-btn>
+          <v-btn @click="changePeriod('반기')" :class="{ 'grey': selectedPeriod === '반기' }">반기</v-btn>
+          <v-btn @click="changePeriod('년')" :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
+      </v-btn-toggle>
+
     </v-container>
   </v-main>
 </template>
@@ -23,5 +30,8 @@ export default {
 </script>
 
 <style scoped>
-
+  .grey {
+    background-color: grey !important; /* 회색 배경색 */
+    color: white !important; /* 흰색 텍스트색 */
+  }
 </style>
