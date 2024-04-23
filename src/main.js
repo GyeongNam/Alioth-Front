@@ -64,10 +64,10 @@ onMessage(messaging, (payload) => {
         console.log('Message received. ', payload);
         const notificationStore = useNotificationStore();
         const notification = {
-            messageId: payload.data.messageId, // 서버에서 발송한 고유 ID
+            messageId: payload.data?.messageId, // 서버에서 발송한 고유 ID
             title: payload.notification.title,
             body: payload.notification.body,
-            url: payload.data.url
+            url: payload.data?.url
             };
             notificationStore.addNotification(notification);
         });
