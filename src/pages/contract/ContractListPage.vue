@@ -7,39 +7,46 @@
       <v-spacer></v-spacer>
       <v-row align="center">
         <v-col cols="4">
-          <v-text-field 
-            v-model="search" 
-            label="Search" 
-            prepend-inner-icon="mdi-magnify" 
-            variant="outlined" 
+          <v-text-field
+            v-model="search"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
             dense>
           </v-text-field>
         </v-col>
         <v-col class="d-flex justify-end">
+
         <v-col cols="4" >
-          <v-select 
-            v-model="selectedStatus" 
-            :items="statusOptions" 
-            label="Status" 
-            outlined 
+          <v-select
+            v-if="loginStore.memberRank==='HQ'"
+            v-model="selectedStatus"
+            :items="statusOptions"
+            item-title="key"
+            item-value="val"
+            label="Status"
+            outlined
             dense>
           </v-select>
         </v-col>
 
         <v-col cols="4">
-          <v-select 
-            v-model="selectedCMmember" 
-            :items="salesMemberOptions" 
-            label="Sales Member" 
-            outlined 
+          <v-select
+            v-if="loginStore.memberRank==='MANAGER' || loginStore.memberRank==='HQ'"
+            v-model="selectedSMmember"
+            :items="salesMemberOptions"
+            label="Sales Member"
+            item-title="key"
+            item-value="val"
+            outlined
             dense>
           </v-select>
         </v-col>
 
         <v-col cols="1">
-          <v-btn 
-            color="grey" 
-            text 
+          <v-btn
+            color="grey"
+            text
             @click="navigateToAddModify">
             계약추가
           </v-btn>
@@ -47,9 +54,9 @@
         </v-col>
 
         <v-col cols="1">
-          <v-btn 
-            color="grey" 
-            text 
+          <v-btn
+            color="grey"
+            text
             @click="downloadExcel">
             엑셀다운로드
           </v-btn>
@@ -71,14 +78,17 @@ import ListComponent from "@/layouts/ListComponent.vue";
 import { ref, onMounted, watch } from 'vue';
 import router from "@/router";
 import axiosInstance from '@/plugins/loginaxios';
+import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
   components: { AppSidebar, AppHeader, ListComponent },
   setup() {
+    const loginStore = useLoginInfoStore();
     const tableColumns = ref([
       { title: "No", key: "id" },
       { title: "보험상품", key: "insuranceProductName" },
       { title: "고객", key: "customName" },
+      { title: "팀", key: "salesMemberResDto.teamName" },
       { title: "계약사원", key: "salesMemberName" },
       { title: "계약 기간(년)", key: "contractPeriod" },
       { title: '계약일자', key: 'contractDate' },
@@ -87,23 +97,65 @@ export default {
     ]);
     const tableRows = ref([]);
     const search = ref('');
-    const selectedStatus = ref(null);
-    const statusOptions = ref(['New', 'Renewal', 'Cancellation']);
-    const selectedCMmember = ref(null);
-    const salesMemberOptions = ref([]);
+
+    const selectedStatus = ref(null)
+
+    const statusOptions = ref();
+
+    const selectedSMmember = ref(null);
+
+    const salesMemberOptions = ref();
 
     const fetchData = () => {
       const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/contract/list`)
         .then(response => {
           let data = response.data.result;
-      console.log("Initial loaded data:", data);
+          console.log("Initial loaded data:", data);
 
-      if (selectedStatus.value) {
-        data = data.filter(contract => contract.contractStatus === selectedStatus.value);
+          statusOptions.value = [{ key: "ALL", val: null }];
+          salesMemberOptions.value = [{ key: "ALL", val: null }];
+
+          if(useLoginInfoStore().memberRank === 'HQ'){
+            const newStatusOptions = response.data.result
+              .map(contract => ({ 'key': contract.salesMemberResDto.teamName, 'val': contract.salesMemberResDto.teamCode }));
+            const uniqueStatusOptions = Array.from(new Set(newStatusOptions.map(JSON.stringify))).map(JSON.parse);
+            statusOptions.value = [
+              ...statusOptions.value,
+              ...uniqueStatusOptions
+            ];
+
+            const newSalesMemberOptions = response.data.result
+              .filter(contract => contract.salesMemberResDto.teamCode === selectedStatus.value)
+              .map(contract => ({
+                'key': contract.salesMemberResDto.name,
+                'val': contract.salesMemberResDto.salesMemberCode
+              }))
+            const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
+
+            salesMemberOptions.value = [
+              ...salesMemberOptions.value,
+              ...uniqueSalesMemberOptions
+            ];
+          }
+
+          if(useLoginInfoStore().memberRank === 'MANAGER'){
+            const newSalesMemberOptions = response.data.result.map(contract => ({ 'key': contract.salesMemberResDto.name, 'val': contract.salesMemberResDto.salesMemberCode }));
+            const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
+
+            salesMemberOptions.value = [
+              ...salesMemberOptions.value,
+              ...uniqueSalesMemberOptions
+            ];
+          }
+
+
+      if (selectedStatus.value !== null) {
+        data = data.filter(contract => contract.salesMemberResDto.teamCode === selectedStatus.value);
       }
-      if (selectedCMmember.value) {
-        data = data.filter(contract => contract.salesMemberName === selectedCMmember.value);
+
+      if (selectedSMmember.value !== null) {
+        data = data.filter(contract => contract.salesMemberResDto.salesMemberCode === selectedSMmember.value);
       }
 
       tableRows.value = data.map((item, index) => ({ ...item, id: index + 1 }));
@@ -113,10 +165,9 @@ export default {
         console.error('Error fetching data:', error);
       });
 
-      fetchSalesMembers();
     };
 
-    
+
     const downloadExcel = () => {
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
     const requestData = {
@@ -143,19 +194,22 @@ export default {
     });
   };
 
-  
-    const fetchSalesMembers = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-      axiosInstance.get(`${baseUrl}/api/members/list`)
-        .then(response => {
-          salesMemberOptions.value = response.data.result.map(member => member.name);
-        //   if (salesMemberOptions.value.length > 0 && !selectedCMmember.value) {
-        //     selectedCMmember.value = salesMemberOptions.value[0]; // 첫 번째 멤버 이름을 기본 선택으로 설정
-        //   }
-        }).catch(error => {
-          console.error('Error fetching sales members:', error);
-        });
-    };
+
+    // const fetchSalesMembers = () => {
+    //   const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    //   axiosInstance.get(`${baseUrl}/api/members/list`)
+    //     .then(response => {
+    //       console.log(salesMemberOptions.value)
+    //       console.log(response.data.result)
+    //       salesMemberOptions.value = [
+    //         ...salesMemberOptions.value,
+    //         ...response.data.result.map(member => ({ 'key': member.name, 'val': member.salesMemberCode }))
+    //       ];
+    //
+    //     }).catch(error => {
+    //       console.error('Error fetching sales members:', error);
+    //     });
+    // };
 
     const navigateToAddModify = () => {
       router.push('/ContractList/AddModify');
@@ -165,14 +219,14 @@ export default {
       router.push(`/ContractList/Detail/${item.item.id}`);
     };
 
-    watch([selectedStatus, selectedCMmember], fetchData);
+    watch([selectedStatus, selectedSMmember], fetchData);
 
     onMounted(() => {
       fetchData();
-      fetchSalesMembers();
+      // fetchSalesMembers();
     });
 
-    
+
 
     return {
       tableColumns,
@@ -180,10 +234,11 @@ export default {
       search,
       selectedStatus,
       statusOptions,
-      selectedCMmember,
+      selectedSMmember,
       salesMemberOptions,
       fetchData,
-      fetchSalesMembers,
+      loginStore,
+      // fetchSalesMembers,
       navigateToAddModify,
       navigateToDetail,
       downloadExcel
