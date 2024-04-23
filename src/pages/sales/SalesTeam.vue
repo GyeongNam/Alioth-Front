@@ -11,7 +11,7 @@
           <v-btn @click="changePeriod('년')" :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
       </v-btn-toggle>
 
-      <SalesTeamTableChart :key="renderCount" ref="childRef"></SalesTeamTableChart>
+      <SalesTeamTableChart ref="childRef"></SalesTeamTableChart>
 
     </v-container>
   </v-main>

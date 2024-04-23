@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useSalesStore } from '@/stores/SalesStore';
 
 export default defineComponent({
-  name: 'SalesTeamTableChart',
+  name: 'SalesTotalTableChart',
   components: {
     GChart,
   },
@@ -50,7 +50,7 @@ export default defineComponent({
       h(GChart, {
         data: data.value,
         options: {
-          title: 'Company Performance',
+          title: 'Company',
           curveType: 'function',
           legend: { position: 'bottom' },
           pageSize: 5,
