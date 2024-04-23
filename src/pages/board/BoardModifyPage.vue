@@ -36,13 +36,10 @@ export default {
     const route = useRoute();
     const router = useRouter();
     const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-    const accessToken = localStorage.getItem('accessToken');  // Moved outside of function scope to be shared
 
     const fetchBoardDetails = () => {
       const boardId = route.params.boardId;
-      axios.get(`${baseUrl}/api/board/detail/${boardId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      }).then(response => {
+      axiosInstance.get(`${baseUrl}/api/board/detail/${boardId}`).then(response => {
         board.value = response.data.result;
       }).catch(error => {
         console.error('게시판 상세 정보를 가져오는데 실패했습니다:', error);

@@ -11,13 +11,8 @@
             label="제목"
             required
           ></v-text-field>
-          <v-textarea
-            v-model="announcement.content"
-            :rules="contentRules"
-            label="내용"
-            required
-          ></v-textarea>
-          <v-btn :disabled="!valid" @click="submitAnnouncement">
+          <Editor @update:content="updateContent" :initialContent="announcement.content"/>
+          <v-btn :disabled="!valid" color="success" @click="submitAnnouncement">
             공지사항 추가
           </v-btn>
         </v-form>
@@ -27,16 +22,19 @@
 </template>
 
 <script>
-import axios from 'axios';
+import Editor from "@/layouts/Editor.vue";
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios';
 
 export default {
-  components: {AppHeader, AppSidebar},
+  components: {
+    AppHeader, AppSidebar, Editor
+  },
   data() {
     return {
       valid: true,
+      baseUrl: import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
       announcement: {
         title: '',
         content: ''
@@ -44,28 +42,32 @@ export default {
       titleRules: [
         v => !!v || '제목은 필수 입력 사항입니다.',
         v => (v && v.length <= 100) || '제목은 100자 이내여야 합니다.'
-      ],
-      contentRules: [
-        v => !!v || '내용은 필수 입력 사항입니다.'
       ]
     };
   },
   methods: {
+    updateContent(htmlContent) {
+      console.log("Received content from editor:", htmlContent);
+      this.announcement.content = htmlContent;
+    },
     submitAnnouncement() {
+      console.log("Attempting to submit content:", this.announcement.content);
+      if (!this.announcement.content) {
+        alert('공지사항 내용을 입력해주세요.');
+        return;
+      }
       if (this.$refs.form.validate()) {
-        const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-        const apiUrl = `${baseUrl}/api/board/create`;
-        const accessToken = localStorage.getItem('accessToken');
-        
+
+        const apiUrl = `${this.baseUrl}/api/board/create`;
+
         const payload = {
           title: this.announcement.title,
           content: this.announcement.content,
           boardType: 'ANNOUNCEMENT'
         };
-
         axiosInstance.post(apiUrl, payload)
-        .then(response => {
-          alert('공지사항이 추가되었습니다.'); 
+        .then(() => {
+          alert('공지사항이 추가되었습니다.');
           this.resetForm();
         })
         .catch(error => {

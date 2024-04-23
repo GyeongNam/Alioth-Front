@@ -1,12 +1,12 @@
 <template>
-  <div class="d-flex justify-center align-center" style="height: 100vh;">
-    <v-container fluid>
-      <v-row class="fill-height" no-gutters>
-        <v-col cols="6" class="d-flex align-center justify-center">
-          <img src="@/assets/2024-03-18_2.22.312.png" alt="Alioth Logo" height="400">
-        </v-col>
-        <v-col cols="5" class="d-flex align-mid justify-center">
-          <v-card class="pa-4 elevation-12" width="500" style="border-radius: 15px;">
+  <div class="d-flex justify-center align-center" style="height: 100vh; width: 100vw;">
+    <div class="d-flex justify-center align-center" style="width: 100%;">
+      <v-card class="pa-4 elevation-12" style="max-width: 1200px; border-radius: 15px;"> <!-- max-width를 조정하여 카드의 최대 크기 지정 -->
+        <v-row justify="center" no-gutters>
+          <v-col cols="12" md="6" class="d-flex justify-center">
+            <img src="@/assets/2024-03-18_2.22.312.png" alt="Alioth Logo" height="400">
+          </v-col>
+          <v-col cols="12" md="6">
             <v-card-title class="text-h5 blue-grey lighten-2 white--text" style="text-align: center;">
               WELCOME!
             </v-card-title>
@@ -18,17 +18,19 @@
                 <v-btn block large color="blue" class="white--text my-4" type="submit">로그인</v-btn>
               </v-form>
             </v-card-text>
-
             <v-card-actions>
               <v-btn text color="blue" @click="this.goToFindPassword">비밀번호를 잊어버렸나요?</v-btn>
             </v-card-actions>
-
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
   </div>
 </template>
+
+
+
+
 <script>
 import axios from 'axios';
 import { useLoginInfoStore } from '@/stores/loginInfo';
@@ -67,7 +69,6 @@ export default {
           alert(error.response.data.message)
         });
       },
-
     goToFindPassword() {
       this.$router.push("/Login/PasswordFind");
     },

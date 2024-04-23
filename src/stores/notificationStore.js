@@ -23,12 +23,12 @@ export const useNotificationStore = defineStore('notification', {
       },
       clearNotifications() {
         this.notifications = [];
-        this.hasNewNotifications = false; // 모든 알림을 지울 때 false로 설정
+        this.hasNewNotifications = false;
       },
       removeNotification(index) {
         this.notifications.splice(index, 1);
         if (this.notifications.length === 0) {
-          this.hasNewNotifications = false; // 모든 알림이 삭제되었을 때만 false로 설정
+          this.hasNewNotifications = false;
         }
       }
     }
