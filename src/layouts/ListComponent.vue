@@ -4,7 +4,6 @@
     :items="rows"
     :items-length="rows.length"
     item-value="id"
-    :show-select="showCheckbox"
   ></v-data-table>
 </template>
 
@@ -18,10 +17,6 @@ export default {
     rows: {
       type: Array,
       required: true
-    },
-    showCheckbox: {
-      type: Boolean,
-      default: false
     },
     selectedItems: {
       type: Array,
