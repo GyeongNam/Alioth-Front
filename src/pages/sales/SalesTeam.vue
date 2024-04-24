@@ -35,18 +35,11 @@ export default {
     return {
       selectedPeriod: '월', // 초기 선택값은 월로 설정
       salesStore: useSalesStore(),
-      //renderCount: 0,
     };
   },
   methods: {
     changePeriod(period) {
-      //this.selectedPeriod = period; // 선택된 기간을 업데이트
-      // this.salesStore.salesTeam = this.selectedPeriod;
       this.salesStore.salesTeam = period;
-      //this.selectedPeriod = period;
-      //this.$refs.childRef.callTeamTable();
-      //this.renderCount += 1;
-
     },
   },
 }

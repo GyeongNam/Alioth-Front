@@ -10,7 +10,7 @@ export default defineComponent({
   },
   setup() {
     const data = ref([
-      ['contractPrice', 'contractCount', 'cancelPrice', 'cancelCount']
+      ['계약 금액', '계약 건', '해약 금액', '해약 건']
     ]);
     const selectedPeriod = ref("월");
     
