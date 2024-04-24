@@ -111,7 +111,6 @@ export default {
       axiosInstance.get(`${baseUrl}/api/contract/list`)
         .then(response => {
           let data = response.data.result;
-          console.log("Initial loaded data:", data);
           statusOptions.value = [{key: "ALL", val: null}];
           salesMemberOptions.value = [{key: "ALL", val: null}];
 
@@ -142,6 +141,7 @@ export default {
 
           if (useLoginInfoStore().memberRank === 'MANAGER') {
             const newSalesMemberOptions = response.data.result
+              .filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().getmemberTeamCode)
               .map(contract => ({
                 'key': contract.salesMemberResDto.name,
                 'val': contract.salesMemberResDto.salesMemberCode
@@ -152,8 +152,14 @@ export default {
               ...salesMemberOptions.value,
               ...uniqueSalesMemberOptions
             ];
+
+            data = data.filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().getmemberTeamCode);
           }
 
+          // console.log(response.data.result)
+          if(useLoginInfoStore().memberRank === 'FP'){
+            data = data.filter(contract => contract.salesMemberResDto.salesMemberCode === useLoginInfoStore().getMemberCode);
+          }
 
           if (selectedStatus.value !== null) {
             data = data.filter(contract => contract.salesMemberResDto.teamCode === selectedStatus.value);
@@ -162,7 +168,6 @@ export default {
           if (selectedSMmember.value !== null) {
             data = data.filter(contract => contract.salesMemberResDto.salesMemberCode === selectedSMmember.value);
           }
-          console.log(data);
           tableRows.value = data.map((item, index) => ({
             ...item,
             id: index + 1,
@@ -183,28 +188,50 @@ export default {
         startDate: null,
         endDate: null
       };
-      console.log(baseUrl)
-      console.log(requestData)
+      let url = null
+      if (useLoginInfoStore().memberRank === 'HQ') {
+        if(selectedStatus.value === null && selectedSMmember.value === null){
+          url = `${baseUrl}/api/excel/export/contract`
+        }else if(selectedStatus.value !== null && selectedSMmember.value === null){
+          url = `${baseUrl}/api/excel/export/contract/${selectedStatus.value}`
+        }else if(selectedStatus.value !== null && selectedSMmember.value !== null){
+          url = `${baseUrl}/api/excel/export/contract/${selectedSMmember.value}`
+        }
+      }
+
+      if (useLoginInfoStore().memberRank === 'MANAGER') {
+        if(selectedSMmember.value === null){
+          url = `${baseUrl}/api/excel/export/contract`
+        }else {
+          url = `${baseUrl}/api/excel/export/contract/${selectedSMmember.value}`
+        }
+      }
+
+      if (useLoginInfoStore().memberRank === 'FP') {
+        url = `${baseUrl}/api/excel/export/contract`
+      }
+
       console.log(selectedStatus.value)
       console.log(selectedSMmember.value)
-    //   axiosInstance.post(`${baseUrl}/api/excel/export/contract`, requestData, {
-    //     responseType: 'blob',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-    //     .then(response => {
-    //       const url = window.URL.createObjectURL(new Blob([response.data]));
-    //       const link = document.createElement('a');
-    //       link.href = url;
-    //       link.setAttribute('download', 'ContractList.xlsx');
-    //       document.body.appendChild(link);
-    //       link.click();
-    //       window.URL.revokeObjectURL(url);
-    //     })
-    //     .catch(error => {
-    //       console.error('Error downloading the file:', error.response);
-    //     });
+      console.log(url)
+      axiosInstance.post(url, requestData, {
+        responseType: 'blob',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'ContractList.xlsx');
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('Error downloading the file:', error.response);
+        });
     };
 
     const navigateToAddModify = () => {
