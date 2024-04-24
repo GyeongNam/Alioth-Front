@@ -8,6 +8,7 @@ export const useLoginInfoStore = defineStore('loginInfo', {
     memberEmail: '',
     memberName: '',
     memberImage: '',
+    fcmToken: '',
   }),
 
   getters: {
@@ -27,6 +28,9 @@ export const useLoginInfoStore = defineStore('loginInfo', {
       return this.$state.memberName;
     },
     getmemberImage() {
+      return this.$state.memberImage;
+    },
+    getFcmToken() {
       return this.$state.memberImage;
     },
   },

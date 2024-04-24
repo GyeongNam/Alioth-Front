@@ -49,7 +49,11 @@ export default {
       // 수정된 URL 참조 방식
       const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
-        const loginData = { memberCode: this.memberCode, password: this.password }
+        const loginData = { 
+                            memberCode: this.memberCode,
+                            password: this.password,
+                            fcmToken: this.loginStore.fcmToken,
+                          }
         // 경로가 /api/login이 되도록 수정
         await axios.post(`${baseUrl}/api/login`, loginData)
         .then(response => {

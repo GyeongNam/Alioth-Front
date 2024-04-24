@@ -4,6 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { registerPlugins } from '@/plugins';
 import { useNotificationStore } from './stores/notificationStore';
+import { useLoginInfoStore } from './stores/loginInfo';
 import { createPinia } from 'pinia';
 import 'quill/dist/quill.snow.css'; // for snow theme
 
@@ -22,6 +23,7 @@ const firebaseConfig = {
     measurementId: "G-9V311JSHBT"
 };
 
+
 const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
 const app = createApp(App);
@@ -30,9 +32,12 @@ app.use(pinia);
 
 
 
+
 app.config.globalProperties.$apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
 
 registerPlugins(app);
+const loginStore = useLoginInfoStore();
+
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/firebase-messaging-sw.js').then(registration => {
@@ -48,6 +53,7 @@ Notification.requestPermission().then(permission => {
         getToken(messaging, { vapidKey: 'BLlTuHlScEMdKr_MVbESYvaPlaqlyL9jnjbwhUEPdTwBEHVidSbfzh73jqSmZf8ciMXuJc8Ic9jtzeYbA2S9zFs' }).then(currentToken => {
             if (currentToken) {
                 console.log('FCM 토큰:', currentToken);
+                loginStore.fcmToken = currentToken;
             } else {
                 console.log('인스턴스 ID 토큰을 사용할 수 없습니다.');
             }
