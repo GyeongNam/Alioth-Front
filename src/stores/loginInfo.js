@@ -14,7 +14,7 @@ export const useLoginInfoStore = defineStore('loginInfo', {
     getMemberRank() {
       return this.$state.memberRank;
     },
-    getmemberTeamCode() {
+    getMemberTeamCode() {
       return this.$state.memberTeamCode;
     },
   },
