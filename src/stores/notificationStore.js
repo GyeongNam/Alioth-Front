@@ -1,12 +1,7 @@
 // notificationStore.js
 import { defineStore } from 'pinia';
-// import { useStorage } from '@vueuse/core'
 
 export const useNotificationStore = defineStore('notification', {
-    // state: () => ({
-    //   notifications: useStorage('my-notifications', []),
-    //   hasNewNotifications: useStorage('has-new-notifications', false)
-    // }),
     state: () => ({ 
       notifications: [],
       hasNewNotifications: false
