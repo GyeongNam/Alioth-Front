@@ -5,6 +5,9 @@ export const useLoginInfoStore = defineStore('loginInfo', {
     memberCode: -1,
     memberRank: "",
     memberTeamCode: "",
+    memberEmail: '',
+    memberName: '',
+    memberImage: '',
   }),
 
   getters: {
@@ -16,6 +19,15 @@ export const useLoginInfoStore = defineStore('loginInfo', {
     },
     getMemberTeamCode() {
       return this.$state.memberTeamCode;
+    },
+    getmemberEmail() {
+      return this.$state.memberEmail;
+    },
+    getmemberName() {
+      return this.$state.memberName;
+    },
+    getmemberImage() {
+      return this.$state.memberImage;
     },
   },
 

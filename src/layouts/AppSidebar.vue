@@ -1,7 +1,12 @@
 <template>
   <v-navigation-drawer location="left" permanent>
     <v-list>
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" subtitle="sandra_a88@gmail.com" title="Sandra Adams" @click="this.$router.push(`/MyPage`);"></v-list-item>
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/MyPage`);">
+        <template v-if="loginStore.memberRank">
+          <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
+          <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+        </template>
+      </v-list-item>
     </v-list>
     <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
       </v-list-item>

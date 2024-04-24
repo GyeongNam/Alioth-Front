@@ -53,20 +53,23 @@ export default {
         // 경로가 /api/login이 되도록 수정
         await axios.post(`${baseUrl}/api/login`, loginData)
         .then(response => {
-          console.log(response);
           const data = response.data.result;
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
-          alert("성공적으로 로그인 되었습니다.");
+          console.log(data);
 
           this.loginStore.memberCode = data.memberCode;
           this.loginStore.memberRank = data.memberRank;
           this.loginStore.memberTeamCode = data.memberTeam;
+          this.loginStore.memberEmail = data.email;
+          this.loginStore.memberName = data.name;
+          this.loginStore.memberImage = ""; // 이미지 생기면 출력 예정
 
+          alert("성공적으로 로그인 되었습니다.");
           this.$router.push("/")
         })
         .catch(error => {
-          alert(error.response.data.message)
+          alert(error)
         });
       },
     goToFindPassword() {
