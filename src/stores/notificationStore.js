@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia';
 
 export const useNotificationStore = defineStore('notification', {
-    state: () => ({
+    state: () => ({ 
       notifications: [],
       hasNewNotifications: false
     }),
@@ -31,6 +31,9 @@ export const useNotificationStore = defineStore('notification', {
           this.hasNewNotifications = false;
         }
       }
+    },
+    persist: {
+      enabled: true
     }
   });
   

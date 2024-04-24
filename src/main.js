@@ -5,7 +5,6 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { registerPlugins } from '@/plugins';
 import { useNotificationStore } from './stores/notificationStore';
 import { createPinia } from 'pinia';
-import { quillEditor } from 'vue3-quill'
 import 'quill/dist/quill.snow.css'; // for snow theme
 
 
@@ -61,15 +60,19 @@ Notification.requestPermission().then(permission => {
 });
 
 onMessage(messaging, (payload) => {
+    if (document.visibilityState === 'visible') { // 앱이 포그라운드 상태일 때만 처리
         console.log('Message received. ', payload);
         const notificationStore = useNotificationStore();
+        console.log(payload);
         const notification = {
-            messageId: payload.data.messageId, // 서버에서 발송한 고유 ID
+            messageId: payload.messageId,
             title: payload.notification.title,
             body: payload.notification.body,
-            url: payload.data.url
-            };
-            notificationStore.addNotification(notification);
-        });
+            url: payload.data?.url
+        };
+        notificationStore.addNotification(notification);
+    }
+});
+
 // 애플리케이션 마운트
 app.mount('#app');

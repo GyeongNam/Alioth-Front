@@ -99,6 +99,7 @@ export default {
       editContent: '',
       currentEditingId: null,
       editTitle: '', 
+      submitting: false
     };
   },
   computed: {
@@ -168,11 +169,18 @@ export default {
       }
     },
     submitAnswer() {
-      if (!this.newAnswer) {
+      if (this.submitting) {
+        alert("처리 중입니다. 잠시만 기다려주세요.");
+        return;
+      }
+      if (!this.newAnswer.trim()) {
         alert("답글을 입력해주세요.");
         return;
       }
+
+      this.submitting = true;
       const boardId = this.$route.params.boardId;
+
       axiosInstance.post(`${this.baseUrl}/api/answer/${boardId}/create`, {
         title: 'Response',
         content: this.newAnswer
@@ -188,7 +196,9 @@ export default {
         console.error('Error submitting answer:', error);
         this.showSuccess = false;
         localStorage.removeItem('showSuccess');
-        alert('답글 등록 실패: ' + error.message);
+        alert('답글 등록 실패: ' + (error.message  && error.response.data.message ? error.response.data.message : '서버 에러'));
+      }).finally(() => {
+        this.submitting = false;
       });
     },
     confirmEdit() {

@@ -39,12 +39,8 @@ export default {
   },
   methods: {
     changePeriod(period) {
-      this.selectedPeriod = period; // 선택된 기간을 업데이트
-      this.salesStore.salesTeam = this.selectedPeriod;
-      this.$refs.childRef.callTeamTable();
-      router.go(0);
-      console.log("새로고침 후 실행")
-    }
+      this.salesStore.salesTeam = period;
+    },
   },
 }
 </script>

@@ -13,7 +13,6 @@
       </div>
       <!-- <SalesPersonalTableChart :period="selectedPeriod"></SalesPersonalTableChart> -->
 
-
     </v-container>
   </v-main>
 </template>
@@ -22,7 +21,7 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import SalesPersonalTableChart from "@/pages/sales/charts/SalesPersonalTableChart"
-
+import { useSalesStore } from '@/stores/SalesStore';
 
 
 export default {
@@ -34,12 +33,13 @@ export default {
   },
   data() {
     return {
-      selectedPeriod: '월' // 초기 선택값은 월로 설정
+      selectedPeriod: '월', // 초기 선택값은 월로 설정
+      salesStore: useSalesStore(),
     };
   },
   methods: {
     changePeriod(period) {
-      this.selectedPeriod = period; // 선택된 기간을 업데이트
+      this.salesStore.salesPersonal = period; // 선택된 기간을 업데이트
     }
   },
 }

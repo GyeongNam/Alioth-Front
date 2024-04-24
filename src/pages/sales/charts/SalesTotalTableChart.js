@@ -4,17 +4,17 @@ import axios from 'axios';
 import { useSalesStore } from '@/stores/SalesStore';
 
 export default defineComponent({
-  name: 'SalesMemberTableChart',
+  name: 'SalesTotalTableChart',
   components: {
     GChart,
   },
   setup() {
     const data = ref([
-      ['사원이름', '사원코드', '계약 금액', '계약 건', '해약 금액', '해약 건']
+      ['계약 금액', '계약 건', '해약 금액', '해약 건']
     ]);
     const selectedPeriod = ref("월");
     
-    watch(() => useSalesStore().salesPersonal, (newValue, oldValue) => {
+    watch(() => useSalesStore().salesHQ, (newValue, oldValue) => {
       if (newValue !== oldValue) {
         selectedPeriod.value = newValue;
         updateChartData();
@@ -26,11 +26,11 @@ export default defineComponent({
         let temp = "";
         
         if (selectedPeriod.value === '월') {
-          temp = "http://localhost:8081/api/batch/sales-member/month";
+          temp = "http://localhost:8081/api/batch/sales-hq/month";
         } else if (selectedPeriod.value === "반기") {
-          temp = "http://localhost:8081/api/batch/sales-member/quarter";
+          temp = "http://localhost:8081/api/batch/sales-hq/quarter";
         } else if (selectedPeriod.value === "년") {
-          temp = "http://localhost:8081/api/batch/sales-member/year";
+          temp = "http://localhost:8081/api/batch/sales-hq/year";
         }
 
         const response = await axios.get(temp);
@@ -52,28 +52,12 @@ export default defineComponent({
         options: {
           title: 'Company',
           curveType: 'function',
-          legend: {
-            alignment: 'center',
-            position: 'top'
-          },
-          pageSize: 10,
+          legend: { position: 'bottom' },
+          pageSize: 5,
           width: 1300,
-          height: 600,
+          height: 500,
         },
         type: 'Table',
       });
   },
-  data() {
-    return {
-      selectedPeriod: "월",
-      salesStore: useSalesStore(),
-    }
-  },
-  methods: {
-    callTeamTable() {
-      console.log("응답받음");
-      getSalesMemberData();
-    }
-  }
-  
 });
