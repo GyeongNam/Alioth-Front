@@ -211,7 +211,7 @@ export default {
 
     const submitChange = () => {
       const data = {
-        teamCode: teamCode.value !== null ? teamCode.value : null,
+        teamCode: teamCode.value,
         performanceReview: performanceReview.value,
         rank: rank.value,
       }
