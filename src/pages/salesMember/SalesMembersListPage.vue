@@ -8,7 +8,15 @@
           사원 목록
           <v-spacer></v-spacer>
           <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
-                        variant="solo-filled" flat hide-details single-line></v-text-field>
+                        variant="solo-filled" flat hide-details single-line style="margin-right: 16px"></v-text-field>
+          <v-select
+            clearable
+            label="Select"
+            v-model="selectedTeam"
+            :items="filteredTeamCodes"
+            variant="filled"
+          ></v-select>
+
           <v-row>
             <v-col class="text-right">
               <v-btn variant="outlined" @click="navigateToAdd">사원 추가</v-btn>
@@ -50,6 +58,20 @@ export default {
       {title: "내선 번호", key: "extensionNumber"},
     ];
     const tableRows = ref([]);
+    const selectedTeamCode = ref([])
+    const selectedTeam = ref(null);
+    const filteredTeamCodes = computed(() => selectedTeamCode.value);
+
+    // 선택된 팀 코드가 변경될 때마다 필터링된 팀 코드 목록을 설정합니다.
+    function handleSelectedTeamChange(value) {
+      if (value) {
+        // 여기서는 선택된 팀 코드를 받아 필터링된 팀 코드 목록을 설정합니다.
+        setFilteredTeamCodes([value]);
+      } else {
+        // 선택이 해제되면 모든 팀 코드를 표시합니다.
+        setFilteredTeamCodes(selectedTeamCode.value);
+      }
+    }
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
 
     const fetchData = () => {
@@ -60,13 +82,18 @@ export default {
           data.forEach((item, index) => {
             item.id = index + 1;
           });
-          // tableRows에 데이터를 할당합니u다.
+          // tableRows에 데이터를 할당합니다.
           tableRows.value = data;
+
+          // 테이블 데이터에서 teamCode만 추출하여 중복을 제거하고 팀 코드 목록을 얻습니다.
+          const teamCodes = Array.from(new Set(data.map(item => item.teamCode)));
+          selectedTeamCode.value = teamCodes.map(code => ({ text: code, value: code }));
         })
         .catch(error => {
           console.log('Error fetching data:', error);
         });
     };
+
 
     function navigateToDetail(event, {item}) {
       router.push({path: `/SalesMembersList/Detail/${item.salesMemberCode}`});
@@ -104,7 +131,11 @@ export default {
       downloadExcel,
       tableColumns,
       tableRows,
-      salesMemberCode
+      salesMemberCode,
+      selectedTeamCode,
+      selectedTeam,
+      filteredTeamCodes,
+      handleSelectedTeamChange
     }
   },
 }

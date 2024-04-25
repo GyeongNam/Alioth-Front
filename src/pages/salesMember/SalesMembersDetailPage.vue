@@ -4,9 +4,9 @@
     <AppHeader></AppHeader>
     <v-container fluid>
       <v-col class="text-right">
-        <v-btn variant="outlined" @click="isModify" v-if="!modify">수정</v-btn>
+        <v-btn variant="outlined" @click="isModify" v-if="!modify && loginStore.getMemberCode!==salesMembersCode">수정</v-btn>
         <v-btn variant="outlined" @click="submitChange" v-if="modify"> 완료</v-btn>
-        <v-btn variant="outlined" @click="deleteMember" v-if="!modify">삭제</v-btn>
+        <v-btn variant="outlined" @click="deleteMember" v-if="!modify && loginStore.getMemberCode!==salesMembersCode">삭제</v-btn>
       </v-col>
       <!--   이미지 들어오는지 확인 해봐야함-->
       <v-col cols="12" md="12">
@@ -33,14 +33,14 @@
             <v-card-title>직급</v-card-title>
             <v-col cols="12" md="4" class="text-right">
             </v-col>
-            <v-card-text v-if="!modify">{{ rank }}</v-card-text>
-            <v-select v-if="modify" v-model="rank" :items="['FP', 'MANAGER', 'HQ']"></v-select>
+            <v-card-text v-if="!modify || loginStore.getMemberRank ==='MANAGER'">{{ rank }}</v-card-text>
+            <v-select v-if="modify && loginStore.getMemberRank==='HQ'" v-model="rank" :items="['FP', 'MANAGER', 'HQ']"></v-select>
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
           <v-card-title>팀</v-card-title>
           <v-col cols="12" md="4" class="text-right">
-            <v-btn variant="outlined" @click="navigateToChangeTeam" v-if="modify"> 팀 목록</v-btn>
+            <v-btn variant="outlined" @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'"> 팀 목록</v-btn>
           </v-col>
           <v-card>
             <v-card-title>팀 명</v-card-title>
@@ -93,7 +93,7 @@
             <v-col cols="12" md="4" class="text-right">
             </v-col>
             <v-card-text v-if="!modify">{{ performanceReview }}</v-card-text>
-            <v-select v-if="modify" v-model="performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
+            <v-select v-if="modify && loginStore.getMemberRank !=='FP'" v-model="performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
           </v-card>
         </v-col>
       </v-row>
@@ -126,6 +126,7 @@ import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
 import {onMounted, ref} from "vue";
 import ListComponent from "@/layouts/ListComponent.vue";
+import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
@@ -153,6 +154,7 @@ export default {
     ];
 
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    const loginStore = useLoginInfoStore();
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
@@ -218,6 +220,7 @@ export default {
 
       if (confirm("수정하시겠습니까?")) {
         console.log(props.salesMembersCode)
+        console.log("로그인 : "+ loginStore.getMemberCode)
         axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMembersCode}`, data)
           .then(res => {
             console.log(res)
@@ -290,6 +293,7 @@ export default {
       teamName,
       teamCode,
       modify,
+      loginStore
     }
   }
 }
