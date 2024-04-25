@@ -15,10 +15,12 @@
       
 
       <v-row>
-        <!-- v-col를 이용하면 안에 들어가는 열을 만들수있다 -->
-        <!-- cols=6작성시 전체 반차지 12넣으면 전체차지 기본값12이여서 넘으면 아래로내려옴-->
+        <!-- Image Upload -->
         <v-col cols="12" class="myimage mt-12 ml-12">
-          <image></image>
+          <!-- Hidden file input -->
+          <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
+          <!-- Image display -->
+          <img class="default-image" :src="imageUrl" @click="openImageUploader">
         </v-col>
       </v-row>
         <!-- cols을 이용하여 차지하는 열의 갯수를 정할수 있다 -->
@@ -160,7 +162,7 @@ export default {
       loginStore: useLoginInfoStore(),
       myPageUpdateStore: useMyPageUpdateStore(),
       /* 출력정보들 수정시 이야기좀해주세요 by.JunStiN */ 
-      prefileImage: null,
+      memberImage: null,
       memberName: "",
       memberCode: "",
       teamName: "",
@@ -186,6 +188,14 @@ export default {
     closeMyPageModal() {
       this.isModalOpen = false;
       window.location.reload(true);
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      // Perform any necessary validation here
+      this.memberImage = URL.createObjectURL(file);
+    },
+    openImageUploader() {
+      this.$refs.imageInput.click();
     },
     getMyPage() {
       console.log("시작화면 겟 요청테스트");
@@ -214,6 +224,12 @@ export default {
         });
     },
   },
+  computed: {
+    // Computed property to dynamically bind image source
+    imageUrl() {
+      return this.memberImage ? this.memberImage : 'https://img.freepik.com/free-vector/flat-floral-spring-background_23-2149272336.jpg?size=626&ext=jpg&ga=GA1.1.1969857694.1713082761&semt=ais';
+    },
+  }
 }
 </script>
 
@@ -263,6 +279,11 @@ export default {
 }
 
 
+.default-image {
+  width: 350px;
+  height: 600px;
+}
+
 
 
 /* 모달 CSS */
@@ -293,5 +314,8 @@ export default {
   overflow: auto;
 }
 /* 모달 CSS */
+
+
+
 
 </style>
