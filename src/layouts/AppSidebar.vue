@@ -14,7 +14,7 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
+      <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/Home`);"></v-list-item>
       <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  >
         <v-list-item-title v-for="(folder, index) in folders" :key="index">
           <v-list-item-title @click="handleSubMenuClick(`/Sales`);">{{ folder.title }}</v-list-item-title>
@@ -59,7 +59,7 @@ export default {
     };
   },
   mounted() {
-    
+
   },
   methods: {
     handleMenuClick(route) {
@@ -73,7 +73,7 @@ export default {
       if (confirm('로그아웃하시겠습니까?')) {
         alert('로그아웃 되었습니다.');
         localStorage.removeItem('accessToken'); // 토큰 삭제
-        this.$router.push('/Login');
+        this.$router.push('/');
       }
     }
   }

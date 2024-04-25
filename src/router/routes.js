@@ -12,7 +12,6 @@ import SuggestionBoardAddPage from "@/pages/board/SuggestionBoardAddPage.vue"
 import SuggestionBoardModifyPage from "@/pages/board/SuggestionBoardModifyPage.vue"
 import SalesMembersAddPage from "@/pages/salesMember/SalesMembersAddPage.vue"
 import SalesMembersDetailPage from "@/pages/salesMember/SalesMembersDetailPage.vue"
-import SalesMembersModifyPage from "@/pages/salesMember/SalesMembersModifyPage.vue"
 import PasswordFind from "@/pages/login/PasswordFind.vue"
 import SalesPersonal from "@/pages/sales/SalesPersonal.vue"
 import SalesRanking from "@/pages/sales/SalesRanking.vue"
@@ -130,14 +129,6 @@ const routes = [
       title: '사원 상세 정보'
     }
   },
-  {
-    path: '/SalesMembersList/Modify',
-    component: SalesMembersModifyPage,
-    meta: {
-      title: '사원 정보 수정'
-    }
-  },
-
   //login
   {
     path: '/Login',
