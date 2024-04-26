@@ -2,7 +2,6 @@
   <v-data-table
     :headers="columns"
     item-key="id"
-    @click:row="handleRowClick"
     :items="rows"
     :items-length="rows.length"
     item-value="id"
@@ -12,13 +11,14 @@
 <script>
 export default {
   props: {
-    columns: Array,
-    rows: Array,
-  },
-  methods: {
-    handleRowClick(event, item) {
-      this.$emit('row-click', item);
+    columns: {
+      type: Array,
+      required: true
     },
-  }
+    rows: {
+      type: Array,
+      required: true
+    },
+  },
 };
 </script>

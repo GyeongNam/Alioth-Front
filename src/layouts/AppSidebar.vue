@@ -1,18 +1,11 @@
 <template>
   <v-navigation-drawer location="left" permanent>
     <v-list>
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/MyPage`);">
-        <template v-if="loginStore.memberRank">
-          <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
-          <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
-        </template>
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg">
+          <v-list-item-title> Alioth </v-list-item-title>
       </v-list-item>
     </v-list>
-    <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
-      </v-list-item>
-
     <v-divider></v-divider>
-
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" title="Dashboard" value="dashboard" @click="handleMenuClick(`/`);"></v-list-item>
       <v-list-item prepend-icon="mdi-network-pos" value="sales" ref="parent"  >
@@ -31,8 +24,22 @@
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
 
       <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
-      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.getMemberTeamCode);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.memberTeamCode);"></v-list-item>
     </v-list>
+
+    <template v-slot:append>
+      <v-list>
+        <span class="small-text" > 오늘도 좋은 하루 보내세요! </span>
+        <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/MyPage`);">
+          <template v-if="loginStore.memberRank">
+            <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
+            <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+          </template>
+        </v-list-item>
+      </v-list>
+      <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
+      </v-list-item>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -59,7 +66,7 @@ export default {
     };
   },
   mounted() {
-    
+
   },
   methods: {
     handleMenuClick(route) {
@@ -81,6 +88,11 @@ export default {
 </script>
 
 <style scoped>
-
+.small-text {
+  font-size: 10px; /* 원하는 작은 크기로 조정 */
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
 </style>
 

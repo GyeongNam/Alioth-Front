@@ -65,7 +65,7 @@
       <v-divider></v-divider>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-      <ListComponent :columns="tableColumns" :rows="tableRows" @row-click="navigateToDetail"/>
+      <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
     </v-card>
   </v-main>
 </template>
@@ -141,7 +141,7 @@ export default {
 
           if (useLoginInfoStore().memberRank === 'MANAGER') {
             const newSalesMemberOptions = response.data.result
-              .filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().getmemberTeamCode)
+              .filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode)
               .map(contract => ({
                 'key': contract.salesMemberResDto.name,
                 'val': contract.salesMemberResDto.salesMemberCode
@@ -153,7 +153,7 @@ export default {
               ...uniqueSalesMemberOptions
             ];
 
-            data = data.filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().getmemberTeamCode);
+            data = data.filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode);
           }
 
           // console.log(response.data.result)
@@ -238,8 +238,9 @@ export default {
       router.push('/ContractList/AddModify');
     };
 
-    const navigateToDetail = (item) => {
-      router.push(`/ContractList/Detail/${item.item.id}`);
+    const navigateToDetail = (event, {item}) => {
+      console.log(item)
+      router.push(`/ContractList/Detail/${item.contractId}`);
     };
 
     watch(selectedStatus, () => {

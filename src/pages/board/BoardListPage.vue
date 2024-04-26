@@ -22,7 +22,7 @@
       <ListComponent
         :columns="headers"
         :rows="formattedItems.slice((currentPage-1)*10, currentPage*10)"
-        @row-click="handleRowClick"
+        @click:row="handleRowClick"
       />
       <v-pagination
         v-model="currentPage"
@@ -44,7 +44,7 @@ export default {
   components: {
     AppHeader,
     AppSidebar,
-    ListComponent 
+    ListComponent
   },
   setup() {
     const router = useRouter();
@@ -85,7 +85,7 @@ export default {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
     },
-    handleRowClick({ item }) {
+    handleRowClick(event, { item }) {
       console.log('상세 게시물 데이터:', item);
       if (!item || !item.boardId) {
         console.error('잘못된 항목 또는 boardId가 누락됨:', item);
