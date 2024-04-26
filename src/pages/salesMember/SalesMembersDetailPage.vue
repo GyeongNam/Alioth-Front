@@ -38,15 +38,13 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
-          <v-card-title>팀</v-card-title>
-          <v-col cols="12" md="4" class="text-right">
-            <v-btn variant="outlined" @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'"> 팀 목록</v-btn>
-          </v-col>
           <v-card>
-            <v-card-title>팀 명</v-card-title>
-            <v-card-text>{{ teamName }}</v-card-text>
-            <v-card-title>팀 코드</v-card-title>
-            <v-card-text>{{ teamCode }}</v-card-text>
+            <v-card-title>팀</v-card-title>
+            <v-col cols="12" md="4" class="text-right">
+              <v-btn variant="outlined" @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'"> 팀 목록</v-btn>
+            </v-col>
+            <v-card-text>팀 명 : {{ teamName }}</v-card-text>
+            <v-card-text>팀 코드 : {{ teamCode }}</v-card-text>
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
@@ -139,7 +137,9 @@ export default {
     const email = ref('');
     const birthDay = ref('');
     const extensionNumber = ref('');
-    const address = ref('');
+    const zoneCode = ref('');
+    const roadAddress = ref('');
+    const detailAddress = ref('');
     const officeAddress = ref('');
     const performanceReview = ref('');
     const teamName = ref('');
@@ -169,7 +169,9 @@ export default {
               phone: mobile,
               email: emailAddress,
               extensionNumber: extensionN,
-              address: homeAddress,
+              zoneCode: homeZoneCode,
+              roadAddress: homeRoad,
+              detailAddress: homeDetail,
               officeAddress: office,
               performanceReview: pr,
               teamName: teamNames,
@@ -182,7 +184,9 @@ export default {
             name.value = memberName
             phone.value = mobile
             email.value = emailAddress
-            address.value = homeAddress
+            zoneCode.value = homeZoneCode
+            roadAddress.value = homeRoad
+            detailAddress.value = homeDetail
             extensionNumber.value = extensionN
             officeAddress.value = office
             performanceReview.value = pr
@@ -286,7 +290,9 @@ export default {
       name,
       phone,
       email,
-      address,
+      zoneCode,
+      roadAddress,
+      detailAddress,
       extensionNumber,
       officeAddress,
       performanceReview,
