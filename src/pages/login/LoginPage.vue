@@ -49,7 +49,7 @@ export default {
       // 수정된 URL 참조 방식
       const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
-        const loginData = { 
+        const loginData = {
                             memberCode: this.memberCode,
                             password: this.password,
                             fcmToken: this.loginStore.fcmToken,
@@ -73,7 +73,8 @@ export default {
           this.$router.push("/")
         })
         .catch(error => {
-          alert(error)
+          console.error("로그인 실패 원인: ", error);
+          alert("사원번호나 비밀번호를 확인해주세요.")
         });
       },
     goToFindPassword() {

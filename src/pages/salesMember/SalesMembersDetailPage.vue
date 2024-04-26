@@ -174,9 +174,6 @@ export default {
               teamCode: teamCodes
             } = response.data.result;
 
-            console.log(teamName)
-            console.log(teamCode)
-
             profile.value = profileImageUrl
             rank.value = memberRank
             birthDay.value = birthday
@@ -212,13 +209,13 @@ export default {
         });
     };
 
-
     const submitChange = () => {
       const data = {
         teamCode: teamCode.value,
         performanceReview: performanceReview.value,
         rank: rank.value,
       }
+
       if (confirm("수정하시겠습니까?")) {
         console.log(props.salesMembersCode)
         axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMembersCode}`, data)
@@ -230,17 +227,13 @@ export default {
           })
           .catch(error => {
             console.error('Error updating data:', error);
+            alert("수정할 수 없습니다. 다시 확인해주세요")
           });
       }
     }
 
     function isModify() {
       modify.value = !modify.value
-    }
-
-    function modifyInfo() {
-      submitChange();
-      modify.value = false
     }
 
     function navigateToChangeTeam() {
@@ -275,7 +268,6 @@ export default {
     });
 
     return {
-      modifyInfo,
       isModify,
       closeModal,
       deleteMember,
