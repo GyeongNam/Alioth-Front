@@ -15,9 +15,10 @@
           @change="fetchData"
           class="flex-grow-1"
         ></v-switch>
-        <v-btn color="primary" @click="navigateToAddPage">
-          글쓰기
-        </v-btn>
+        <v-btn color="primary" @click="navigateToAddPage" v-if="shouldShowWriteButton">
+  글쓰기
+</v-btn>
+
       </v-toolbar>
       <ListComponent
         :columns="headers"
@@ -32,12 +33,15 @@
     </v-main>
   </v-container>
 </template>
+
 <script>
 import { useRouter } from 'vue-router';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import axiosInstance from '@/plugins/loginaxios';
+import { useLoginInfoStore } from '@/stores/loginInfo.js';
+import { ref, computed } from 'vue';
 
 export default {
 
@@ -47,12 +51,27 @@ export default {
     ListComponent
   },
   setup() {
-    const router = useRouter();
-    return { router };
-  },
+  const router = useRouter();
+  const loginInfoStore = useLoginInfoStore();
+  const salesMemberRank = ref(loginInfoStore.getMemberRank); 
+  const model = ref('Announcement');
+
+  const shouldShowWriteButton = computed(() => {
+  // 'Suggestion' 상태일 때는 항상 true를 반환하여 글쓰기 버튼이 보이도록 함
+  if (model.value === 'Suggestion') {
+    return true;
+  }
+  // 'Announcement' 상태이고 등급이 'FP'일 때만 false를 반환하여 글쓰기 버튼을 숨김
+  return !(model.value === 'Announcement' && salesMemberRank.value === 'FP');
+});
+
+  // 함수와 반응형 참조들을 반환
+  return { router, salesMemberRank, model, shouldShowWriteButton };
+},
+
   data() {
     return {
-      model: 'Announcement',
+      // model: 'Announcement',
       items: [],
       currentPage: 1,
       pageCount: 0,
@@ -70,6 +89,7 @@ export default {
     pageCount() {
     return Math.ceil(this.items.length / 10);
   },
+  
     formattedItems() {
       return this.items.map(item => ({
         ...item,
@@ -115,6 +135,7 @@ export default {
   },
   mounted() {
     this.fetchData();
+    
   }
 };
 </script>
