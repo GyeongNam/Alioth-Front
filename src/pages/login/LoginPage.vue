@@ -67,7 +67,7 @@ export default {
           this.loginStore.memberTeamCode = data.memberTeam;
           this.loginStore.memberEmail = data.email;
           this.loginStore.memberName = data.name;
-          this.loginStore.memberImage = ""; // 이미지 생기면 출력 예정
+          this.loginStore.memberImage = data.image; // 이미지 생기면 출력 예정
 
           alert("성공적으로 로그인 되었습니다.");
           this.$router.push("/")
