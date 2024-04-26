@@ -1,43 +1,32 @@
 <template>
-<v-toolbar color="white" flat>
-  <v-app-bar-title class="ms-auto">{{ pageName }}</v-app-bar-title>
-  <template v-slot:append>
-    <span class="ms-2">{{ currentDateTime }}</span>
-    <v-menu offset-y open-on-hover>
 
-      <template v-slot:activator="{ props, on }">
-        <v-btn icon v-bind="props" v-on="{ ...on }">
-          <v-icon :color="hasNewNotifications ? 'indigo darken-4' : 'grey darken-2'">mdi-bell</v-icon>
-        </v-btn>
-      </template>
-
-      <v-card tile shaped class="pa-2" v-if="notifications && notifications.length > 0">
-        <v-list dense>
-          <v-list-item-group>
-            <v-list-item
-              v-for="(notification, index) in notifications"
-              :key="index"
-              @click="handleNotificationClick(index)"
-              class="my-2"
-            >
-            <v-list-item-avatar>
-              <v-icon>mdi-information</v-icon>
-            </v-list-item-avatar>
-            
-            <v-list-item-content>
-              <v-list-item-title class="headline">{{ notification.title }}</v-list-item-title>
-              <v-list-item-subtitle>{{ notification.body }}</v-list-item-subtitle>
-            </v-list-item-content>
+  <v-toolbar color="white">
+    <v-app-bar-title class="ms-auto">{{ pageName }}</v-app-bar-title>
+    <template v-slot:append>
+      <span class="ms-2">{{ currentDateTime }}</span>
+      <v-menu offset-y open-on-hover>
+        <template v-slot:activator="{ props, on }">
+          <v-btn icon v-bind="props" v-on="{ ...on }">
+            <v-icon :color="hasNewNotifications ? 'red' : 'black'">mdi-bell</v-icon>
+            <v-badge color="red" dot v-if="hasNewNotifications"></v-badge>
+          </v-btn>
+        </template>
+        <v-list dense v-if="notifications && notifications.length > 0">
+          <v-list-item
+            v-for="(notification, index) in notifications"
+            :key="index"
+            @click="handleNotificationClick(index)"
+          >
+            <div>
+              <div class="text-h6">{{ notification.title }}</div>
+              <div class="text-subtitle-1">{{ notification.body }}</div>
+            </div>
           </v-list-item>
-          <v-divider v-if="index < notifications.length - 1"></v-divider>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
-    </v-menu>
-  </template>
-</v-toolbar>
-<v-divider :thickness="2" class="border-opacity-50"></v-divider>
-
+        </v-list>
+      </v-menu>
+    </template>
+  </v-toolbar>
+  <v-divider :thickness="4" class="border-opacity-50"></v-divider>
 </template>
 
 <script>
@@ -107,30 +96,4 @@ export default {
 </script>
 
 <style scoped>
-.v-btn {
-  position: relative;
-  overflow: visible;
-}
-
-.v-badge {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  border: 2px solid white;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.26);
-}
-
-.v-list-item {
-  transition: background-color 0.3s ease;
-}
-
-.v-list-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.v-menu__content {
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
-  border-radius: 8px;
-}
-
 </style>
