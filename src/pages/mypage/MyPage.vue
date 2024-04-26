@@ -193,6 +193,27 @@ export default {
       const file = event.target.files[0];
       // Perform any necessary validation here
       this.memberImage = URL.createObjectURL(file);
+      
+      const formData = new FormData();
+      formData.append('memberImage', file);
+
+      const url = `/api/members/${this.memberCode}/image`;
+      axiosInstance.patch(url, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          // get 요청으로 받은 데이터를 화면에 출력
+          const findMember = response.data.result;
+          console.log(findMember)
+          // // 직급, 직책, 직무 추가해야함
+
+        })
+        .catch(error => {
+          console.error("회원정보를 요청할 수 없습니다. : ", error);
+          alert("회원정보를 요청할 수 없습니다.");
+        });
     },
     openImageUploader() {
       this.$refs.imageInput.click();
@@ -205,10 +226,12 @@ export default {
         .then(response => {
           // get 요청으로 받은 데이터를 화면에 출력
           const findMember = response.data.result;
+          console.log(findMember);
           this.myPageUpdateStore.memberInfo = findMember;
           this.memberName = findMember.name;
           this.memberCode = findMember.salesMemberCode;
           this.teamName = findMember.teamName;
+          this.memberImage = findMember.profileImage;
           this.address = findMember.address;
           this.officeAddress = findMember.officeAddress;
           this.email = findMember.email;
@@ -227,7 +250,8 @@ export default {
   computed: {
     // Computed property to dynamically bind image source
     imageUrl() {
-      return this.memberImage ? this.memberImage : 'https://img.freepik.com/free-vector/flat-floral-spring-background_23-2149272336.jpg?size=626&ext=jpg&ga=GA1.1.1969857694.1713082761&semt=ais';
+      this.loginStore.memberImage = this.memberImage;
+      return this.memberImage;
     },
   }
 }
