@@ -5,6 +5,8 @@
 <script>
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
+import { ref, onMounted, watch } from 'vue';
+
 
 export default {
     name: "QuillEditor",
@@ -49,6 +51,12 @@ export default {
         emit('update:content', html);
         });
     });
+    watch(() => props.initialContent, (newVal) => {
+            if (quill) {
+                quill.root.innerHTML = newVal;
+            }
+        });
+
         return {
             quillEditor
         };
