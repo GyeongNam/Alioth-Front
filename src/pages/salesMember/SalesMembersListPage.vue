@@ -11,9 +11,11 @@
                         variant="solo-filled" flat hide-details single-line style="margin-right: 16px"></v-text-field>
           <v-select
             clearable
-            label="Select"
+            label="팀 명"
             v-model="selectedTeam"
-            :items="filteredTeamCodes"
+            :items="selectedTeamCode"
+            item-title="name"
+            item-value="value"
             variant="filled"
           ></v-select>
 
@@ -36,7 +38,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import router from "@/router";
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, watch} from 'vue';
 import axiosInstance from "@/plugins/loginaxios"; // Composition API의 ref와 onMounted 임포트
 
 
@@ -60,34 +62,37 @@ export default {
     const tableRows = ref([]);
     const selectedTeamCode = ref([])
     const selectedTeam = ref(null);
-    const filteredTeamCodes = computed(() => selectedTeamCode.value);
+    const filteredTeamCodes = ref([]);
 
-    // 선택된 팀 코드가 변경될 때마다 필터링된 팀 코드 목록을 설정합니다.
-    function handleSelectedTeamChange(value) {
-      if (value) {
-        // 여기서는 선택된 팀 코드를 받아 필터링된 팀 코드 목록을 설정합니다.
-        setFilteredTeamCodes([value]);
-      } else {
-        // 선택이 해제되면 모든 팀 코드를 표시합니다.
-        setFilteredTeamCodes(selectedTeamCode.value);
-      }
-    }
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/list`)
         .then(response => {
-          const data = response.data.result;
-          console.log(data)
-          data.forEach((item, index) => {
-            item.id = index + 1;
-          });
-          // tableRows에 데이터를 할당합니다.
-          tableRows.value = data;
+          let data = response.data.result;
+          selectedTeamCode.value = [{name: "ALL", value: null}];
 
+          // tableRows에 데이터를 할당합니다.
+          console.log(data)
           // 테이블 데이터에서 teamCode만 추출하여 중복을 제거하고 팀 코드 목록을 얻습니다.
-          const teamCodes = Array.from(new Set(data.map(item => item.teamCode)));
-          selectedTeamCode.value = teamCodes.map(code => ({ text: code, value: code }));
+          const teamCodes = Array.from(new Set(data.map(item => item.teamCode)))
+            .map(code => ({
+              name: data.find(item => item.teamCode === code).teamName,
+              value: code,
+            }));
+          console.log(teamCodes)
+          selectedTeamCode.value = [
+            ...selectedTeamCode.value,
+            ...teamCodes
+          ];
+          if (selectedTeam.value !== null) {
+            data = data.filter(item=> item.teamCode === selectedTeam.value);
+          }
+
+          tableRows.value = data.map((item, index) => ({
+            ...item,
+            id: index + 1
+          }));
         })
         .catch(error => {
           console.log('Error fetching data:', error);
@@ -103,6 +108,10 @@ export default {
       router.push(`/SalesMembersList/Add`);
     }
 
+    watch(selectedTeam, () => {
+      fetchData();
+    });
+
     onMounted(() => {
       fetchData();
     });
@@ -112,7 +121,15 @@ export default {
         startDate: null,
         endDate: null
       };
-      axiosInstance.post(`${baseUrl}/api/excel/export/salesMembers`, requestData, {
+      let url = null
+      console.log(selectedTeam.value)
+      if(selectedTeam.value !== null){
+        url = `${baseUrl}/api/excel/export/salesMembers/${selectedTeam.value}`
+      } else {
+        url = `${baseUrl}/api/excel/export/salesMembers`
+      }
+
+      axiosInstance.post(url,requestData, {
         responseType: 'blob'
       })
         .then(response => {
@@ -135,7 +152,6 @@ export default {
       selectedTeamCode,
       selectedTeam,
       filteredTeamCodes,
-      handleSelectedTeamChange
     }
   },
 }
