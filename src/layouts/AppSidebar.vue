@@ -29,16 +29,23 @@
 
     <template v-slot:append>
       <v-list>
-        <span class="small-text" > 오늘도 좋은 하루 보내세요! </span>
+        <span class="small-text">오늘도 좋은 하루 보내세요!</span>
         <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/MyPage`);">
           <template v-if="loginStore.memberRank">
             <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
-            <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+            <v-row align="center" no-gutters>
+              <v-col cols="11">
+                <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+              </v-col>
+              <v-col cols="1">
+                <v-btn icon @click="confirmLogout">
+                  <v-icon>mdi-minus-circle</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
           </template>
         </v-list-item>
       </v-list>
-      <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
-      </v-list-item>
     </template>
   </v-navigation-drawer>
 </template>
@@ -94,6 +101,16 @@ export default {
   text-align: center;
   margin: 0 auto;
   display: block;
+}
+.v-btn--icon {
+  border-radius: 0;  /* 원형 테두리 제거 */
+  padding: 0;        /* 내부 패딩 제거 */
+  background: transparent; /* 배경 투명 처리 */
+}
+
+/* 필요에 따라 다음과 같이 더 구체적으로 조정할 수 있습니다 */
+.v-btn--icon .v-icon {
+  color: inherit;    /* 아이콘 색상을 버튼 색상과 동일하게 설정 */
 }
 </style>
 

@@ -44,7 +44,9 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import axiosInstance from '@/plugins/loginaxios';
 import { useLoginInfoStore } from '@/stores/loginInfo.js';
-import { ref, computed } from 'vue';
+import { ref, computed,watchEffect } from 'vue';
+import { useBoardTypeStore } from '@/stores/boardTypeStore.js';
+
 
 export default {
 
@@ -57,7 +59,28 @@ export default {
   const router = useRouter();
   const loginInfoStore = useLoginInfoStore();
   const salesMemberRank = ref(loginInfoStore.getMemberRank); 
+  const boardTypeStore = useBoardTypeStore();
   const model = ref('Announcement');
+
+  // onBeforeRouteEnter((to, from, next) => {
+  //     // URL에서 type 쿼리를 읽어 상태를 업데이트
+  //     model.value = to.query.type || 'Announcement';
+  //     next();
+  //   });
+
+  //   onBeforeRouteUpdate((to, from, next) => {
+  //     // URL에서 type 쿼리를 읽어 상태를 업데이트
+  //     model.value = to.query.type || 'Announcement';
+  //     next();
+  //   });
+
+    watchEffect(() => {
+      const type = router.currentRoute.value.query.type || 'Announcement';
+      model.value = type;
+      boardTypeStore.setBoardType(type);
+    });
+
+
 
   const shouldShowWriteButton = computed(() => {
   // 'Suggestion' 상태일 때는 항상 true를 반환하여 글쓰기 버튼이 보이도록 함
@@ -137,8 +160,9 @@ export default {
     },
   },
   mounted() {
+    // const type = this.$route.query.type || 'Announcement';  // URL에서 type 쿼리 파라미터를 읽음
+    // this.model = type;  // model 상태를 업데이트하여 알맞은 목록을 표시
     this.fetchData();
-    
   }
 };
 </script>
