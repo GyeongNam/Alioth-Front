@@ -19,8 +19,8 @@ export const options = {
   // vAxis: {
   //   title: '전사',
   // },
-  width: 800,
-  height: 500,
+  width: 500,
+  height: 364,
 };
 
 export default defineComponent({

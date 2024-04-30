@@ -16,24 +16,42 @@
         <v-btn :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
       </v-btn-toggle>
 
-      <v-row>
-        <v-col cols="12" md="5"> <!-- Changed md="5" to md="7" -->
-          <SalesTransChart class="ml-12 mt-15 p-20 w-60 h-20"></SalesTransChart>
+      <v-row class="mt-4">
+        <v-col cols="12" md="5">
+          <v-card class="p-20">
+            <SalesPageTargetChart style="width: 80%;"></SalesPageTargetChart>
+          </v-card>
         </v-col>
 
-        <v-col cols="12" md="5"> <!-- Changed md="5" to md="7" -->
-          <SalesPageTargetChart style="width: 30%;"></SalesPageTargetChart> <!-- Added inline style -->
+
+        <v-col cols="12" md="5">
+          <v-card>
+            <SalesTransChart></SalesTransChart>
+          </v-card>
         </v-col>
       </v-row>
 
-      <div class="d-flex">
-        <SalesPagePieChart :loaded_PricePie="loaded_PricePie"></SalesPagePieChart>
-        <SalesPageCountPieChart :loaded_CountPie="loaded_CountPie"></SalesPageCountPieChart>
-      </div>
+      <v-row>
+        <v-col cols="12" md="5">
+          <v-card>
+            <SalesPagePieChart :loaded_PricePie="loaded_PricePie"></SalesPagePieChart>
+          </v-card>
+        </v-col>
 
-      <v-col cols="12" md="12"> <!-- Changed md="5" to md="7" -->
+        <v-col cols="12" md="5">
+          <v-card>
+            <SalesPageCountPieChart :loaded_CountPie="loaded_CountPie"></SalesPageCountPieChart>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="10"> <!-- Changed md="5" to md="7" -->
           <SalesUserTable></SalesUserTable>
-      </v-col>
+        </v-col>
+      </v-row>
+
+
 
     </v-container>
   </v-main>
@@ -47,11 +65,12 @@ import SalesPageCountPieChart from "@/pages/sales/charts/SalesPageCountPieChart"
 import SalesPageTargetChart from "@/pages/sales/charts/SalesPageTarget"
 import SalesTransChart from "@/pages/sales/charts/SalesAnalytics.vue"
 import SalesUserTable from "@/pages/sales/charts/AnalyticsUserTable.vue"
+import ListComponent from "@/layouts/ListComponent.vue";
 
 export default {
   components: {
     AppHeader, AppSidebar, SalesPagePieChart, SalesPageCountPieChart, SalesPageTargetChart,
-    SalesTransChart, SalesUserTable
+    SalesTransChart, SalesUserTable, ListComponent
   },
   setup() {
     const loaded_CountPie = ref(false);

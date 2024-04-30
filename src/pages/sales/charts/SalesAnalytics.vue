@@ -70,7 +70,7 @@ const statistics = [
             </div>
           </VCard>
         </VCol>
-        <VCol cols="12" sm="6" md="6">
+        <VCol cols="12" sm="6" md="6" class="mb-8">
           <VCard color="warning" class="text-center">
             <div class="d-flex align-center justify-center gap-x-3 py-4">
               <div class="d-flex flex-column">

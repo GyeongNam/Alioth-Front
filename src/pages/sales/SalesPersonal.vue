@@ -3,16 +3,16 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-container fluid>
-      <div>
-        <h1>개인매출조회</h1>
+      <v-card>
+        <!-- <h1>개인매출조회</h1> -->
         <v-btn-toggle v-model="selectedPeriod" mandatory>
           <v-btn @click="changePeriod('월')" :class="{ 'grey': selectedPeriod === '월' }">월</v-btn>
           <v-btn @click="changePeriod('반기')" :class="{ 'grey': selectedPeriod === '반기' }">반기</v-btn>
           <v-btn @click="changePeriod('년')" :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
         </v-btn-toggle>
-      </div>
-      <SalesPersonalTableChart></SalesPersonalTableChart>
 
+        <!-- <SalesPersonalTableChart></SalesPersonalTableChart> -->
+      </v-card>
     </v-container>
   </v-main>
 </template>

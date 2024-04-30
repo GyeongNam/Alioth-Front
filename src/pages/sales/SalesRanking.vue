@@ -24,10 +24,6 @@
         <v-divider></v-divider>
 
         <!-- ListComponent에 데이터를 표시하는 부분 -->
-
-
-
-
         <ListComponent
           v-if="model === '개인'"
           :columns="headers"
@@ -77,6 +73,8 @@ export default {
         { title: '계약 총금액', key: 'contractPrice' },
         { title: '계약 건수', key: 'contractCount' },
       ],
+      memberCount: 0,
+      teamCount: 0,
     }
   },
   mounted() {
