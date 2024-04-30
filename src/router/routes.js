@@ -107,14 +107,14 @@ const routes = [
   },
 
   // mypage
-  {
+ /* {
     path: '/MyPage',
     component: MyPage,
     meta: {
       title: '마이페이지',
       requiresAuth: true
     }
-  },
+  },*/
 
   //salesMember
   {

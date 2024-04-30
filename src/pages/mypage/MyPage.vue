@@ -12,7 +12,7 @@
         </div>
       </div>
 
-      
+
 
       <v-row>
         <!-- Image Upload -->
@@ -76,10 +76,10 @@
               <div class="flex-grow-1 mr-3"/> <!-- Flex item 2를 오른쪽에 정렬하기 위한 빈 div -->
               <button class="detail-text ma-2 pa-2" @click="openDetailModal">정보수정</button>
               <button class="detail-text ma-2 pa-2 mr-8" @click="">비밀번호 변경</button>
-              
+
               <!-- <h3 class="ma-2 pa-2">정보수정</h3>
               <h3 class="ma-2 pa-2 mr-8">비밀번호 변경</h3> -->
-            </div>       
+            </div>
             <div class="divider ml-2"></div>
 
             <div class="d-flex">
@@ -128,7 +128,7 @@
 
         </v-col>
       </v-row>
-      
+
     </v-container>
   </v-main>
 </template>
@@ -161,7 +161,7 @@ export default {
       loginMemberCode: "",
       loginStore: useLoginInfoStore(),
       myPageUpdateStore: useMyPageUpdateStore(),
-      /* 출력정보들 수정시 이야기좀해주세요 by.JunStiN */ 
+      /* 출력정보들 수정시 이야기좀해주세요 by.JunStiN */
       memberImage: null,
       memberName: "",
       memberCode: "",
@@ -193,7 +193,7 @@ export default {
       const file = event.target.files[0];
       // Perform any necessary validation here
       this.memberImage = URL.createObjectURL(file);
-      
+
       const formData = new FormData();
       formData.append('memberImage', file);
 
@@ -219,7 +219,7 @@ export default {
       this.$refs.imageInput.click();
     },
     getMyPage() {
-      console.log("시작화면 겟 요청테스트");
+      console.log("`시작화면 겟 요청테스트");
       this.loginMemberCode = this.loginStore.getMemberCode;
       console.log("api/members/details/" + this.loginMemberCode);
       axiosInstance.get("api/members/details/" + this.loginMemberCode)

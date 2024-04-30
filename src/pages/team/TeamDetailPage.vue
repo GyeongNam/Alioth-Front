@@ -6,7 +6,7 @@
       <v-card flat>
         <v-row>
           <v-col cols="4" offset="3"> <!-- 팀 명 -->
-            <v-card text="팀명" variant="outlined"> {{ state.teamName }}</v-card>
+            <v-card text="팀명" variant="outlined"> {{ state.teamName }} </v-card>
           </v-col>
           <v-col cols="4" offset="1"> <!-- 팀장 -->
             <v-card text="팀장" variant="outlined"> {{ state.teamManagerName }}</v-card>
