@@ -4,8 +4,10 @@
     <v-main>
       <AppHeader></AppHeader>
       <v-divider></v-divider>
+
+      <v-card style="margin-top: 10px;">
       <v-toolbar flat>
-        <v-switch
+        <v-switch style="margin-left: 10px;"
           v-model="model"
           :label="model === 'Announcement' ? '공지사항' : '건의사항'"
           :color="model === 'Announcement' ? 'success' : 'info'"
@@ -16,8 +18,8 @@
           class="flex-grow-1"
         ></v-switch>
         <v-btn color="primary" @click="navigateToAddPage" v-if="shouldShowWriteButton">
-  글쓰기
-</v-btn>
+          글쓰기
+        </v-btn>
 
       </v-toolbar>
       <ListComponent
@@ -30,6 +32,7 @@
         :length="pageCount"
         class="pt-2"
       ></v-pagination>
+    </v-card>
     </v-main>
   </v-container>
 </template>

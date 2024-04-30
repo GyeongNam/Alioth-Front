@@ -52,6 +52,8 @@ export default {
         }
     });
 
+
+
     console.log("Quill editor initialized");
 
     const Clipboard = Quill.import('modules/clipboard');
@@ -112,36 +114,80 @@ export default {
     });
     let isUploading = false; // 업로드 중인지 추적하는 변수
 
+//     function removeDuplicateImages() {
+//     const images = quill.root.getElementsByTagName('img');
+//     const seenUrls = new Set();
 
-    quill.root.addEventListener('drop', (e) => {
-    e.preventDefault();
-    isUploading = true;  // 기본 드롭 이벤트 방지
-    if (isUploading) {
-        console.log('Upload already in progress.');
-        return false;
+//     Array.from(images).forEach((img) => {
+//         if (seenUrls.has(img.src)) {
+//         // Remove the duplicate image node
+//         img.parentNode.removeChild(img);
+//         } else {
+//         seenUrls.add(img.src);
+//         }
+//     });
+// }
+
+        function removeExtraImageAfterDrop() {
+        const images = quill.root.getElementsByTagName('img');
+        if (images.length > 1) {
+            const lastImage = images[images.length - 1]; // Get the last image element
+            if (lastImage) {
+            lastImage.parentNode.removeChild(lastImage); // Remove the last image
+            console.log('Extra image removed');
+            }
+        }
     }
 
-const files = e.dataTransfer.files;
-if (files.length > 0 && files[0].type.startsWith('image/')) {
-    isUploading = true;
-    const file = files[0];
-    console.log(`Uploading ${file.name}...`);
+    
+    // const dropContainer = quill.root;
+        quill.root.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (isUploading) {
+                console.log('Upload already in progress.');
+                return;
+            }
+        
+    // quill.root.addEventListener('drop', (e) => {
+    // e.preventDefault();
+    // // isUploading = true;  // 기본 드롭 이벤트 방지
+    // if (isUploading) {
+    //     console.log('Upload already in progress.');
+    //     return false;
+    // }
 
-    uploadImageToServer(file).then(imageUrl => {
-        const range = quill.getSelection(true) || { index: quill.getLength() };
-        quill.insertEmbed(range.index, 'image', imageUrl, 'user');
-        console.log(`Image inserted at index ${range.index}.`);
-    }).catch(error => {
-        console.error('Image upload failed:', error);
-    }).finally(() => {
-        isUploading = false;
+const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].type.startsWith('image/')) {
+        isUploading = true;
+        const file = files[0];
+        console.log(`Uploading ${file.name}...`);
+
+        uploadImageToServer(files[0])
+            .then(imageUrl => {
+                const range = quill.getSelection(true) || { index: quill.getLength() };
+                quill.insertEmbed(range.index, 'image', imageUrl, 'user');
+                console.log(`Image inserted at index ${range.index}.`);
+                // removeDuplicateImages();
+                removeExtraImageAfterDrop();
+            }).catch(error => {
+                console.error('Image upload failed:', error);
+            }).finally(() => {
+                isUploading = false;
+            });
+        } else {
+            console.log('No image files to process.');
+        }
     });
-} else {
-    console.log('No image files to process.');
-}
-    return false;
-    }, false); 
-});
+
+    quill.on('text-change', () => {
+        const html = quill.root.innerHTML;
+        emit('update:content', html);
+    });
+
+        if (props.initialContent) {
+            quill.root.innerHTML = props.initialContent;
+        }
+    });
 
 
 function uploadImageToServer(file) {
@@ -149,32 +195,32 @@ function uploadImageToServer(file) {
     formData.append('image', file);
 
     return fetch(`${baseUrl}/api/image/upload`, {
-    method: 'POST',
-    body: formData,
+        method: 'POST',
+        body: formData,
     })
     .then(response => {
-    if (!response.ok) {
-        throw new Error('Server response wasn\'t OK');
-    }
-    return response.json();
+        if (!response.ok) {
+            throw new Error('Server response wasn\'t OK');
+        }
+        return response.json();
     })
     .then(data => {
-    return data.imageUrl;
+        return data.imageUrl;
     });
 }
 
 watch(() => props.initialContent, (newVal) => {
     if (quill) {
-    const currentHtml = quill.root.innerHTML;
-    if(newVal !== currentHtml && !(newVal === '<p><br></p>' && !currentHtml.trim())) {
-        quill.root.innerHTML = newVal;
-    }
+        const currentHtml = quill.root.innerHTML;
+        if(newVal !== currentHtml && !(newVal === '<p><br></p>' && !currentHtml.trim())) {
+            quill.root.innerHTML = newVal;
+        }
     }
 });
 
-return {
-    quillEditor
-};
+    return {
+        quillEditor
+    };
 }
 };
 </script>

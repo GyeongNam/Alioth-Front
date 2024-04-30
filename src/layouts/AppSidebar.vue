@@ -1,9 +1,9 @@
 <template>
   <v-navigation-drawer location="left" permanent>
     <v-list>
-      <v-list-item prepend-avatar="C:\Users\Playdata\Desktop\Alioth\Alioth-Front\src\assets\2024-03-18_2.22.312.png">
+      <!-- <v-list-item prepend-avatar="C:\Users\Playdata\Desktop\Alioth\Alioth-Front\src\assets\2024-03-18_2.22.312.png"> -->
           <v-list-item-title> Alioth </v-list-item-title>
-      </v-list-item>
+      <!-- </v-list-item> -->
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
