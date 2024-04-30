@@ -178,7 +178,6 @@ export default {
         .catch(error => {
           console.error('Error fetching data:', error);
         });
-
     };
 
 
@@ -211,9 +210,6 @@ export default {
         url = `${baseUrl}/api/excel/export/contract`
       }
 
-      console.log(selectedStatus.value)
-      console.log(selectedSMmember.value)
-      console.log(url)
       axiosInstance.post(url, requestData, {
         responseType: 'blob',
         headers: {

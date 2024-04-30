@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer location="left" permanent>
     <v-list>
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg">
+      <v-list-item prepend-avatar="C:\Users\Playdata\Desktop\Alioth\Alioth-Front\src\assets\2024-03-18_2.22.312.png">
           <v-list-item-title> Alioth </v-list-item-title>
       </v-list-item>
     </v-list>
@@ -24,7 +24,7 @@
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
 
       <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-star" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
-      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.memberTeamCode);"></v-list-item>
+      <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-star" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+ loginStore.memberTeamCode);"></v-list-item>
     </v-list>
 
     <template v-slot:append>
@@ -70,6 +70,7 @@ export default {
   },
   methods: {
     handleMenuClick(route) {
+
       this.$router.push(route);
     },
     handleSubMenuClick(route) {

@@ -6,11 +6,11 @@
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import { ref, onMounted, watch } from 'vue';
+
 import '@fortawesome/fontawesome-free/css/all.css';
 import ImageResize from 'quill-image-resize';
 
 Quill.register('modules/imageResize', ImageResize);
-
 export default {
     name: "QuillEditor",
     emits: ['update:content'],
