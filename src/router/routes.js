@@ -139,7 +139,7 @@ const routes = [
     props:true,
     meta: {
       title: '사원 상세 정보',
-      requiresAuth: true
+      // requiresAuth: true
     }
   },
 

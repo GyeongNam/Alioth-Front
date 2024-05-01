@@ -3,11 +3,12 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-divider></v-divider>
+    <v-card style="margin-top: 10px; margin-left: 15px; border-radius: 15px;" max-width="1560">
     <v-card flat>
       <v-spacer></v-spacer>
       <v-row align="center">
         <v-col cols="4">
-          <v-text-field
+          <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
             v-model="search"
             label="Search"
             prepend-inner-icon="mdi-magnify"
@@ -15,8 +16,8 @@
             dense>
           </v-text-field>
         </v-col>
-        <v-col class="d-flex justify-end">
 
+        <v-col class="d-flex justify-end">
           <v-col cols="4">
             <v-select
               v-if="loginStore.memberRank==='HQ'"
@@ -54,7 +55,7 @@
         </v-col>
 
         <v-col cols="1">
-          <v-btn
+          <v-btn 
             color="grey"
             text
             @click="downloadExcel">
@@ -67,6 +68,7 @@
       <v-spacer></v-spacer>
       <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
     </v-card>
+  </v-card>
   </v-main>
 </template>
 
@@ -178,7 +180,6 @@ export default {
         .catch(error => {
           console.error('Error fetching data:', error);
         });
-
     };
 
 
@@ -211,9 +212,6 @@ export default {
         url = `${baseUrl}/api/excel/export/contract`
       }
 
-      console.log(selectedStatus.value)
-      console.log(selectedSMmember.value)
-      console.log(url)
       axiosInstance.post(url, requestData, {
         responseType: 'blob',
         headers: {

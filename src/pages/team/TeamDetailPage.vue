@@ -8,12 +8,14 @@
           <v-col cols="4" offset="3"> <!-- 팀 명 -->
             <v-card text="팀명" variant="outlined"> {{ state.teamName }} </v-card>
           </v-col>
-          <v-col cols="4" offset="1"> <!-- 팀장 -->
-            <v-card text="팀장" variant="outlined"> {{ state.teamManagerName }}</v-card>
+          <v-col cols="auto">
+            <v-card variant="outlined" class="team-card">
+              <span class="team-label">팀장:</span>
+              <span class="team-name">{{ state.teamManagerName }}</span>
+            </v-card>
           </v-col>
         </v-row>
         <v-card-actions>
-
         </v-card-actions>
       </v-card>
 
@@ -67,7 +69,6 @@
                     <v-checkbox v-model="item.isSelected"></v-checkbox>
                   </td>
                   <td>{{ item.id }}</td>
-                  <td>{{ item.profileImage }}</td>
                   <td>{{ item.name }}</td>
                   <td>{{ item.salesMemberCode }}</td>
                   <td>{{ item.rank }}</td>
@@ -79,7 +80,6 @@
                 </tr>
               </template>
             </v-data-table>
-
           </div>
         </v-container>
       </v-card-text>
@@ -116,7 +116,6 @@ export default {
       modalOpen: false,
       tableColumns: [
         {title: "No", key: "id"},
-        {title: "프로필사진", key: "profileImage"},
         {title: "이름", key: "name"},
         {title: "사원코드", key: "salesMemberCode"},
         {title: "직급", key: "rank"},

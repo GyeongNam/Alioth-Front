@@ -3,8 +3,9 @@
                        class="blue-lighten-5">
     <v-list>
       <v-list-item prepend-avatar="/Alioth.png">
+
           <v-list-item-title> Alioth </v-list-item-title>
-      </v-list-item>
+      <!-- </v-list-item> -->
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
@@ -23,7 +24,6 @@
       <v-list-item prepend-icon="mdi-format-list-bulleted" title="게시판" value="starred"  @click="handleMenuClick(`/BoardList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-file-sign" title="계약" value="starred" @click="handleMenuClick(`/ContractList`);"></v-list-item>
       <v-list-item prepend-icon="mdi-calendar-check" title="일정" value="starred" @click="handleMenuClick(`/Schedule`);"></v-list-item>
-
       <v-list-item v-if="loginStore.memberRank === 'HQ'" prepend-icon="mdi-account-details" title="팀 목록" value="starred" @click="handleMenuClick(`/Team/List`);"></v-list-item>
       <v-list-item v-if="loginStore.memberRank === 'MANAGER'" prepend-icon="mdi-badge-account-horizontal-outline" title="팀 " value="starred" @click="handleMenuClick(`/Team/Detail/`+loginStore.memberTeamCode);"></v-list-item>
     </v-list>
@@ -34,12 +34,19 @@
         <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/SalesMembersList/Detail/${loginStore.memberCode}`);">
           <template v-if="loginStore.memberRank">
             <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
-            <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+            <v-row align="center" no-gutters>
+              <v-col cols="11">
+                <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
+              </v-col>
+              <v-col cols="1">
+                <v-btn icon @click="confirmLogout">
+                  <v-icon>mdi-minus-circle</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
           </template>
         </v-list-item>
       </v-list>
-      <v-list-item prepend-icon="mdi-power" @click="confirmLogout">
-      </v-list-item>
     </template>
   </v-navigation-drawer>
 </template>
@@ -71,6 +78,7 @@ export default {
   },
   methods: {
     handleMenuClick(route) {
+
       this.$router.push(route);
     },
     handleSubMenuClick(route) {
@@ -94,6 +102,16 @@ export default {
   text-align: center;
   margin: 0 auto;
   display: block;
+}
+.v-btn--icon {
+  border-radius: 0;  /* 원형 테두리 제거 */
+  padding: 0;        /* 내부 패딩 제거 */
+  background: transparent; /* 배경 투명 처리 */
+}
+
+/* 필요에 따라 다음과 같이 더 구체적으로 조정할 수 있습니다 */
+.v-btn--icon .v-icon {
+  color: inherit;    /* 아이콘 색상을 버튼 색상과 동일하게 설정 */
 }
 </style>
 

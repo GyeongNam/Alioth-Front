@@ -192,6 +192,7 @@ export default {
     const loginStore = useLoginInfoStore();
     // const myPageUpdateStore = useMyPageUpdateStore();
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    const loginStore = useLoginInfoStore();
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
@@ -266,6 +267,7 @@ export default {
 
       if (confirm("수정하시겠습니까?")) {
         console.log(props.salesMembersCode)
+        console.log("로그인 : "+ loginStore.getMemberCode)
         axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMembersCode}`, data)
           .then(res => {
             console.log(res)
@@ -425,9 +427,7 @@ export default {
       teamName,
       teamCode,
       modify,
-      loginStore,
-      salesMembersCodeTemp
-      // myPageUpdateStore
+      loginStore
     }
   }
 }
