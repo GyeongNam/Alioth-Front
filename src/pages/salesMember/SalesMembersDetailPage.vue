@@ -192,7 +192,6 @@ export default {
     const loginStore = useLoginInfoStore();
     // const myPageUpdateStore = useMyPageUpdateStore();
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
-    const loginStore = useLoginInfoStore();
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)

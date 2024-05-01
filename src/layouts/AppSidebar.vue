@@ -5,7 +5,7 @@
       <v-list-item prepend-avatar="/Alioth.png">
 
           <v-list-item-title> Alioth </v-list-item-title>
-      <!-- </v-list-item> -->
+       </v-list-item>
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
