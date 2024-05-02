@@ -17,7 +17,6 @@
             <img class="default-image" :src="imageUrl" @click="openImageUploader">
           </v-card>
         </v-col>
-
         <v-col cols="7">
           <v-card class="pa-3">
             <!-- Name, Position, and Employee Number -->
@@ -141,20 +140,18 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text="닫기" variant="plain" @click="closeMyPageModal"></v-btn>
-        <v-btn color="primary" text="저장" variant="tonal" @click="updateMypage"></v-btn>
+        <v-btn color="primary" text="저장" variant="tonal" @click="updateMyPage"></v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
-
-
 
 <script>
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
-import {onMounted, ref, computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import {useLoginInfoStore} from "@/stores/loginInfo";
 
@@ -231,9 +228,6 @@ export default {
             teamName.value = teamNames
             teamCode.value = teamCodes
             salesMembersCodeTemp.value = props.salesMembersCode
-
-            console.log(salesMembersCodeTemp.value )
-            console.log(loginStore.memberCode )
           } else {
             console.error('Empty response or missing result data');
           }
@@ -249,7 +243,6 @@ export default {
           data.forEach((item, index) => {
             item.id = index + 1;
           });
-          // tableRows에 데이터를 할당합니다.
           rows.value = data;
         })
         .catch(error => {
@@ -331,22 +324,13 @@ export default {
         }
       })
         .then(response => {
-          // get 요청으로 받은 데이터를 화면에 출력
-          const newImageUrl = response.data;
-          console.log("findMember")
-          console.log(newImageUrl)
-          profile.value = newImageUrl
-          loginStore.memberImage = newImageUrl
-
-          // // 직급, 직책, 직무 추가해야함
-
+          loginStore.memberImage = response.data
         })
         .catch(error => {
           console.error("회원정보를 요청할 수 없습니다. : ", error);
           alert("회원정보를 요청할 수 없습니다.");
         });
     }
-
     function deleteMember() {
       if (confirm("퇴사 처리하시겠습니까?")) {
         axiosInstance.delete(`${baseUrl}/api/members/delete/${props.salesMembersCode}`)
@@ -359,7 +343,7 @@ export default {
           });
       }
     }
-   function updateMypage() {
+   function updateMyPage() {
      console.log("회원정보 업데이트 요청");
      const data = {
        email: email.value,
@@ -413,7 +397,7 @@ export default {
       handleImageUpload,
       openImageUploader,
       openDetailModal,
-      updateMypage,
+      updateMyPage,
       formatDateTime,
       openPostCode,
       isModalOpen,
