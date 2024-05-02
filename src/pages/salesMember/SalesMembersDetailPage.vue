@@ -7,14 +7,14 @@
         <v-btn variant="outlined" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCode.toString() !== loginStore.memberCode.toString())">수정</v-btn>
 
         <v-btn variant="outlined" @click="submitChange" v-if="modify"> 완료</v-btn>
-        <v-btn variant="outlined" @click="deleteMember" v-if="!modify && loginStore.getMemberRank !== 'FP'">삭제</v-btn>
+        <v-btn variant="outlined" @click="deleteMember" v-if="!modify && loginStore.getMemberRank === 'HQ' && (salesMembersCode.toString() !== loginStore.memberCode.toString())">삭제</v-btn>
       </v-col>
       <v-row>
         <!-- Image Upload -->
         <v-col cols="4">
           <v-card class="myimage pa-3">
             <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
-            <img class="default-image" :src="imageUrl" @click="openImageUploader">
+            <img class="default-image" :src="imageUrl" @click="openImageUploader" v-if="(salesMembersCode.toString() === loginStore.memberCode.toString())">
           </v-card>
         </v-col>
         <v-col cols="7">
