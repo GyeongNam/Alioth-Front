@@ -14,7 +14,7 @@
         <v-col cols="4">
           <v-card class="myimage pa-3">
             <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
-            <img class="default-image" :src="imageUrl" @click="openImageUploader" v-if="(salesMembersCode.toString() === loginStore.memberCode.toString())">
+            <img class="default-image" :src="imageUrl" @click="openImageUploader" v-if="(loginStore.memberCode.toString()===salesMembersCode)">
           </v-card>
         </v-col>
         <v-col cols="7">
