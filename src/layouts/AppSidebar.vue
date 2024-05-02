@@ -37,10 +37,8 @@
               <v-col cols="11">
                 <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
               </v-col>
-              <v-col cols="1">
-                <v-btn icon @click="confirmLogout">
-                  <v-icon>mdi-minus-circle</v-icon>
-                </v-btn>
+              <v-col cols="1" class="d-flex justify-end">
+                <v-icon @click="confirmLogout">mdi-minus-circle</v-icon>
               </v-col>
             </v-row>
           </template>
