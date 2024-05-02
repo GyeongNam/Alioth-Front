@@ -86,7 +86,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
-import { useBoardTypeStore } from '@/stores/boardTypeStore';
+
 
 
 export default {
@@ -140,6 +140,7 @@ export default {
       .then(response => {
         this.board = response.data.result;
         this.fetchAnswers(boardId);
+        tihs.showSuccess = false;
       }).catch(error => {
         console.error('Error fetching board details:', error);
       });
@@ -195,13 +196,14 @@ export default {
       .then(() => {
         this.newAnswer = '';
         this.showSuccess = true;
-        this.showInput = false;
         this.fetchAnswers(boardId);
-        localStorage.setItem('showSuccess', 'true');
+        // this.showInput = false;
         this.showModal = false;
+        // localStorage.setItem('showSuccess', 'true');
+        // this.showModal = false;
       }).catch(error => {
         console.error('Error submitting answer:', error);
-        this.showSuccess = false;
+        // this.showSuccess = false;
         
         alert('답글 등록 실패: ' + (error.message  && error.response.data.message ? error.response.data.message : '서버 에러'));
       }).finally(() => {
@@ -254,7 +256,7 @@ export default {
     }
   },
   mounted() {
-    this.showSuccess = localStorage.getItem("showSuccess") === "true";
+    // this.showSuccess = localStorage.getItem("showSuccess") === "true";
     
     this.fetchBoardDetail();
   }

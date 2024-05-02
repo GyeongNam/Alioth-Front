@@ -3,23 +3,27 @@
   <v-main>
     <AppHeader></AppHeader>
     <v-container fluid>
-      <v-card flat>
-        <v-row>
-          <v-col cols="4" offset="3"> <!-- 팀 명 -->
-            <v-card text="팀명" variant="outlined"> {{ state.teamName }} </v-card>
-          </v-col>
-          <v-col cols="auto">
+
+      <v-card flat class="team-info-card">
+        <v-row >
+          <v-col cols="6" md="6"> <!-- 팀 명 -->
             <v-card variant="outlined" class="team-card">
-              <span class="team-label">팀장:</span>
-              <span class="team-name">{{ state.teamManagerName }}</span>
+              <p class="team-label">팀명</p>
+              <p class="team-name">{{ state.teamName }}</p>
+            </v-card>
+          </v-col>
+
+          <v-col cols="6" md="6">
+            <v-card variant="outlined" class="team-card">
+              <p class="team-label">팀장</p>
+              <p class="team-name">{{ state.teamManagerName }}</p>
             </v-card>
           </v-col>
         </v-row>
-        <v-card-actions>
-        </v-card-actions>
       </v-card>
 
       <div style="margin-bottom: 16px;"></div>
+      
 
       <v-card>
         <v-card-title class="d-flex align-center pe-2">
@@ -272,5 +276,25 @@ export default {
 <style>
 .v-input__details {
   display: none;
+}
+.team-info-card {
+  
+  width: 100%; /* v-card의 너비를 확장합니다. */
+  max-width: 350px; /* 최대 너비 설정 (필요에 따라 조정하세요) */
+  margin: auto; /* 중앙 정렬 */
+}
+
+.team-card {
+  padding: 20px; /* 카드 내부의 패딩을 조정하여 내용물이 더 여유롭게 보이도록 합니다. */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.team-label, .team-name {
+  font-size: 1.5rem; /* 글씨 크기를 1.5rem으로 설정 */
+  font-weight: bold; /* 글씨를 굵게 */
+}
+
+.team-name {
+  margin-top: 10px; /* 팀 이름과 팀장 이름 사이의 간격 조정 */
 }
 </style>
