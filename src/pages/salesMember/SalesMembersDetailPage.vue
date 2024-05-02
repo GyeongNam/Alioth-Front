@@ -162,6 +162,7 @@ export default {
   components: { ListComponent, AppHeader, AppSidebar},
   props: ["salesMembersCode"],
   setup(props) {
+    const loginStore = useLoginInfoStore();
     const profile = ref('');
     const rank = ref('');
     const name = ref('');
@@ -191,7 +192,6 @@ export default {
     const formatDateTime = (date) => {
       return `${date}`;
     };
-    const loginStore = useLoginInfoStore();
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
     const fetchData = () => {
@@ -313,10 +313,7 @@ export default {
       window.location.reload(true);
     }
 
-    const imageUrl = computed(() => {
-      loginStore.memberImage = profile.value
-      return profile.value
-    });
+    const imageUrl = computed(() => loginStore.memberImage);
 
 
     function handleImageUpload(event) {
@@ -338,6 +335,8 @@ export default {
           const newImageUrl = response.data;
           console.log("findMember")
           console.log(newImageUrl)
+          profile.value = newImageUrl
+          loginStore.memberImage = newImageUrl
 
           // // 직급, 직책, 직무 추가해야함
 
