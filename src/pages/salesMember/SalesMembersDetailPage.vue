@@ -4,21 +4,21 @@
     <AppHeader></AppHeader>
     <v-container fluid>
       <v-col class="text-right">
-        <v-btn variant="outlined" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCodeTemp.toString() !== loginStore.memberCode.toString())">수정</v-btn>
+        <v-btn variant="outlined" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCode.toString() !== loginStore.memberCode.toString())">수정</v-btn>
 
         <v-btn variant="outlined" @click="submitChange" v-if="modify"> 완료</v-btn>
         <v-btn variant="outlined" @click="deleteMember" v-if="!modify && loginStore.getMemberRank !== 'FP'">삭제</v-btn>
       </v-col>
       <v-row>
         <!-- Image Upload -->
-        <v-col cols="3">
-          <v-card class="pa-3">
+        <v-col cols="4">
+          <v-card class="myimage pa-3">
             <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
             <img class="default-image" :src="imageUrl" @click="openImageUploader">
           </v-card>
         </v-col>
 
-        <v-col cols="9">
+        <v-col cols="7">
           <v-card class="pa-3">
             <!-- Name, Position, and Employee Number -->
             <v-row>
@@ -154,7 +154,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, computed} from "vue";
 import ListComponent from "@/layouts/ListComponent.vue";
 import {useLoginInfoStore} from "@/stores/loginInfo";
 
@@ -186,11 +186,12 @@ export default {
       {title: "팀 코드", key: "teamCode"},
       {title: "팀장", key: "teamManagerName"},
     ];
+    const modalContainer = ref(null)
+    const imageInput = ref(null);
     const formatDateTime = (date) => {
       return `${date}`;
     };
     const loginStore = useLoginInfoStore();
-    // const myPageUpdateStore = useMyPageUpdateStore();
     const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
     const fetchData = () => {
@@ -231,7 +232,6 @@ export default {
             teamCode.value = teamCodes
             salesMembersCodeTemp.value = props.salesMembersCode
 
-            console.log('dasdasdasdasd' )
             console.log(salesMembersCodeTemp.value )
             console.log(loginStore.memberCode )
           } else {
@@ -283,8 +283,8 @@ export default {
 
     function handleModalClick(event) {
       // 모달 배경 클릭 시 모달 닫기
-      if (event.target === this.$refs.modalContainer) {
-        this.closeModal();
+      if (event.target === modalContainer.value) {
+        closeModal();
       }
     }
 
@@ -310,18 +310,24 @@ export default {
     }
     function closeMyPageModal() {
       isModalOpen.value = false;
-      // window.location.reload(true);
+      window.location.reload(true);
     }
+
+    const imageUrl = computed(() => {
+      loginStore.memberImage = profile.value
+      return profile.value
+    });
+
 
     function handleImageUpload(event) {
       const file = event.target.files[0];
       // Perform any necessary validation here
-      this.memberImage = URL.createObjectURL(file);
+      profile.value = URL.createObjectURL(file);
 
       const formData = new FormData();
       formData.append('memberImage', file);
 
-      const url = `/api/members/${this.memberCode}/image`;
+      const url = `${baseUrl}/api/members/${props.salesMembersCode.toString()}/image`;
       axiosInstance.patch(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -329,8 +335,10 @@ export default {
       })
         .then(response => {
           // get 요청으로 받은 데이터를 화면에 출력
-          const findMember = response.data.result;
-          console.log(findMember)
+          const newImageUrl = response.data;
+          console.log("findMember")
+          console.log(newImageUrl)
+
           // // 직급, 직책, 직무 추가해야함
 
         })
@@ -377,8 +385,9 @@ export default {
 
    }
     function openImageUploader() {
-      this.$refs.imageInput.click();
+      imageInput.value.click();
     }
+
     function openPostCode() {
       new window.daum.Postcode({
         oncomplete: (data) => {
@@ -390,6 +399,7 @@ export default {
 
     onMounted(() => {
       fetchData();
+      document.addEventListener('click', handleModalClick);
     });
 
     return {
@@ -426,7 +436,10 @@ export default {
       teamName,
       teamCode,
       modify,
-      loginStore
+      loginStore,
+      imageUrl,
+      imageInput,
+      modalContainer
     }
   }
 }
@@ -437,6 +450,15 @@ export default {
 .btn-small {
   font-size: smaller;
   padding: 5px 5px; /* 원하는 크기로 조절 */
+}
+.default-image {
+  width: 350px;
+  height: 670px;
+}
+.myimage {
+  height: 698px;
+  width: 380px;
+  position:absolute;
 }
 </style>
 
