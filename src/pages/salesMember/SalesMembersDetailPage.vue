@@ -120,7 +120,7 @@
           <v-col cols="12" md="4" sm="6">
             <v-text-field label="생년월일" type="date" v-model="birthDay"></v-text-field>
           </v-col>
-          <v-col cols="12" md="4" sm="6">
+          <v-col cols="12" md="8" sm="6">
             <v-text-field label="사무실"></v-text-field>
           </v-col>
           <v-col cols="12" md="12" sm="12">
