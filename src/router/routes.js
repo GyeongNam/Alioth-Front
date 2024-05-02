@@ -1,5 +1,4 @@
 import HomePage from "/src/pages/main/HomePage.vue";
-import MyPage from "@/pages/mypage/MyPage.vue";
 import BoardListPage from "@/pages/board/BoardListPage.vue";
 import SchedulePage from "@/pages/schedule/SchedulePage.vue";
 import SalesMembersListPage from "@/pages/salesMember/SalesMembersListPage.vue";
@@ -106,16 +105,6 @@ const routes = [
     }
   },
 
-  // mypage
- /* {
-    path: '/MyPage',
-    component: MyPage,
-    meta: {
-      title: '마이페이지',
-      requiresAuth: true
-    }
-  },*/
-
   //salesMember
   {
     path: '/SalesMembersList',
@@ -139,21 +128,23 @@ const routes = [
     props:true,
     meta: {
       title: '사원 상세 정보',
-      // requiresAuth: true
+      requiresAuth: true
     }
   },
-
-
   //login
   {
     path: '/Login',
     component: LoginPage,
-    requiresAuth: false
+    meta: {
+      requiresAuth: false
+    }
   },
   {
     path: '/Login/PasswordFind',
     component: PasswordFind,
-    requiresAuth: false
+    meta: {
+      requiresAuth: false
+    }
   },
 
 

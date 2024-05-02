@@ -126,7 +126,7 @@
           <v-col cols="12" md="12" sm="12">
             <span>자택주소</span>
             <v-spacer></v-spacer>
-            <span>우편번호</span>
+            <span style="font-size: 0.8em;">우편번호</span>
             <v-spacer></v-spacer>
             <v-text-field type="text" v-model="zoneCode" placeholder="우편번호" readonly/>
             <v-btn id="postcode" type="button" @click="openPostCode" value="우편번호 찾기">우편번호 찾기</v-btn>
