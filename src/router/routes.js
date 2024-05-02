@@ -107,14 +107,14 @@ const routes = [
   },
 
   // mypage
-  {
+ /* {
     path: '/MyPage',
     component: MyPage,
     meta: {
       title: '마이페이지',
       requiresAuth: true
     }
-  },
+  },*/
 
   //salesMember
   {
@@ -139,7 +139,7 @@ const routes = [
     props:true,
     meta: {
       title: '사원 상세 정보',
-      requiresAuth: true
+      // requiresAuth: true
     }
   },
 

@@ -47,11 +47,11 @@ export default {
   },
   methods: {
     updateContent(htmlContent) {
-      console.log("Received content from editor:", htmlContent);
+      // console.log("Received content from editor:", htmlContent);
       this.announcement.content = htmlContent;
     },
     submitAnnouncement() {
-      console.log("Attempting to submit content:", this.announcement.content);
+      
       if (!this.announcement.content) {
         alert('공지사항 내용을 입력해주세요.');
         return;

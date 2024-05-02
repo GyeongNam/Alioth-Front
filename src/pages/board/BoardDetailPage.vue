@@ -6,16 +6,24 @@
       <v-card class="mt-5" outlined>
         <v-card-title class="headline">{{ board.title }}</v-card-title>
         <v-card-subtitle>
-          <span>작성자 {{ board.memberId }}</span>
+          <span> 작성자 사번 {{ board.salesMemberCode }}</span>
           <span class="grey--text"> | 작성일 {{ board.created_at }}</span>
         </v-card-subtitle>
         <v-card-text v-html="board.content"></v-card-text>
 
         <div class="answers" v-if="board.boardType === 'SUGGESTION'">
           <div v-for="answer in answers" :key="answer.answer_id" class="answer">
-
+            <v-divider></v-divider>
+            
+            <h3>답변</h3>
+            <v-divider></v-divider>
+            <v-card-subtitle>
+              <span> 작성자 사번 {{ answer.salesMemberCode }}</span>
+              <p><span> 작성시간 {{ answer.created_at }}</span></p>
+            </v-card-subtitle>
             <div v-html="answer.content"></div>
-            <v-btn small class="small-btn" @click="openEditModal(answer)">답변 수정</v-btn>
+            <v-btn small class="small-btn" @click="openEditModal(answer)" style="margin-bottom: 10px; margin-left: 10px;">답변 수정</v-btn>
+            
 
           </div>
           <v-btn v-if="answers.length === 0 && !showModal" @click="showModal = true">답글 작성</v-btn>
@@ -34,8 +42,10 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          
           <div v-if="showSuccess">
             <v-alert class="success-alert" dense>
+              
               <template #prepend>
                 <v-icon large>mdi-check-circle</v-icon>
               </template>
@@ -76,6 +86,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
+import { useBoardTypeStore } from '@/stores/boardTypeStore';
 
 
 export default {
@@ -103,6 +114,7 @@ export default {
     }
   },
   methods: {
+
     openEditModal(answer) {
       this.editTitle = answer.title; 
       this.editContent = answer.content; 
@@ -233,8 +245,12 @@ export default {
     },
   
     goBack() {
-      localStorage.removeItem('showSuccess');
-      this.$router.go(-1);
+  // 건의사항 게시판에서 '뒤로가기'를 클릭했을 때
+      if (this.board.boardType === 'SUGGESTION') {
+        this.$router.push({ path: '/BoardList', query: { type: 'Suggestion' } });
+      } else {
+        this.$router.push({ path: '/BoardList', query: { type: 'Announcement' } });
+      }
     }
   },
   mounted() {

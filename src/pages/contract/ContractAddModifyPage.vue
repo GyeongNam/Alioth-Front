@@ -3,7 +3,7 @@
     <AppSidebar></AppSidebar>
     <v-main>
       <AppHeader></AppHeader>
-      <v-container>
+      <v-container >
         <v-row justify="center">
           <v-col cols="12" md="8">
             <v-card>
@@ -22,6 +22,7 @@
 
                   <!-- 보험상품 선택 모달 -->
                   <v-text-field
+                    
                     readonly
                     v-model="form.insuranceProductId"
                     label="보험상품ID"
@@ -55,10 +56,10 @@
                       <v-icon @click="showCustomerDialog = true">mdi-menu-down</v-icon>
                     </template>
                   </v-text-field>
-
-                  <v-textarea v-model="form.contractConsultation" label="상담 내용" required></v-textarea>
                   <v-select v-model="form.contractStatus" :items="contractStatuses" label="계약 상태" required></v-select>
-                  <v-btn color="primary" type="submit">계약 생성</v-btn>
+                  <v-textarea v-model="form.contractConsultation" label="상담 내용" required></v-textarea>
+                  
+                  <v-btn style="margin-top: 15px;" rounded="pill" color="#42A5F5" type="submit">계약 생성</v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -241,4 +242,18 @@ export default {
 </script>
 
 <style scoped>
+.v-card-text {
+  background-color:white
+}
+.v-text-field {
+  /* background-color: #E3F2FD; */
+  border-radius: 13px;
+  padding: 10px;
+  /* box-shadow: 0 4px 8px rgba(0,0,0,0.1); */
+  
+}
+.v-card {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 13px;
+}
 </style>
