@@ -54,22 +54,41 @@ import { useLoginInfoStore } from "@/stores/loginInfo";
 
 export default {
   data() {
-    return {
-      dropDownStore : useDropdownStore(),
-      loginStore : useLoginInfoStore(),
-      folders: [
-        {
-          title: '매출',
-          subItems: [
-            {title: '순위', url: '/Sales/Ranking'},
-            {title: '개인', url: '/Sales/Personal'},
-            {title: '팀', url: '/Sales/Team'},
-            {title: '전사', url: '/Sales/Total'},
-          ]
-        }
-      ],
-    };
-  },
+  const loginStore = useLoginInfoStore(); // 로그인 정보 스토어 가져오기
+  let salesSubItems = []; // 매출 관련 하위 메뉴 초기화
+
+  // 사용자 등급에 따라 매출 하위 메뉴 동적 할당
+  if (loginStore.memberRank === 'HQ') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+      {title: '팀', url: '/Sales/Team'},
+      {title: '전사', url: '/Sales/Total'},
+    ];
+  } else if (loginStore.memberRank === 'MANAGER') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+      {title: '팀', url: '/Sales/Team'},
+    ];
+  } else if (loginStore.memberRank === 'FP') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+    ];
+  }
+
+  return {
+    dropDownStore: useDropdownStore(),
+    loginStore,
+    folders: [
+      {
+        title: '매출',
+        subItems: salesSubItems
+      }
+    ],
+  };
+},
   mounted() {
 
   },
