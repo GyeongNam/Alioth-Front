@@ -9,9 +9,12 @@
             <v-card-text>
               <v-form @submit.prevent="submitForm">
               <span>사진</span>
-              <v-img v-if="form.imageUrl" :width="300" aspect-ratio="16/9" cover :src="form.imageUrl"
-                     alt="Selected Image"></v-img>
-              <input type="file" @change="handleFileUpload">
+                <v-card class="pa-3">
+                  <div class="image-container">
+                    <v-img v-if="form.imageUrl" :width="300" aspect-ratio="16/9" cover :src="form.imageUrl"></v-img>
+                    <input type="file" @change="handleFileUpload">
+                  </div>
+                </v-card>
               <v-spacer></v-spacer>
               <span>이름</span>
               <v-text-field v-model="form.name" label="이름을 입력하세요" required></v-text-field>
@@ -124,5 +127,9 @@ export default {
 </script>
 
 <style scoped>
+.image-container {
+  display: flex;
+  justify-content: center;
+}
 
 </style>
