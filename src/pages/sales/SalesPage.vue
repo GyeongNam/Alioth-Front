@@ -31,7 +31,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <!-- <v-row>
         <v-col cols="12" md="5">
           <v-card>
             <SalesPagePieChart :loaded_PricePie="loaded_PricePie"></SalesPagePieChart>
@@ -43,7 +43,7 @@
             <SalesPageCountPieChart :loaded_CountPie="loaded_CountPie"></SalesPageCountPieChart>
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row>
         <v-col cols="12" md="10"> <!-- Changed md="5" to md="7" -->
