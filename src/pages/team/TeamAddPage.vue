@@ -81,7 +81,7 @@ export default {
     }
 
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/members/list/manager`)
         .then(response => {
           const data = response.data.result;
@@ -105,7 +105,7 @@ export default {
           ...form.value,
         };
         console.log(formData)
-        const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+        const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
         axiosInstance.post(`${baseUrl}/api/team/create`, formData)
           .then(response => {
             alert(response.data.message)

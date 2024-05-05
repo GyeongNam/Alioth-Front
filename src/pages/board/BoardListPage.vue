@@ -58,7 +58,7 @@ export default {
   setup() {
   const router = useRouter();
   const loginInfoStore = useLoginInfoStore();
-  const salesMemberRank = ref(loginInfoStore.getMemberRank); 
+  const salesMemberRank = ref(loginInfoStore.getMemberRank);
   const boardTypeStore = useBoardTypeStore();
   const model = ref('Announcement');
 
@@ -115,7 +115,7 @@ export default {
     pageCount() {
     return Math.ceil(this.items.length / 10);
   },
-  
+
     formattedItems() {
       return this.items.map(item => ({
         ...item,
@@ -141,7 +141,7 @@ export default {
       this.router.push(path);
     },
     fetchData() {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
       const apiEndpoint = this.model === 'Announcement' ? 'list' : 'suggestions-list';
       const apiURL = `${baseUrl}/api/board/${apiEndpoint}`;
 

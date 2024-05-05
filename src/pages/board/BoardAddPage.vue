@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       valid: true,
-      baseUrl: import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
+      baseUrl: import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080',
       announcement: {
         title: '',
         content: ''
@@ -51,7 +51,7 @@ export default {
       this.announcement.content = htmlContent;
     },
     submitAnnouncement() {
-      
+
       if (!this.announcement.content) {
         alert('공지사항 내용을 입력해주세요.');
         return;

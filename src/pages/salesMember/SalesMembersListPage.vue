@@ -64,7 +64,7 @@ export default {
     const selectedTeam = ref(null);
     const filteredTeamCodes = ref([]);
 
-    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/list`)

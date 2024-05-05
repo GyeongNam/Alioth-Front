@@ -14,7 +14,7 @@
         <div class="answers" v-if="board.boardType === 'SUGGESTION'">
           <div v-for="answer in answers" :key="answer.answer_id" class="answer">
             <v-divider></v-divider>
-            
+
             <h3>답변</h3>
             <v-divider></v-divider>
             <v-card-subtitle>
@@ -23,7 +23,7 @@
             </v-card-subtitle>
             <div v-html="answer.content"></div>
             <v-btn small class="small-btn" @click="openEditModal(answer)" style="margin-bottom: 10px; margin-left: 10px;">답변 수정</v-btn>
-            
+
 
           </div>
           <v-btn v-if="answers.length === 0 && !showModal" @click="showModal = true">답글 작성</v-btn>
@@ -42,10 +42,10 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          
+
           <div v-if="showSuccess">
             <v-alert class="success-alert" dense>
-              
+
               <template #prepend>
                 <v-icon large>mdi-check-circle</v-icon>
               </template>
@@ -86,7 +86,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
-import { useBoardTypeStore } from '@/stores/boardTypeStore';
+
 
 
 export default {
@@ -97,14 +97,14 @@ export default {
       answers: [],
       newAnswer: '',
       currentUser: localStorage.getItem('userId'),
-      baseUrl: import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
+      baseUrl: import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080',
       showSuccess: false,
       showInput: false,
       showModal: false,
       editModalVisible: false,
       editContent: '',
       currentEditingId: null,
-      editTitle: '', 
+      editTitle: '',
       submitting: false
     };
   },
@@ -116,16 +116,16 @@ export default {
   methods: {
 
     openEditModal(answer) {
-      this.editTitle = answer.title; 
-      this.editContent = answer.content; 
-      this.currentEditingId = answer.answer_id; 
-      this.editModalVisible = true; 
+      this.editTitle = answer.title;
+      this.editContent = answer.content;
+      this.currentEditingId = answer.answer_id;
+      this.editModalVisible = true;
     },
     closeEditModal() {
-      this.editModalVisible = false; 
+      this.editModalVisible = false;
     },
     updateEditContent(htmlContent) {
-      this.editContent = htmlContent; 
+      this.editContent = htmlContent;
     },
     stripTags(html) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -140,6 +140,7 @@ export default {
       .then(response => {
         this.board = response.data.result;
         this.fetchAnswers(boardId);
+        tihs.showSuccess = false;
       }).catch(error => {
         console.error('Error fetching board details:', error);
       });
@@ -195,14 +196,15 @@ export default {
       .then(() => {
         this.newAnswer = '';
         this.showSuccess = true;
-        this.showInput = false;
         this.fetchAnswers(boardId);
-        localStorage.setItem('showSuccess', 'true');
+        // this.showInput = false;
         this.showModal = false;
+        // localStorage.setItem('showSuccess', 'true');
+        // this.showModal = false;
       }).catch(error => {
         console.error('Error submitting answer:', error);
-        this.showSuccess = false;
-        
+        // this.showSuccess = false;
+
         alert('답글 등록 실패: ' + (error.message  && error.response.data.message ? error.response.data.message : '서버 에러'));
       }).finally(() => {
         this.submitting = false;
@@ -215,12 +217,12 @@ export default {
   };
 
     axiosInstance.patch(`${this.baseUrl}/api/answer/update/${this.currentEditingId}`, {
-      content: this.editContent 
+      content: this.editContent
     })
     .then(() => {
       alert('답글이 수정되었습니다.');
       this.fetchAnswers(this.board.boardId);
-      this.editModalVisible = false; 
+      this.editModalVisible = false;
     })
     .catch(error => {
       console.error('답글 수정 실패:', error);
@@ -243,7 +245,7 @@ export default {
           });
       }
     },
-  
+
     goBack() {
   // 건의사항 게시판에서 '뒤로가기'를 클릭했을 때
       if (this.board.boardType === 'SUGGESTION') {
@@ -254,8 +256,8 @@ export default {
     }
   },
   mounted() {
-    this.showSuccess = localStorage.getItem("showSuccess") === "true";
-    
+    // this.showSuccess = localStorage.getItem("showSuccess") === "true";
+
     this.fetchBoardDetail();
   }
 }

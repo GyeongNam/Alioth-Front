@@ -42,7 +42,7 @@ export default {
     const tableRows = ref([]); // ref를 사용하여 반응형 데이터 생성
     const teamCode = ref('teamCode');
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
       axiosInstance.get(`${baseUrl}/api/team/list`)
         .then(response => {
           const data = response.data.result;

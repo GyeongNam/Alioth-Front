@@ -47,7 +47,7 @@ export default {
   methods: {
     async login() {
       // 수정된 URL 참조 방식
-      const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
 
         const loginData = {
                             memberCode: this.memberCode,

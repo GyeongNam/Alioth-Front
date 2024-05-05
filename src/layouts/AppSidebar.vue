@@ -3,9 +3,8 @@
                        class="blue-lighten-5">
     <v-list>
       <v-list-item prepend-avatar="/Alioth.png">
-
           <v-list-item-title> Alioth </v-list-item-title>
-      <!-- </v-list-item> -->
+       </v-list-item>
     </v-list>
     <v-divider></v-divider>
     <v-list density="compact" nav>
@@ -31,17 +30,15 @@
     <template v-slot:append>
       <v-list>
         <span class="small-text" > 오늘도 좋은 하루 보내세요! </span>
-        <v-list-item prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg" @click="this.$router.push(`/SalesMembersList/Detail/${loginStore.memberCode}`);">
+        <v-list-item :prepend-avatar="loginStore.memberImage" @click="this.$router.push(`/SalesMembersList/Detail/${loginStore.memberCode}`);">
           <template v-if="loginStore.memberRank">
             <v-list-item-title>{{ loginStore.memberEmail }}</v-list-item-title>
             <v-row align="center" no-gutters>
               <v-col cols="11">
                 <v-list-item-subtitle>{{ loginStore.memberName }}</v-list-item-subtitle>
               </v-col>
-              <v-col cols="1">
-                <v-btn icon @click="confirmLogout">
-                  <v-icon>mdi-minus-circle</v-icon>
-                </v-btn>
+              <v-col cols="1" class="d-flex justify-end">
+                <v-icon @click="confirmLogout">mdi-minus-circle</v-icon>
               </v-col>
             </v-row>
           </template>
@@ -57,28 +54,46 @@ import { useLoginInfoStore } from "@/stores/loginInfo";
 
 export default {
   data() {
-    return {
-      dropDownStore : useDropdownStore(),
-      loginStore : useLoginInfoStore(),
-      folders: [
-        {
-          title: '매출',
-          subItems: [
-            {title: '순위', url: '/Sales/Ranking'},
-            {title: '개인', url: '/Sales/Personal'},
-            {title: '팀', url: '/Sales/Team'},
-            {title: '전사', url: '/Sales/Total'},
-          ]
-        }
-      ]
-    };
-  },
+  const loginStore = useLoginInfoStore(); // 로그인 정보 스토어 가져오기
+  let salesSubItems = []; // 매출 관련 하위 메뉴 초기화
+
+  // 사용자 등급에 따라 매출 하위 메뉴 동적 할당
+  if (loginStore.memberRank === 'HQ') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+      {title: '팀', url: '/Sales/Team'},
+      {title: '전사', url: '/Sales/Total'},
+    ];
+  } else if (loginStore.memberRank === 'MANAGER') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+      {title: '팀', url: '/Sales/Team'},
+    ];
+  } else if (loginStore.memberRank === 'FP') {
+    salesSubItems = [
+      {title: '순위', url: '/Sales/Ranking'},
+      {title: '개인', url: '/Sales/Personal'},
+    ];
+  }
+
+  return {
+    dropDownStore: useDropdownStore(),
+    loginStore,
+    folders: [
+      {
+        title: '매출',
+        subItems: salesSubItems
+      }
+    ],
+  };
+},
   mounted() {
 
   },
   methods: {
     handleMenuClick(route) {
-
       this.$router.push(route);
     },
     handleSubMenuClick(route) {
@@ -89,7 +104,9 @@ export default {
       if (confirm('로그아웃하시겠습니까?')) {
         alert('로그아웃 되었습니다.');
         localStorage.removeItem('accessToken'); // 토큰 삭제
+        localStorage.removeItem('refreshToken')
         this.$router.push('/Login');
+        window.location.reload();
       }
     }
   }

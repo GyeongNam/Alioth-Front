@@ -217,8 +217,8 @@ export default {
       this.datePickerDialog = !this.datePickerDialog; // 모달 닫기
     },
     getSalesMemberData() {
-      let url = `http://localhost:8081/api/stat/sales-ranking/member`;
-
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      let url = `${baseUrl}/api/stat/sales-ranking/member`;
       axios.get(url)
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
@@ -234,7 +234,8 @@ export default {
         });
     },
     getSalesTeamData() {
-      axios.get("http://localhost:8081/api/batch/sales-team/day")
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      axios.get(`${baseUrl}/api/batch/sales-team/day`)
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
           //this.teamItems = response.data.result || [];

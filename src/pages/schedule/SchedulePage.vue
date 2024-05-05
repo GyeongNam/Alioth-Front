@@ -86,7 +86,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useLoginInfoStore } from '@/stores/loginInfo';
 
-const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
 console.log("확인")
 
 export default {
