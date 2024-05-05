@@ -1,19 +1,19 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <AppHeader></AppHeader>
-    <v-container fluid>
+  <v-container fluid>
+
+    <v-main>
+      <AppHeader></AppHeader>
       <div>
         <h1>메인</h1>
       </div>
 
       <VCol cols="12" md="10">
-        <AnalyticsTransactions />
+        <AnalyticsTransactions/>
       </VCol>
+    </v-main>
+  </v-container>
 
-
-    </v-container>
-  </v-main>
 </template>
 
 <script>

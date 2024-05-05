@@ -1,8 +1,8 @@
 <template>
   <AppSidebar></AppSidebar>
+  <v-container fluid>
   <v-main>
     <AppHeader></AppHeader>
-    <v-container fluid>
       <v-card flat>
         <v-card-title class="d-flex align-center pe-2">
           <v-spacer></v-spacer>
@@ -10,15 +10,15 @@
                         variant="solo-filled" flat hide-details single-line></v-text-field>
           <v-row>
             <v-col class="text-right">
-              <v-btn variant="outlined" @click="navigateToAdd">팀 추가</v-btn>
+              <v-btn variant="tonal" color="#2979FF" @click="navigateToAdd">팀 추가</v-btn>
             </v-col>
           </v-row>
         </v-card-title>
         <v-spacer></v-spacer>
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
-    </v-container>
   </v-main>
+  </v-container>
   <!--  <TeamDetailPage :team-code="teamCode"/>-->
 </template>
 

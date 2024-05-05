@@ -1,8 +1,8 @@
 <template>
   <AppSidebar></AppSidebar>
+  <v-container fluid>
   <v-main>
     <AppHeader></AppHeader>
-    <v-container fluid>
       <v-row justify="center">
         <v-col cols="12" md="8">
           <v-card>
@@ -44,8 +44,9 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
   </v-main>
+  </v-container>
+
 </template>
 <script>
 

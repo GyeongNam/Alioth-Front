@@ -1,13 +1,13 @@
 <template>
   <AppSidebar></AppSidebar>
+  <v-container fluid>
   <v-main>
     <AppHeader></AppHeader>
-    <v-container fluid>
       <v-col class="text-right">
-        <v-btn variant="outlined" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCode.toString() !== loginStore.memberCode.toString())">수정</v-btn>
+        <v-btn variant="tonal" color="#2979FF" style="margin-right: 0.5vw;" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCode.toString() !== loginStore.memberCode.toString())">수정</v-btn>
 
-        <v-btn variant="outlined" @click="submitChange" v-if="modify"> 완료</v-btn>
-        <v-btn variant="outlined" @click="deleteMember" v-if="!modify && loginStore.getMemberRank === 'HQ' && (salesMembersCode.toString() !== loginStore.memberCode.toString())">삭제</v-btn>
+        <v-btn variant="tonal" color="#2979FF" @click="submitChange" v-if="modify"> 완료</v-btn>
+        <v-btn variant="tonal" color="primary" @click="deleteMember" v-if="!modify && loginStore.getMemberRank === 'HQ' && (salesMembersCode.toString() !== loginStore.memberCode.toString())">삭제</v-btn>
       </v-col>
       <v-row>
         <!-- Image Upload -->
@@ -55,7 +55,7 @@
               <h3>상세 설명</h3>
               <div class="d-flex align-end mb-2">
                 <div class="flex-grow-1"></div>
-                <button class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode">정보수정 </button>
+                <v-btn variant="tonal" color="#2979FF" class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode"> 수정 </v-btn>
               </div>
               <div class="divider"></div>
               <div class="d-flex align-start mb-2">
@@ -86,9 +86,9 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
   </v-main>
-  <v-dialog v-model="modalOpen" width="auto">
+  </v-container>
+  <v-dialog v-model="modalOpen">
     <v-card>
       <v-card-text>
         <v-container>
@@ -100,7 +100,9 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="" @click="closeModal">닫기</v-btn>
+        <v-col class="text-right">
+          <v-btn color="#2C3E50" variant="tonal" @click="closeModal">닫기</v-btn>
+        </v-col>
       </v-card-actions>
     </v-card>
   </v-dialog>

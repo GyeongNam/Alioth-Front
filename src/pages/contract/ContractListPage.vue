@@ -1,24 +1,20 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <AppHeader></AppHeader>
-    <v-divider></v-divider>
-    <v-card style="margin-top: 10px; margin-left: 15px; border-radius: 15px;" max-width="1560">
-    <v-card flat>
-      <v-spacer></v-spacer>
-      <v-row align="center">
-        <v-col cols="4">
-          <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
-            v-model="search"
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            variant="outlined"
-            dense>
-          </v-text-field>
-        </v-col>
-
-        <v-col class="d-flex justify-end">
-          <v-col cols="4">
+  <v-container fluid>
+    <v-main>
+      <AppHeader></AppHeader>
+      <v-card style="margin-top: 10px;">
+        <v-row align="center">
+          <v-col cols="4" class="pa-2 ma-2">
+            <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
+                          v-model="search"
+                          label="Search"
+                          prepend-inner-icon="mdi-magnify"
+                          variant="outlined"
+                          dense>
+            </v-text-field>
+          </v-col>
+          <v-col cols="2">
             <v-select
               v-if="loginStore.memberRank==='HQ'"
               v-model="selectedStatus"
@@ -31,7 +27,7 @@
             </v-select>
           </v-col>
 
-          <v-col cols="4">
+          <v-col cols="2">
             <v-select
               v-if="loginStore.memberRank==='MANAGER' || loginStore.memberRank==='HQ'"
               v-model="selectedSMmember"
@@ -44,32 +40,19 @@
             </v-select>
           </v-col>
 
-          <v-col cols="1">
-            <v-btn
-              color="grey"
-              text
-              @click="navigateToAddModify">
-              계약추가
-            </v-btn>
+          <v-col class="text-right">
+            <v-btn variant="tonal" color="#2979FF" @click="navigateToAddModify" class="button-margin">계약 추가</v-btn>
+            <v-btn variant="tonal" color="#558B2F" @click="downloadExcel" style="margin-right: 1vw;">엑셀다운로드</v-btn>
           </v-col>
-        </v-col>
+        </v-row>
 
-        <v-col cols="1">
-          <v-btn 
-            color="grey"
-            text
-            @click="downloadExcel">
-            엑셀다운로드
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-divider></v-divider>
-      <v-spacer></v-spacer>
-      <v-spacer></v-spacer>
-      <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
-    </v-card>
-  </v-card>
-  </v-main>
+        <v-divider></v-divider>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
+      </v-card>
+    </v-main>
+  </v-container>
 </template>
 
 
@@ -275,12 +258,15 @@ export default {
 
 
 <style scoped>
-.v-text-field, .v-select, .v-btn {
+.v-text-field, .v-select {
   height: 50px;
 }
 
 .d-flex.justify-end {
   display: flex;
   justify-content: flex-end;
+}
+.button-margin {
+  margin-right: 10px; /* 원하는 간격 값으로 조정하세요 */
 }
 </style>

@@ -6,8 +6,17 @@
       <v-divider></v-divider>
 
       <v-card style="margin-top: 10px;">
-      <v-toolbar flat>
-        <v-switch style="margin-left: 10px;"
+          <v-tabs
+            v-model="model"
+            align-tabs="center"
+            color="deep-purple-accent-4"
+          >
+            <v-tab :value="1">공지사항</v-tab>
+            <v-tab :value="2">건의사항</v-tab>
+          </v-tabs>
+
+
+      <v-toolbar flat color="white">
           v-model="model"
           :label="model === 'Announcement' ? '공지사항' : '건의사항'"
           :color="model === 'Announcement' ? 'success' : 'info'"
@@ -16,8 +25,7 @@
           hide-details
           @change="fetchData"
           class="flex-grow-1"
-        ></v-switch>
-        <v-btn color="primary" @click="navigateToAddPage" v-if="shouldShowWriteButton">
+        <v-btn variant="tonal" color="#2979FF" @click="navigateToAddPage" v-if="shouldShowWriteButton">
           글쓰기
         </v-btn>
 
@@ -58,7 +66,7 @@ export default {
   setup() {
   const router = useRouter();
   const loginInfoStore = useLoginInfoStore();
-  const salesMemberRank = ref(loginInfoStore.getMemberRank); 
+  const salesMemberRank = ref(loginInfoStore.getMemberRank);
   const boardTypeStore = useBoardTypeStore();
   const model = ref('Announcement');
 
@@ -115,7 +123,7 @@ export default {
     pageCount() {
     return Math.ceil(this.items.length / 10);
   },
-  
+
     formattedItems() {
       return this.items.map(item => ({
         ...item,

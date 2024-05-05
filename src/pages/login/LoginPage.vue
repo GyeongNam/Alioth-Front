@@ -69,7 +69,7 @@ export default {
           this.loginStore.memberName = data.name;
           this.loginStore.memberImage = data.image; // 이미지 생기면 출력 예정
 
-          alert("성공적으로 로그인 되었습니다.");
+          alert(response.data.message);
           this.$router.push("/")
         })
         .catch(error => {
