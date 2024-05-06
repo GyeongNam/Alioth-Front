@@ -3,9 +3,9 @@
     <v-list >
       <v-list-item >
         <v-list-item-avatar >
-          <v-row style="align-items: center;">
+          <v-row>
             <img src="/Alioth.png" style="width: 60px; height: 60px; margin-right: 10px;"/>
-            <v-list-item-title style="align-self: center;" >Alioth</v-list-item-title>
+            <v-list-item-title style="align-self: center;"  @click="handleMenuClick(`/`);" >Alioth</v-list-item-title>
           </v-row>
         </v-list-item-avatar>
       </v-list-item>

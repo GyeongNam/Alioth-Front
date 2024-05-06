@@ -5,7 +5,6 @@
     <AppHeader></AppHeader>
       <v-col class="text-right">
         <v-btn variant="tonal" color="#2979FF" style="margin-right: 0.5vw;" @click="isModify" v-if="!modify && (loginStore.getMemberRank !== 'FP') && (salesMembersCode.toString() !== loginStore.memberCode.toString())">수정</v-btn>
-
         <v-btn variant="tonal" color="#2979FF" @click="submitChange" v-if="modify"> 완료</v-btn>
         <v-btn variant="tonal" color="primary" @click="deleteMember" v-if="!modify && loginStore.getMemberRank === 'HQ' && (salesMembersCode.toString() !== loginStore.memberCode.toString())">삭제</v-btn>
       </v-col>
