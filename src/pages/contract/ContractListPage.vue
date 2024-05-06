@@ -92,7 +92,7 @@ export default {
     let salesMemberOptions = ref();
 
     const fetchData = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
       axiosInstance.get(`${baseUrl}/api/contract/list`)
         .then(response => {
           let data = response.data.result;
@@ -167,7 +167,7 @@ export default {
 
 
     const downloadExcel = () => {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
       const requestData = {
         startDate: null,
         endDate: null

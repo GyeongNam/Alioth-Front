@@ -33,7 +33,6 @@ import { ref, onMounted } from 'vue';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import { useRouter, useRoute } from 'vue-router';
-import axios from 'axios';
 import axiosInstance from '@/plugins/loginaxios';
 
 export default {
@@ -42,6 +41,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const valid = ref(false);
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
     const contract = ref({
       contractPeriod: '',
       contractPaymentFrequency: '',
@@ -62,7 +62,7 @@ export default {
         return;
       }
 
-      axiosInstance.get(`http://localhost:8080/api/contract/detail/${contractId}`)
+      axiosInstance.get(`${baseUrl}/api/contract/detail/${contractId}`)
       .then(response => {
         const data = response.data.result;
         contract.value.contractPeriod = data.contractPeriod;
@@ -83,7 +83,7 @@ export default {
         return;
       }
 
-      axiosInstance.patch(`http://localhost:8080/api/contract/update/${route.params.id}`, contract.value)
+      axiosInstance.patch(`${baseUrl}/api/contract/update/${route.params.id}`, contract.value)
       .then(() => {
         alert('계약 정보가 성공적으로 변경되었습니다.');
         router.push('/ContractList');

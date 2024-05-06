@@ -97,7 +97,8 @@ export default {
       }
     },
     getSalesMemberData() {
-      axios.get("http://localhost:8081/api/batch/sales-member/day")
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      axios.get(`${baseUrl}/api/batch/sales-member/day`)
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
           this.items = response.data.result || [];
@@ -112,7 +113,8 @@ export default {
         });
     },
     getSalesTeamData() {
-      axios.get("http://localhost:8081/api/batch/sales-team/day")
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      axios.get(`${baseUrl}/api/batch/sales-team/day`)
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
           this.teamItems = response.data.result || [];
@@ -122,9 +124,6 @@ export default {
             ...teamItems,
             id: index + 1,
           }));
-
-
-
           console.log(this.teamItems);
         })
         .catch(error => {

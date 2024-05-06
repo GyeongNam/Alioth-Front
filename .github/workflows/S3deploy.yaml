@@ -16,6 +16,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Create .env file
+        run: |
+          touch .env
+          echo VITE_API_SERVER_BASE_URL=${{ secrets.VITE_API_SERVER_BASE_URL }} >> .env
+          echo VITE_API_STATISTICS_BASE_URL=${{ secrets.VITE_API_STATISTICS_BASE_URL }} >> .env
+          cat .env
+
       - name: npm install
         working-directory: ./
         run: npm install

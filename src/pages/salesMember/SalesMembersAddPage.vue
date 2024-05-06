@@ -101,7 +101,7 @@ export default {
           ...form.value,
           birthDay: formatDateTime(form.value.birthDay),
         };
-        const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+        const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
         axiosInstance.post(`${baseUrl}/api/members/create`, formData)
           .then(response => {
             alert(response.data.message)

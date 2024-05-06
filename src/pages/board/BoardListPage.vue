@@ -149,7 +149,7 @@ export default {
       this.router.push(path);
     },
     fetchData() {
-      const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
       const apiEndpoint = this.model === 'Announcement' ? 'list' : 'suggestions-list';
       const apiURL = `${baseUrl}/api/board/${apiEndpoint}`;
 

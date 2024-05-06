@@ -190,7 +190,7 @@ export default {
     const formatDateTime = (date) => {
       return `${date}`;
     };
-    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)

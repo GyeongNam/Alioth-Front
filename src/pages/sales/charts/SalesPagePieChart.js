@@ -8,7 +8,8 @@ let data = [['보험 분류', '보험별 금액']];
 
 async function getProductCountData() {
   try {
-    const response = await axios.get("http://localhost:8081/api/batch/contract-rank/price");
+    const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+    const response = await axios.get(`${baseUrl}/api/batch/contract-rank/price`);
     const valuesOnly = response.data.result.map(obj => {
       obj.price = parseInt(obj.price);
       return Object.values(obj);

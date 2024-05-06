@@ -23,7 +23,7 @@
       </v-card>
 
       <div style="margin-bottom: 16px;"></div>
-      
+
 
       <v-card>
         <v-card-title class="d-flex align-center pe-2">
@@ -133,7 +133,7 @@ export default {
       rows: [],
       selectedItems: ref([])
     });
-    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
     const fetchData = () => {
 
       axiosInstance.get(`${baseUrl}/api/team/detail/${props.teamCode}`)
@@ -278,7 +278,7 @@ export default {
   display: none;
 }
 .team-info-card {
-  
+
   width: 100%; /* v-card의 너비를 확장합니다. */
   max-width: 350px; /* 최대 너비 설정 (필요에 따라 조정하세요) */
   margin: auto; /* 중앙 정렬 */

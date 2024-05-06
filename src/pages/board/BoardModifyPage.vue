@@ -30,12 +30,12 @@ import Editor from "@/layouts/Editor.vue"; // Editor 컴포넌트를 import
 
 export default {
   components: {AppHeader, AppSidebar, Editor},
-  
+
   setup() {
     const board = ref({ title: '', content: '' });
     const route = useRoute();
     const router = useRouter();
-    const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
 
     const fetchBoardDetails = () => {
       const boardId = route.params.boardId;
@@ -55,7 +55,7 @@ export default {
         title: board.value.title,
         content: board.value.content
       })
-      
+
       .then(response => {
         console.log(response.data);
         alert('공지사항이 수정되었습니다.');

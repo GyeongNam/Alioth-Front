@@ -74,12 +74,12 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const contract = ref(null);
-
+    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL
     const fetchContractDetail = () => {
       const contractId = route.params.id;
-      
 
-      axiosInstance.get(`http://localhost:8080/api/contract/detail/${contractId}`)
+
+      axiosInstance.get(`${baseUrl}/api/contract/detail/${contractId}`)
       .then(response => {
         contract.value = response.data.result;
       })
