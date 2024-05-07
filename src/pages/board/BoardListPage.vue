@@ -15,22 +15,12 @@
             <v-tab :value="1">공지사항</v-tab>
             <v-tab :value="2">건의사항</v-tab>
           </v-tabs>
+        <v-col class="text-right">
+          <v-btn variant="tonal" style="margin-right: 0.5vw" color="#2979FF" @click="navigateToAddPage" v-if="shouldShowWriteButton">
+            글쓰기
+          </v-btn>
+        </v-col>
 
-
-      <v-toolbar flat color="white">
-          v-model="model"
-          :label="model === 'Announcement' ? '공지사항' : '건의사항'"
-          :color="model === 'Announcement' ? 'success' : 'info'"
-          false-value="Announcement"
-          true-value="Suggestion"
-          hide-details
-          @change="fetchData"
-          class="flex-grow-1"
-        <v-btn variant="tonal" color="#2979FF" @click="navigateToAddPage" v-if="shouldShowWriteButton">
-          글쓰기
-        </v-btn>
-
-      </v-toolbar>
       <ListComponent
         :columns="headers"
         :rows="formattedItems.slice((currentPage-1)*10, currentPage*10)"

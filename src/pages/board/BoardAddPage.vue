@@ -12,7 +12,7 @@
             required
           ></v-text-field>
           <Editor @update:content="updateContent" :initialContent="announcement.content"/>
-          <v-btn :disabled="!valid" color="success" @click="submitAnnouncement">
+          <v-btn style="margin-top: 0.5vw" color="#2979FF" variant="tonal" :disabled="!valid" @click="submitAnnouncement">
             공지사항 추가
           </v-btn>
         </v-form>

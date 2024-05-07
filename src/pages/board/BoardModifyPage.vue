@@ -41,7 +41,6 @@ export default {
       const boardId = route.params.boardId;
       axiosInstance.get(`${baseUrl}/api/board/detail/${boardId}`)
         .then(response => {
-          console.log(response.data);
           board.value = response.data.result;
         }).catch(error => {
         console.error('게시판 상세 정보를 가져오는데 실패했습니다:', error);
