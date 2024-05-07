@@ -1,10 +1,9 @@
 <template>
   <AppSidebar></AppSidebar>
   <v-main>
-    <AppHeader></AppHeader>
     <v-container fluid>
+    <AppHeader></AppHeader>
       <v-card>
-        <!-- <v-card-title>계약 상세 정보</v-card-title> -->
         <v-card-text>
           <div v-if="contract">
             <p><strong>계약 번호:</strong> {{ contract.contractId }}</p>

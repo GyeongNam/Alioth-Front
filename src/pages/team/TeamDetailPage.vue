@@ -1,23 +1,30 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <AppHeader></AppHeader>
-    <v-container fluid>
-
-      <v-card flat class="team-info-card">
-        <v-row >
-          <v-col cols="6" md="6"> <!-- 팀 명 -->
-            <v-card variant="outlined" class="team-card">
-              <p class="team-label">팀명</p>
-              <p class="team-name">{{ state.teamName }}</p>
-            </v-card>
+  <v-container fluid>
+    <v-main>
+      <AppHeader></AppHeader>
+      <v-card flat>
+        <v-row>
+          <v-col cols="3" class="d-flex align-center">
+            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">팀명</v-card-title>
+            <div style="font-family: 'Spoqa Han Sans Neo'">{{ state.teamName }}</div>
           </v-col>
-
-          <v-col cols="6" md="6">
-            <v-card variant="outlined" class="team-card">
-              <p class="team-label">팀장</p>
-              <p class="team-name">{{ state.teamManagerName }}</p>
-            </v-card>
+          <v-col cols="3" class="d-flex align-center">
+            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">팀장</v-card-title>
+            <div style="font-family: 'Spoqa Han Sans Neo'">{{ state.teamManagerName }}</div>
+          </v-col>
+          <v-col cols="3" class="d-flex align-center">
+            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">매출 목표</v-card-title>
+            <div class="custom-font">{{ state.monthlyTargetCount }}건 | {{ state.monthlyTargetPrice }}원</div>
+          </v-col>
+          <v-col cols="3">
+            <v-col class="d-flex align-center">
+              <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'" @click="isModify">고과평가</v-card-title>
+              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" style="font-family: 'Spoqa Han Sans Neo'">
+                {{ state.performanceReview }}
+              </v-card-title>
+              <v-select v-if="modify" v-model="state.performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
+            </v-col>
           </v-col>
         </v-row>
       </v-card>
@@ -25,28 +32,27 @@
       <div style="margin-bottom: 16px;"></div>
 
 
-      <v-card>
-        <v-card-title class="d-flex align-center pe-2">
-          <!--          <v-icon icon="fa:fas fa-edit"></v-icon> &nbsp;-->
-          팀원 목록
-          <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
-                        variant="solo-filled" flat hide-details single-line></v-text-field>
-          <v-row>
-            <v-col class="text-right">
-              <v-btn variant="outlined" @click="navigateToAdd">팀원 추가</v-btn>
-            </v-col>
-          </v-row>
-        </v-card-title>
+      <v-card style="margin-top: 10px;">
+        <v-row align="center" class="d-flex justify-space-between">
+          <v-col cols="4" class="pa-2 ma-2">
+            <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
+                          v-model="search"
+                          label="Search"
+                          prepend-inner-icon="mdi-magnify"
+                          variant="outlined"
+                          dense>
+            </v-text-field>
+          </v-col>
+
+          <v-col class="text-right">
+            <v-btn variant="tonal" color="#2979FF" @click="navigateToAdd" style="margin-right: 1vw">팀원 추가</v-btn>
+          </v-col>
+        </v-row>
         <v-spacer></v-spacer>
         <ListComponent :columns="state.tableColumns" :rows="state.tableRows" @click:row="navigateToDetail"/>
       </v-card>
-      <v-col class="text-right">
-        <v-btn variant="outlined" @click="downloadExcel">엑셀다운로드</v-btn>
-        <v-btn variant="outlined" @click="deleteTeam">팀 삭제</v-btn>
-      </v-col>
-    </v-container>
-  </v-main>
+    </v-main>
+  </v-container>
   <v-dialog v-model="state.modalOpen" width="auto">
     <v-card>
       <v-card-title>
@@ -103,6 +109,7 @@ import ListComponent from "@/layouts/ListComponent.vue";
 import {ref, onMounted, reactive} from 'vue';
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
+import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
   components: {ListComponent, AppHeader, AppSidebar},
@@ -116,6 +123,9 @@ export default {
     const state = reactive({
       teamName: '', // 초기값을 빈 문자열로 설정
       teamManagerName: '',
+      performanceReview: '',
+      monthlyTargetPrice: '',
+      monthlyTargetCount: '',
       salesMemberCode: 'salesMemberCode',
       modalOpen: false,
       tableColumns: [
@@ -133,6 +143,8 @@ export default {
       rows: [],
       selectedItems: ref([])
     });
+    const modify = ref(false);
+    const loginStore = useLoginInfoStore();
     const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
     const fetchData = () => {
 
@@ -142,12 +154,17 @@ export default {
             const {
               teamName: fetchedTeamName,
               teamManagerName: fetchedTeamManagerName,
+              performanceReview: fetchedPerformanceReview,
+              monthlyTargetPrice: fetchedMonthlyTargetPrice,
+              monthlyTargetCount: fetchedMonthlyTargetCount,
               teamMemberList
             } = response.data.result;
-            // 데이터를 Vue 데이터에 할당
+
             state.teamName = fetchedTeamName; // API 응답에서 받은 값으로 할당
             state.teamManagerName = fetchedTeamManagerName;
-            // 데이터를 가져온 후에 각 항목에 대한 ID를 추가
+            state.performanceReview = fetchedPerformanceReview;
+            state.monthlyTargetPrice = fetchedMonthlyTargetPrice;
+            state.monthlyTargetCount = fetchedMonthlyTargetCount;
             teamMemberList.forEach((item, index) => {
               item.id = index + 1;
             });
@@ -184,6 +201,12 @@ export default {
       state.modalOpen = false;
     }
 
+    function isModify() {
+      modify.value = !modify.value
+      console.log(state.performanceReview)
+    }
+
+
     function toggleCheckbox(item) {
       item.isSelected = !item.isSelected;
     }
@@ -211,7 +234,7 @@ export default {
         .filter(item => item.isSelected) //
         .map(item => item.salesMemberCode);
       if (confirm("선택하신 사원들을 추가하시겠습니까?")) {
-        axiosInstance.post(`${baseUrl}/api/team/addMembers/${props.teamCode}`,selectedEmployeeCodes)
+        axiosInstance.post(`${baseUrl}/api/team/addMembers/${props.teamCode}`, selectedEmployeeCodes)
           .then(() => {
             alert("추가되었습니다.")
             closeModal();
@@ -223,8 +246,8 @@ export default {
       }
     }
 
-    function deleteTeam(){
-      if(confirm("팀을 삭제하시겠습니까?")){
+    function deleteTeam() {
+      if (confirm("팀을 삭제하시겠습니까?")) {
         axiosInstance.delete(`${baseUrl}/api/team/delete/${props.teamCode}`)
           .then(() => {
             alert("삭제되었습니다.")
@@ -235,6 +258,7 @@ export default {
           });
       }
     }
+
     function downloadExcel() {
       const requestData = {
         startDate: null,
@@ -253,19 +277,23 @@ export default {
           window.URL.revokeObjectURL(url);
         })
     }
+
     onMounted(() => {
       fetchData();
     });
 
     return {
+      loginStore,
       state,
       teamMemberList,
+      modify,
       toggleAll,
       navigateToDetail,
       toggleCheckbox,
       selectMembers,
       navigateToAdd,
       closeModal,
+      isModify,
       deleteTeam,
       downloadExcel
     }
@@ -274,9 +302,15 @@ export default {
 </script>
 
 <style>
+
 .v-input__details {
   display: none;
 }
+
+.custom-font {
+  font-family: "Spoqa Han Sans Neo", sans-serif;
+}
+
 .team-info-card {
 
   width: 100%; /* v-card의 너비를 확장합니다. */

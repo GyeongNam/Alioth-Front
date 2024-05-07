@@ -3,52 +3,48 @@
   <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
-      <v-card style="margin-top: 10px;">
-        <v-row align="center">
-          <v-col cols="4" class="pa-2 ma-2">
-            <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
-                          v-model="search"
-                          label="Search"
-                          prepend-inner-icon="mdi-magnify"
-                          variant="outlined"
-                          dense>
-            </v-text-field>
-          </v-col>
-          <v-col cols="2">
-            <v-select
-              v-if="loginStore.memberRank==='HQ'"
-              v-model="selectedStatus"
-              :items="statusOptions"
-              item-title="key"
-              item-value="val"
-              label="Team Code"
-              outlined
-              dense>
-            </v-select>
-          </v-col>
+      <v-row align="center">
+        <!--          <v-col cols="4" class="pa-2 ma-2">
+                    <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
+                                  v-model="search"
+                                  label="Search"
+                                  prepend-inner-icon="mdi-magnify"
+                                  variant="outlined"
+                                  dense>
+                    </v-text-field>
+                  </v-col>-->
+        <v-col cols="2" class="pa-2 ma-2">
+          <v-select
+            v-if="loginStore.memberRank==='HQ'"
+            v-model="selectedStatus"
+            :items="statusOptions"
+            item-title="key"
+            item-value="val"
+            label="Team Code"
+            outlined
+            dense>
+          </v-select>
+        </v-col>
 
-          <v-col cols="2">
-            <v-select
-              v-if="loginStore.memberRank==='MANAGER' || loginStore.memberRank==='HQ'"
-              v-model="selectedSMmember"
-              :items="salesMemberOptions"
-              label="Sales Member"
-              item-title="key"
-              item-value="val"
-              outlined
-              dense>
-            </v-select>
-          </v-col>
+        <v-col cols="2">
+          <v-select
+            v-if="loginStore.memberRank==='MANAGER' || loginStore.memberRank==='HQ'"
+            v-model="selectedSMmember"
+            :items="salesMemberOptions"
+            label="Sales Member"
+            item-title="key"
+            item-value="val"
+            outlined
+            dense>
+          </v-select>
+        </v-col>
 
-          <v-col class="text-right">
-            <v-btn variant="tonal" color="#2979FF" @click="navigateToAddModify" class="button-margin">계약 추가</v-btn>
-            <v-btn variant="tonal" color="#558B2F" @click="downloadExcel" style="margin-right: 1vw;">엑셀다운로드</v-btn>
-          </v-col>
-        </v-row>
-
-        <v-divider></v-divider>
-        <v-spacer></v-spacer>
-        <v-spacer></v-spacer>
+        <v-col class="text-right">
+          <v-btn variant="tonal" color="#2979FF" @click="navigateToAddModify" class="button-margin">계약 추가</v-btn>
+          <v-btn variant="tonal" color="#558B2F" @click="downloadExcel" style="margin-right: 1vw;">엑셀다운로드</v-btn>
+        </v-col>
+      </v-row>
+      <v-card style="margin-top: 1vw;">
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
     </v-main>
@@ -142,7 +138,7 @@ export default {
           }
 
           // console.log(response.data.result)
-          if(useLoginInfoStore().memberRank === 'FP'){
+          if (useLoginInfoStore().memberRank === 'FP') {
             data = data.filter(contract => contract.salesMemberResDto.salesMemberCode === useLoginInfoStore().getMemberCode);
           }
 
@@ -174,19 +170,19 @@ export default {
       };
       let url = null
       if (useLoginInfoStore().memberRank === 'HQ') {
-        if(selectedStatus.value === null && selectedSMmember.value === null){
+        if (selectedStatus.value === null && selectedSMmember.value === null) {
           url = `${baseUrl}/api/excel/export/contract`
-        }else if(selectedStatus.value !== null && selectedSMmember.value === null){
+        } else if (selectedStatus.value !== null && selectedSMmember.value === null) {
           url = `${baseUrl}/api/excel/export/contract/${selectedStatus.value}`
-        }else if(selectedStatus.value !== null && selectedSMmember.value !== null){
+        } else if (selectedStatus.value !== null && selectedSMmember.value !== null) {
           url = `${baseUrl}/api/excel/export/contract/${selectedSMmember.value}`
         }
       }
 
       if (useLoginInfoStore().memberRank === 'MANAGER') {
-        if(selectedSMmember.value === null){
+        if (selectedSMmember.value === null) {
           url = `${baseUrl}/api/excel/export/contract`
-        }else {
+        } else {
           url = `${baseUrl}/api/excel/export/contract/${selectedSMmember.value}`
         }
       }
@@ -266,6 +262,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+
 .button-margin {
   margin-right: 10px; /* 원하는 간격 값으로 조정하세요 */
 }

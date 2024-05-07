@@ -3,8 +3,9 @@
   <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
-      <v-card style="margin-top: 10px;">
+
         <v-row align="center">
+<!--
           <v-col cols="4" class="pa-2 ma-2">
             <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
                           v-model="search"
@@ -14,8 +15,9 @@
                           dense>
             </v-text-field>
           </v-col>
+-->
 
-          <v-col cols="2">
+          <v-col cols="2" class="pa-2 ma-2">
             <v-select
               clearable
               label="팀 명"
@@ -34,6 +36,7 @@
         </v-row>
         <v-divider></v-divider>
         <v-spacer></v-spacer>
+      <v-card style="margin-top: 1vw;">
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
 
