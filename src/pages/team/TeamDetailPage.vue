@@ -6,21 +6,26 @@
       <v-card flat>
         <v-row>
           <v-col cols="3" class="d-flex align-center">
-            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">팀명</v-card-title>
-            <div style="font-family: 'Spoqa Han Sans Neo'">{{ state.teamName }}</div>
+            <v-card-title class="mr-2 custom-font">팀명</v-card-title>
+            <div class="custom-font" v-if="!modify">{{ state.teamName }}</div>
+              <v-col v-if="modify" cols="6">
+                <v-text-field v-model="state.teamName"></v-text-field>
+              </v-col>
           </v-col>
           <v-col cols="3" class="d-flex align-center">
-            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">팀장</v-card-title>
-            <div style="font-family: 'Spoqa Han Sans Neo'">{{ state.teamManagerName }}</div>
+            <v-card-title class="mr-2 custom-font">팀장</v-card-title>
+            <div class="custom-font" v-if="!modify">{{ state.teamManagerName }}</div>
+            <v-text-field v-if="modify" v-model="state.teamManagerName" @click="showModal()" readonly></v-text-field>
           </v-col>
           <v-col cols="3" class="d-flex align-center">
-            <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'">매출 목표</v-card-title>
-            <div class="custom-font">{{ state.monthlyTargetCount }}건 | {{ state.monthlyTargetPrice }}원</div>
+            <v-card-title class="mr-2 custom-font">매출 목표</v-card-title>
+            <div class="custom-font" v-if="!modify">{{ state.monthlyTargetCount }}건 | {{ state.monthlyTargetPrice }}원</div>
+            <v-btn v-if="modify && loginStore.memberRank==='HQ'" variant="tonal" color="#1A237E" @click="showSalesModal()">매출 목표 입력</v-btn>
           </v-col>
           <v-col cols="3">
             <v-col class="d-flex align-center">
-              <v-card-title class="mr-2" style="font-family: 'Spoqa Han Sans Neo'" @click="isModify">고과평가</v-card-title>
-              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" style="font-family: 'Spoqa Han Sans Neo'">
+              <v-card-title class="mr-2 custom-font" >고과평가</v-card-title>
+              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" class="custom-font" >
                 {{ state.performanceReview }}
               </v-card-title>
               <v-select v-if="modify" v-model="state.performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
@@ -52,12 +57,14 @@
         <v-spacer></v-spacer>
         <ListComponent :columns="state.tableColumns" :rows="state.tableRows" @click:row="navigateToDetail"/>
       </v-card>
+      <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& !modify" style="margin-top: 0.5vw; margin-right: 0.5vw" @click="isModify">정보 수정</v-btn>
+      <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& modify" style="margin-top: 0.5vw; margin-right: 0.5vw" @click="updateTeam">수정 완료</v-btn>
+      <v-btn color="primary" variant="tonal" v-if="loginStore.memberRank==='HQ'" style="margin-top: 0.5vw" @click="deleteTeam">팀 삭제</v-btn>
     </v-main>
   </v-container>
+
   <v-dialog v-model="state.modalOpen" width="auto">
     <v-card>
-      <v-card-title>
-      </v-card-title>
       <v-card-text>
         <v-container>
           <div>
@@ -95,12 +102,47 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="" @click="selectMembers">확인</v-btn>
+        <v-btn color="#2979FF" variant="tonal" @click="selectMembers">확인</v-btn>
         <v-btn color="" @click="closeModal">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
+  <v-dialog v-model="updateTeamManager" width="auto">
+    <v-card>
+      <v-card-title>
+      </v-card-title>
+      <v-card-text>
+        <v-container>
+          <div>
+            <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                          variant="solo-filled" flat hide-details single-line></v-text-field>
+            <ListComponent :columns="tableColumns" :rows="rows" @click:row="select"></ListComponent>
+          </div>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="#2C3E50" variant="tonal" @click="updateTeamManager=false">닫기</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="updateSales" >
+    <v-card title="매출 목표">
+        <v-row>
+          <v-col cols="4">
+            <v-text-field label="목표 건수" v-model="state.monthlyTargetCount"></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field label="목표 금액" v-model="state.monthlyTargetPrice"></v-text-field>
+          </v-col>
+        </v-row>
+      <v-card-actions>
+        <v-btn color="grey" variant="tonal" @click="updateSales=false">닫기</v-btn>
+        <v-btn color="#2979FF" variant="tonal" @click="">저장</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -144,9 +186,26 @@ export default {
       rows: [],
       selectedItems: ref([])
     });
+    const form = ref({
+      teamName: '',
+      teamManagerCode: '',
+      name: '',
+    });
+    const tableColumns = [
+      {title: "이름", key: "name"},
+      {title: "사원번호", key: "salesMemberCode"},
+    ];
+    const rows = ref([]);
+    const teamName = ref('');
+    const teamManagerCode = ref('');
+    const name = ref('');
+    const updateTeamManager = ref(false);
+    const updateSales = ref(false);
+
     const search = ref('');
     const MySearch = ref('');
     const modify = ref(false);
+
     const loginStore = useLoginInfoStore();
     const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
     const fetchData = () => {
@@ -215,6 +274,29 @@ export default {
           console.log('Error fetching data:', error);
         });
     }
+    const managerFetchData = () => {
+      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
+      axiosInstance.get(`${baseUrl}/api/members/list/manager`)
+        .then(response => {
+          const data = response.data.result;
+          console.log(data)
+
+          const filteredData = data.filter(item => {
+            const name = item.name.toLowerCase();
+            const salesMemberCode = item.salesMemberCode.toString().toLowerCase();
+            return name.includes(search.value) || salesMemberCode.includes(search.value);
+          });
+
+          filteredData.forEach((item, index) => {
+            item.id = index + 1;
+          });
+
+          rows.value = filteredData;
+        })
+        .catch(error => {
+          console.log('Error fetching data:', error);
+        });
+    };
 
     let teamMemberList;
 
@@ -226,11 +308,15 @@ export default {
       state.modalOpen = false;
     }
 
+    function showModal(){
+      updateTeamManager.value = true;
+    }
     function isModify() {
       modify.value = !modify.value
-      console.log(state.performanceReview)
     }
-
+    function showSalesModal(){
+      updateSales.value = true;
+    }
 
     function toggleCheckbox(item) {
       item.isSelected = !item.isSelected;
@@ -253,6 +339,11 @@ export default {
         });
       }
     }
+
+    function updateTeam(){
+
+    }
+
 
     function selectMembers() {
       const selectedEmployeeCodes = state.rows
@@ -284,32 +375,6 @@ export default {
       }
     }
 
-    function downloadExcel() {
-      const requestData = {
-        startDate: null,
-        endDate: null
-      };
-      axiosInstance.post(`${baseUrl}/api/excel/export/salesMembers/${props.teamCode}`, requestData, {
-        responseType: 'blob'
-      })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', '팀원목록.xlsx');
-          document.body.appendChild(link);
-          link.click();
-          window.URL.revokeObjectURL(url);
-        })
-    }
-
-    // function MySearchKeyUp(){
-    //   console.log(MySearch)
-    // }
-    //
-    // function searchKeyUp(){
-    //   console.log(search)
-    // }
     watch(MySearch, () => {
       fetchData();
     });
@@ -320,6 +385,7 @@ export default {
     onMounted(() => {
       fetchData();
       membersFetchData();
+      managerFetchData();
     });
 
     return {
@@ -327,6 +393,16 @@ export default {
       state,
       teamMemberList,
       modify,
+      form,
+      rows,
+      teamName,
+      teamManagerCode,
+      name,
+      tableColumns,
+      updateTeamManager,
+      updateSales,
+      showSalesModal,
+      showModal,
       toggleAll,
       navigateToDetail,
       toggleCheckbox,
@@ -334,12 +410,10 @@ export default {
       navigateToAdd,
       closeModal,
       isModify,
-      // MySearchKeyUp,
-      // searchKeyUp,
       deleteTeam,
+      updateTeam,
       search,
       MySearch,
-      downloadExcel
     }
   },
 }

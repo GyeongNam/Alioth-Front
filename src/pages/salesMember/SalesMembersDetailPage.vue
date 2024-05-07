@@ -104,7 +104,7 @@
     </v-card>
   </v-dialog>
   <v-dialog v-model="isModalOpen" width="auto">
-    <v-card prepend-icon="" title="정보 수정">
+    <v-card title="정보 수정">
       <v-card-text>
         <v-row dense>
           <v-col cols="12" md="4" sm="6">
@@ -177,7 +177,6 @@ export default {
     const modalOpen = ref(false);
     const isModalOpen = ref(false)
     const rows = ref([]);
-    const salesMembersCodeTemp = ref('');
     const tableColumns = [
       {title: "팀", key: "teamName"},
       {title: "팀 코드", key: "teamCode"},
@@ -193,7 +192,6 @@ export default {
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
         .then(response => {
-          console.log(response.data.result)
           if (response.data && response.data.result) {
             const {
               profile: profileImageUrl,
@@ -226,7 +224,6 @@ export default {
             performanceReview.value = pr
             teamName.value = teamNames
             teamCode.value = teamCodes
-            salesMembersCodeTemp.value = props.salesMembersCode
           } else {
             console.error('Empty response or missing result data');
           }
@@ -257,8 +254,6 @@ export default {
       }
 
       if (confirm("수정하시겠습니까?")) {
-        console.log(props.salesMembersCode)
-        console.log("로그인 : "+ loginStore.getMemberCode)
         axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMembersCode}`, data)
           .then(res => {
             console.log(res)
