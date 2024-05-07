@@ -1,4 +1,5 @@
 <template>
+  <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
   <AppSidebar></AppSidebar>
   <v-container fluid>
     <v-main>

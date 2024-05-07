@@ -1,10 +1,9 @@
 <template>
   <AppSidebar></AppSidebar>
   <v-main>
-    <AppHeader></AppHeader>
     <v-container fluid>
+    <AppHeader></AppHeader>
       <v-card>
-        <!-- <v-card-title>계약 상세 정보</v-card-title> -->
         <v-card-text>
           <div v-if="contract">
             <p><strong>계약 번호:</strong> {{ contract.contractId }}</p>
@@ -49,8 +48,8 @@
           <div v-else>
             <p>계약 정보를 불러오는 중...</p>
           </div>
-          <v-btn rounded="pill" color="#42A5F5" @click="navigateToModify">수정</v-btn>
-          <v-btn rounded="pill" color="#42A5F5" @click="navigateToCancel">해약</v-btn>
+          <v-btn variant="tonal" color="#2979FF" @click="navigateToModify">수정</v-btn>
+          <v-btn variant="tonal" color="primary" @click="navigateToCancel">해약</v-btn>
         </v-card-text>
       </v-card>
     </v-container>

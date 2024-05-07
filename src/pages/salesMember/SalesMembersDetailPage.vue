@@ -44,8 +44,6 @@
               </v-col>
               <v-col cols="4">
                 <h5>고과평가</h5>
-                <v-col cols="12" md="4" class="text-right">
-                </v-col>
                 <v-card-text v-if="!modify">{{ performanceReview }}</v-card-text>
                 <v-select v-if="modify" v-model="performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
               </v-col>
@@ -141,7 +139,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn text="닫기" variant="plain" @click="closeMyPageModal"></v-btn>
-        <v-btn color="primary" text="저장" variant="tonal" @click="updateMyPage"></v-btn>
+        <v-btn color="#2979FF" variant="tonal"  text="저장" @click="updateMyPage"></v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

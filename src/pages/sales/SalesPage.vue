@@ -292,8 +292,8 @@ export default {
 </script>
 
 <style scoped>
-  .grey {
-    background-color: grey !important; /* 회색 배경색 */
-    color: white !important; /* 흰색 텍스트색 */
-  }
+.grey {
+  background-color: grey !important; /* 회색 배경색 */
+  color: white !important; /* 흰색 텍스트색 */
+}
 </style>

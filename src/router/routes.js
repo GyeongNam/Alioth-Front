@@ -257,6 +257,10 @@ const routes = [
       requiresAuth: true
     }
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
+  }
 ]
 
 export default routes
