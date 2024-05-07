@@ -1,25 +1,24 @@
 <template>
   <AppSidebar></AppSidebar>
   <v-container fluid>
-  <v-main>
-    <AppHeader></AppHeader>
-      <v-card flat>
-        <v-card-title class="d-flex align-center pe-2">
-          <v-spacer></v-spacer>
-          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
-                        variant="solo-filled" flat hide-details single-line></v-text-field>
-          <v-row>
-            <v-col class="text-right">
-              <v-btn variant="tonal" color="#2979FF" @click="navigateToAdd">팀 추가</v-btn>
-            </v-col>
-          </v-row>
-        </v-card-title>
+    <v-main>
+      <AppHeader></AppHeader>
+      <v-card style="margin-top: 10px;">
+        <v-row align="center">
+          <v-col cols="4" class="pa-2 ma-2">
+            <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;" v-model="search"
+                          label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" dense>
+            </v-text-field>
+          </v-col>
+          <v-col class="text-right">
+            <v-btn variant="tonal" color="#2979FF" @click="navigateToAdd" style="margin-right:1vw">팀 추가</v-btn>
+          </v-col>
+        </v-row>
         <v-spacer></v-spacer>
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
-  </v-main>
+    </v-main>
   </v-container>
-  <!--  <TeamDetailPage :team-code="teamCode"/>-->
 </template>
 
 <script>

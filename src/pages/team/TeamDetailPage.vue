@@ -152,12 +152,12 @@ export default {
               item.id = index + 1;
             });
             state.tableRows = teamMemberList;
-          } else {
-            console.error('Empty response or missing result data');
           }
         })
         .catch(error => {
+          alert("담당팀이 없습니다.")
           console.error('Error fetching data:', error);
+          router.push(`/`)
         });
 
       axiosInstance.get(`${baseUrl}/api/members/list/FP`)

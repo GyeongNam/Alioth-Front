@@ -49,8 +49,8 @@
           <div v-else>
             <p>계약 정보를 불러오는 중...</p>
           </div>
-          <v-btn rounded="pill" color="#42A5F5" @click="navigateToModify">수정</v-btn>
-          <v-btn rounded="pill" color="#42A5F5" @click="navigateToCancel">해약</v-btn>
+          <v-btn variant="tonal" color="#2979FF" @click="navigateToModify">수정</v-btn>
+          <v-btn variant="tonal" color="primary" @click="navigateToCancel">해약</v-btn>
         </v-card-text>
       </v-card>
     </v-container>

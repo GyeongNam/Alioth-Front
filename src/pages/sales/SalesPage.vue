@@ -1,20 +1,11 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <AppHeader></AppHeader>
-    <v-container fluid>
-      <div>
-        <v-divider></v-divider>
-        <h2>매출 메인 화면</h2>
-        <v-divider></v-divider>
-        <p><button onclick="location.href=`/Sales/Ranking`">매출순위</button></p>
-      </div>
-
-      <v-btn-toggle v-model="selectedPeriod" mandatory>
-        <v-btn :class="{ 'grey': selectedPeriod === '월' }">월</v-btn>
-        <v-btn :class="{ 'grey': selectedPeriod === '반기' }">반기</v-btn>
-        <v-btn :class="{ 'grey': selectedPeriod === '년' }">년</v-btn>
-      </v-btn-toggle>
+  <v-container fluid>
+    <v-main>
+      <AppHeader></AppHeader>
+        <v-col class="text-right">
+          <v-btn variant="tonal" color="#1A237E" onclick="location.href=`/Sales/Ranking`" style="margin-right: 1vw">매출순위</v-btn>
+        </v-col>
 
       <v-row class="mt-4">
         <v-col cols="12" md="5">
@@ -52,9 +43,8 @@
       </v-row>
 
 
-
-    </v-container>
-  </v-main>
+    </v-main>
+  </v-container>
 </template>
 
 <script>
@@ -96,15 +86,13 @@ export default {
       selectedPeriod: '월', // 초기 선택값은 월로 설정
     };
   },
-  methods: {
-
-  },
+  methods: {},
 }
 </script>
 
 <style scoped>
-  .grey {
-    background-color: grey !important; /* 회색 배경색 */
-    color: white !important; /* 흰색 텍스트색 */
-  }
+.grey {
+  background-color: grey !important; /* 회색 배경색 */
+  color: white !important; /* 흰색 텍스트색 */
+}
 </style>
