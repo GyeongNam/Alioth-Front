@@ -58,10 +58,6 @@ export default {
             item.id = index + 1;
           });
 
-          console.log('팀 목록 데이터:');
-          console.log(filteredData);
-
-
           tableRows.value = filteredData;
         })
         .catch(error => {
