@@ -5,18 +5,6 @@
       <AppHeader></AppHeader>
 
         <v-row align="center">
-<!--
-          <v-col cols="4" class="pa-2 ma-2">
-            <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
-                          v-model="search"
-                          label="Search"
-                          prepend-inner-icon="mdi-magnify"
-                          variant="outlined"
-                          dense>
-            </v-text-field>
-          </v-col>
--->
-
           <v-col cols="2" class="pa-2 ma-2">
             <v-select
               clearable
