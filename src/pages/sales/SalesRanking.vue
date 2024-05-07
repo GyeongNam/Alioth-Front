@@ -15,14 +15,6 @@
           </v-col>
 
           <v-col cols="12">
-              <!-- <v-switch v-model="model"
-                        :label="model === '개인' ? '개인' : '팀'"
-                        :color="model === '개인' ? 'success' : 'info'"
-                        :false-value="'개인'"
-                        :true-value="'팀'"
-                        hide-details
-                        @change="fetchData">
-              </v-switch> -->
               <v-text-field v-model="startDate" class="mt-3"></v-text-field>
               <v-dialog v-model="datePickerDialog" persistent max-width="300px">
                 <v-card>
