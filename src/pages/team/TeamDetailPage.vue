@@ -36,11 +36,12 @@
         <v-row align="center" class="d-flex justify-space-between">
           <v-col cols="4" class="pa-2 ma-2">
             <v-text-field style="margin-bottom: 15px; margin-left: 15px; margin-top: 15px;"
-                          v-model="search"
+                          v-model="MySearch"
                           label="Search"
                           prepend-inner-icon="mdi-magnify"
                           variant="outlined"
-                          dense>
+                          dense
+            >
             </v-text-field>
           </v-col>
 
@@ -106,7 +107,7 @@
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import ListComponent from "@/layouts/ListComponent.vue";
-import {ref, onMounted, reactive} from 'vue';
+import {ref, onMounted, reactive, watch} from 'vue';
 import axiosInstance from "@/plugins/loginaxios";
 import router from "@/router";
 import {useLoginInfoStore} from "@/stores/loginInfo";
@@ -143,6 +144,8 @@ export default {
       rows: [],
       selectedItems: ref([])
     });
+    const search = ref('');
+    const MySearch = ref('');
     const modify = ref(false);
     const loginStore = useLoginInfoStore();
     const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
@@ -165,10 +168,19 @@ export default {
             state.performanceReview = fetchedPerformanceReview;
             state.monthlyTargetPrice = fetchedMonthlyTargetPrice;
             state.monthlyTargetCount = fetchedMonthlyTargetCount;
-            teamMemberList.forEach((item, index) => {
+
+            const filteredData = teamMemberList.filter(item => {
+              const name = item.name.toLowerCase();
+              const salesMemberCode = item.salesMemberCode.toString().toLowerCase();
+              const phone = item.phone.toLowerCase();
+              return name.includes(MySearch.value) || salesMemberCode.includes(MySearch.value) || phone.includes(MySearch.value);
+            });
+
+            filteredData.forEach((item, index) => {
               item.id = index + 1;
             });
-            state.tableRows = teamMemberList;
+
+            state.tableRows = filteredData;
           }
         })
         .catch(error => {
@@ -177,20 +189,33 @@ export default {
           router.push(`/`)
         });
 
+
+    };
+
+    const membersFetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/list/FP`)
         .then(response => {
           const data = response.data.result;
-          console.log(data)
-          data.forEach((item, index) => {
+
+          const filteredData = data.filter(item => {
+            const name = item.name.toLowerCase();
+            const salesMemberCode = item.salesMemberCode.toString().toLowerCase();
+            const phone = item.phone.toLowerCase();
+            return name.includes(search.value) || salesMemberCode.includes(search.value) || phone.includes(search.value);
+          });
+
+          filteredData.forEach((item, index) => {
             item.id = index + 1;
             item.isSelected = false; // isSelected 속성을 추가하고 초기값을 false로 설정합니다.
           });
-          state.rows = data;
+
+          state.rows = filteredData;
         })
         .catch(error => {
           console.log('Error fetching data:', error);
         });
-    };
+    }
+
     let teamMemberList;
 
     function navigateToAdd() {
@@ -278,8 +303,23 @@ export default {
         })
     }
 
+    // function MySearchKeyUp(){
+    //   console.log(MySearch)
+    // }
+    //
+    // function searchKeyUp(){
+    //   console.log(search)
+    // }
+    watch(MySearch, () => {
+      fetchData();
+    });
+    watch(search, () => {
+      membersFetchData();
+    });
+
     onMounted(() => {
       fetchData();
+      membersFetchData();
     });
 
     return {
@@ -294,7 +334,11 @@ export default {
       navigateToAdd,
       closeModal,
       isModify,
+      // MySearchKeyUp,
+      // searchKeyUp,
       deleteTeam,
+      search,
+      MySearch,
       downloadExcel
     }
   },
