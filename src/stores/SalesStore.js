@@ -4,6 +4,7 @@ export const useSalesStore = defineStore('SalesStore', {
   state: () => ({
     startDate: "",
     startTeamDate: "",
+    startHQDate: "",
     salesPersonal: "월",
     salesTeam: "월",
     salesHQ: "월",
@@ -15,6 +16,9 @@ export const useSalesStore = defineStore('SalesStore', {
     },
     getStartTeamDate() {
       return this.$state.startTeamDate;
+    },
+    getStartHQDate() {
+      return this.$state.startHQDate;
     },
     getSalesPersonal() {
       return this.$state.salesPersonal;

@@ -43,26 +43,45 @@
       </v-row>
 
       <v-row>
-        <v-card-title> {{ startDate }}</v-card-title>
+        <v-card class="pa-8 ml-3 text-center" color="#E1BEE7" dark>
+          <v-row align="center" justify="center">
+            <h2 class="headline white--text">{{ startDate }}</h2>
+          </v-row>
+        </v-card>
       </v-row>
+
 
       <v-row class="mt-4">
         <v-col cols="12" md="5">
+          <v-card class="pa-5 text-center" color="#C8E6C9" dark>
+            <v-row align="center" justify="center">
+              <h2 class="headline white--text">개인 현황</h2>
+            </v-row>
+          </v-card>
           <v-card class="p-20">
             <SalesPageTargetChart></SalesPageTargetChart>
           </v-card>
         </v-col>
 
         <v-col cols="12" md="5">
-          <VCard title="판매 실적">
-            <VCardText class="pt-10">
-              <VRow>
-                <VCol cols="12" sm="6" md="6" class="mb-5">
-                  <VCard color="primary" class="text-center">
-                    <div class="d-flex align-center justify-center gap-x-3 py-4">
-                      <div class="d-flex flex-column">
-                        <div class="text-body-1">
-                          {{ statistics[0].title }}
+            <v-card class="pa-5 text-center" color="#C8E6C9" dark>
+              <v-row align="center" justify="center">
+                <h2 class="headline white--text">개인 판매 실적</h2>
+              </v-row>
+            </v-card>
+            <VCard height="24vw" title="">
+              <VCardText class="pt-10">
+                <VRow>
+                  <VCol cols="12" sm="6" md="6" class="mb-5">
+                    <VCard color="primary" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ statistics[0].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ statistics[0].stats }}
+                          </h5>
                         </div>
                         <h5 class="text-h5">
                           {{ statistics[0].stats }}
@@ -110,15 +129,19 @@
                           {{ statistics[3].stats }}
                         </h5>
                       </div>
-                    </div>
-                  </VCard>
-                </VCol>
-              </VRow>
-            </VCardText>
-          </VCard>
+                    </VCard>
+                  </VCol>
+                </VRow>
+              </VCardText>
+            </VCard>
         </v-col>
       </v-row>
 
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">계약 리스트</h2>
+        </v-row>
+      </v-card>
       <ListComponent
         v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
         :columns="headers"
@@ -239,16 +262,127 @@
             </VCard>
           </v-col>
         </v-row>
-
       </v-card>
 
-
       <v-divider></v-divider>
       <v-divider></v-divider>
 
+      <!-- 전사 데이터 보여주는 부분 -->
+      <v-card class="mt-12" v-if="model === 'HQ'">
+        <v-row class="mt-12">
+          <v-card-title> 전사 매출 </v-card-title>
+        </v-row>
 
-    </v-main>
-  </v-container>
+        <v-col cols="2">
+          <v-btn class="mt-1" @click="showDatePickerHQDialog">
+              <v-icon left>mdi-calendar</v-icon>
+              날짜 선택
+          </v-btn>
+        </v-col>
+
+        <v-col cols="12">
+          <v-dialog v-model="datePickerHQDialog" persistent max-width="300px">
+            <v-card>
+              <v-card-title>날짜 선택</v-card-title>
+
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field v-model="startHQDate" label="선택 날짜" type="month"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn color="primary" @click="applyHQDate">적용</v-btn>
+                <v-btn color="secondary" @click="cancelHQDateRange">취소</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
+        <v-row>
+          <v-card-title> {{ startHQDate }}</v-card-title>
+        </v-row>
+
+        <v-col cols="12" md="5">
+          <VCard title="판매 실적">
+            <VCardText class="pt-10">
+              <VRow>
+                <VCol cols="12" sm="6" md="6" class="mb-5">
+                  <VCard color="primary" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ hqStatistics[0].title }}
+                        </div>
+                        <h5 class="text-h5">
+                          {{ hqStatistics[0].stats }}
+                        </h5>
+                      </div>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6" class="mb-5">
+                  <VCard color="success" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ hqStatistics[1].title }}
+                        </div>
+                        <h5 class="text-h5">
+                          {{ hqStatistics[1].stats }}
+                        </h5>
+                      </div>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6" class="mb-8">
+                  <VCard color="warning" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ hqStatistics[2].title }}
+                        </div>
+                        <h5 class="text-h5">
+                          {{ hqStatistics[2].stats }}
+                        </h5>
+                      </div>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6">
+                  <VCard color="info" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ hqStatistics[3].title }}
+                        </div>
+                        <h5 class="text-h5">
+                          {{ hqStatistics[3].stats }}
+                        </h5>
+                      </div>
+                    </div>
+                  </VCard>
+                </VCol>
+              </VRow>
+            </VCardText>
+          </VCard>
+        </v-col>
+      </v-card>
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">팀 실적 리스트</h2>
+        </v-row>
+      </v-card>
+      <ListComponent
+        v-if="model === 'HQ'"
+        :columns="teamHeaders"
+        :rows="formattedTeamItems"
+      />
+
+
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -284,6 +418,8 @@ export default {
     let startDate = ref("");
     let datePickerTeamDialog = ref(false);
     let startTeamDate = ref("");
+    let datePickerHQDialog = ref(false);
+    let startHQDate = ref("");
     const SalesStore = useSalesStore();
 
     // 데이터 로딩 후 loaded 상태 변경
@@ -311,13 +447,23 @@ export default {
       datePickerTeamDialog.value = false; // 모달 닫기
     };
 
-    return {
-      loaded_CountPie, loaded_PricePie, model,
-      datePickerDialog, startDate, SalesStore,
-      showDatePickerDialog, cancelDateRange,
 
-      startTeamDate, datePickerTeamDialog, cancelTeamDateRange,
-      showDatePickerTeamDialog,
+    const showDatePickerHQDialog = () => {
+      datePickerHQDialog.value = true;
+    };
+
+    const cancelHQDateRange = () => {
+      datePickerHQDialog.value = false; // 모달 닫기
+    };
+
+    return {
+      loaded_CountPie, loaded_PricePie, model, SalesStore,
+
+      datePickerDialog, startDate, showDatePickerDialog, cancelDateRange,
+
+      startTeamDate, datePickerTeamDialog, cancelTeamDateRange, showDatePickerTeamDialog,
+
+      startHQDate, datePickerHQDialog, showDatePickerHQDialog, cancelHQDateRange
     }
   },
   data() {
@@ -333,6 +479,20 @@ export default {
         {title: '계약 건수', key: 'contractCount'},
         {title: '해약 총금액', key: 'cancelPrice'},
         {title: '해약 건수', key: 'cancelCount'},
+        { title: 'No', key: 'id' },
+        { title: '계약 총금액', key: 'contractPrice' },
+        { title: '계약 건수', key: 'contractCount' },
+        { title: '해약 총금액', key: 'cancelPrice' },
+        { title: '해약 건수', key: 'cancelCount' },
+      ],
+      teamItems: [],
+      teamHeaders: [
+        { title: 'No', key: 'id' },
+        { title: '팀 이름', key: 'teamName' },
+        { title: '계약 총금액', key: 'contractPrice' },
+        { title: '계약 건수', key: 'contractCount' },
+        { title: '해약 총금액', key: 'cancelPrice' },
+        { title: '해약 건수', key: 'cancelCount' },
       ],
       statistics: [
         {
@@ -378,11 +538,36 @@ export default {
           color: 'info',
         }
       ],
+      hqStatistics: [
+        {
+          title: '전사 매출',
+          stats: '-',
+          color: 'primary',
+        },
+        {
+          title: '전사 계약건수',
+          stats: '-',
+          color: 'success',
+        },
+        {
+          title: '전사 해약 매출',
+          stats: '-',
+          color: 'warning',
+        },
+        {
+          title: '전사 해약 건수',
+          stats: '-',
+          color: 'info',
+        }
+      ],
     };
   },
   computed: {
     formattedItems() {
       return this.items.map(item => ({...item}));
+    },
+    formattedTeamItems() {
+      return this.teamItems.map(teamItems => ({ ...teamItems }));
     },
   },
   methods: {
@@ -397,9 +582,21 @@ export default {
     },
     applyTeamDate() {
       useSalesStore().startTeamDate = this.startTeamDate;
-      this.teamShot();
+      if(this.startTeamDate !== "") {
+        this.teamShot();
+      }
 
       this.datePickerTeamDialog = !this.datePickerTeamDialog; // 모달 닫기
+    },
+    applyHQDate() {
+      useSalesStore().startHQDate = this.startHQDate;
+      console.log("전사 날짜 선택: ", this.startHQDate);
+      if(this.startHQDate !== "") {
+        this.hqShot();
+        this.hqList();
+      }
+
+      this.datePickerHQDialog = !this.datePickerHQDialog; // 모달 닫기
     },
 
     async memberList() {
@@ -460,6 +657,46 @@ export default {
           this.teamStatistics[1].stats = Number(result.contractCount).toLocaleString() + "건" || "-";
           this.teamStatistics[2].stats = Number(result.cancelPrice).toLocaleString() + "원" || "-";
           this.teamStatistics[3].stats = Number(result.cancelCount).toLocaleString() + "건" || "-";
+        })
+        .catch(error => {
+          console.log("요청할 수 없습니다. : ", error);
+        });
+    },
+    async hqShot() {
+      // const memberTeamCode = this.loginStore.memberTeamCode;
+      const date = this.startHQDate;
+
+      let url = `http://localhost:8081/statistics/api/sales/hq/${date}/price`;
+      console.log("hqShot() : ", url);
+
+      await axios.get(url)
+        .then(response => {
+          console.log("전사 결과 응답결과 : ", response.data.result);
+          const result = response.data.result || "-";
+
+          this.hqStatistics[0].stats = Number(result.contractPrice).toLocaleString() + "원" || "-";
+          this.hqStatistics[1].stats = Number(result.contractCount).toLocaleString() + "건" || "-";
+          this.hqStatistics[2].stats = Number(result.cancelPrice).toLocaleString() + "원" || "-";
+          this.hqStatistics[3].stats = Number(result.cancelCount).toLocaleString() + "건" || "-";
+        })
+        .catch(error => {
+          console.log("요청할 수 없습니다. : ", error);
+        });
+    },
+    async hqList() {
+      const date = this.startHQDate;
+
+      let url = `http://localhost:8081/statistics/api/sales/hq/${date}/team-price`;
+      console.log("hqList() ", url);
+
+      await axios.get(url)
+        .then(response => {
+          console.log("전사 팀 리스트 응답결과 : ", response.data.result);
+          this.teamItems = response.data.result || [];
+          this.teamItems = this.teamItems.map((teamItems, index) => ({
+            ...teamItems,
+            id: index + 1,
+          }));
         })
         .catch(error => {
           console.log("요청할 수 없습니다. : ", error);
