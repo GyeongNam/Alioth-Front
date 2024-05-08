@@ -3,6 +3,7 @@ import {defineStore} from 'pinia';
 export const useSalesStore = defineStore('SalesStore', {
   state: () => ({
     startDate: "",
+    startTeamDate: "",
     salesPersonal: "월",
     salesTeam: "월",
     salesHQ: "월",
@@ -11,6 +12,9 @@ export const useSalesStore = defineStore('SalesStore', {
   getters: {
     getStartDate() {
       return this.$state.startDate;
+    },
+    getStartTeamDate() {
+      return this.$state.startTeamDate;
     },
     getSalesPersonal() {
       return this.$state.salesPersonal;

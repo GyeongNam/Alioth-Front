@@ -46,92 +46,208 @@
         <v-card-title> {{ startDate }}</v-card-title>
       </v-row>
 
-
-
-
       <v-row class="mt-4">
-
-
         <v-col cols="12" md="5">
           <v-card class="p-20">
             <SalesPageTargetChart></SalesPageTargetChart>
           </v-card>
         </v-col>
 
-
         <v-col cols="12" md="5">
-          <VCard title="판매 실적">
-            <VCardText class="pt-10">
-              <VRow>
-                <VCol cols="12" sm="6" md="6" class="mb-5">
-                  <VCard color="primary" class="text-center">
-                    <div class="d-flex align-center justify-center gap-x-3 py-4">
-                      <div class="d-flex flex-column">
-                        <div class="text-body-1">
-                          {{ statistics[0].title }}
+            <VCard title="판매 실적">
+              <VCardText class="pt-10">
+                <VRow>
+                  <VCol cols="12" sm="6" md="6" class="mb-5">
+                    <VCard color="primary" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ statistics[0].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ statistics[0].stats }}
+                          </h5>
                         </div>
-                        <h5 class="text-h5">
-                          {{ statistics[0].stats }}
-                        </h5>
                       </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol cols="12" sm="6" md="6" class="mb-5">
-                  <VCard color="success" class="text-center">
-                    <div class="d-flex align-center justify-center gap-x-3 py-4">
-                      <div class="d-flex flex-column">
-                        <div class="text-body-1">
-                          {{ statistics[1].title }}
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6" class="mb-5">
+                    <VCard color="success" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ statistics[1].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ statistics[1].stats }}
+                          </h5>
                         </div>
-                        <h5 class="text-h5">
-                          {{ statistics[1].stats }}
-                        </h5>
                       </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol cols="12" sm="6" md="6" class="mb-8">
-                  <VCard color="warning" class="text-center">
-                    <div class="d-flex align-center justify-center gap-x-3 py-4">
-                      <div class="d-flex flex-column">
-                        <div class="text-body-1">
-                          {{ statistics[2].title }}
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6" class="mb-8">
+                    <VCard color="warning" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ statistics[2].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ statistics[2].stats }}
+                          </h5>
                         </div>
-                        <h5 class="text-h5">
-                          {{ statistics[2].stats }}
-                        </h5>
                       </div>
-                    </div>
-                  </VCard>
-                </VCol>
-                <VCol cols="12" sm="6" md="6">
-                  <VCard color="info" class="text-center">
-                    <div class="d-flex align-center justify-center gap-x-3 py-4">
-                      <div class="d-flex flex-column">
-                        <div class="text-body-1">
-                          {{ statistics[3].title }}
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6">
+                    <VCard color="info" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ statistics[3].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ statistics[3].stats }}
+                          </h5>
                         </div>
-                        <h5 class="text-h5">
-                          {{ statistics[3].stats }}
-                        </h5>
                       </div>
-                    </div>
-                  </VCard>
-                </VCol>
-              </VRow>
-            </VCardText>
-          </VCard>
+                    </VCard>
+                  </VCol>
+                </VRow>
+              </VCardText>
+            </VCard>
+          </v-col>
+        </v-row>
+
+        <ListComponent
+          v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
+          :columns="headers"
+          :rows="formattedItems"
+        />
+
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+
+      <!-- 팀 데이터를 표시하는 부분 -->
+      <!-- 팀 데이터를 표시하는 부분 -->
+      <v-card class="mt-12" v-if="model === 'MANAGER'">
+        <v-row class="mt-12">
+          <v-card-title> 팀 매출 </v-card-title>
+        </v-row>
+
+        <v-col cols="2">
+          <v-btn class="mt-1" @click="showDatePickerTeamDialog">
+              <v-icon left>mdi-calendar</v-icon>
+              날짜 선택
+          </v-btn>
         </v-col>
-      </v-row>
+
+        <v-col cols="12">
+          <v-dialog v-model="datePickerTeamDialog" persistent max-width="300px">
+            <v-card>
+              <v-card-title>날짜 선택</v-card-title>
+
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field v-model="startTeamDate" label="선택 날짜" type="month"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn color="primary" @click="applyTeamDate">적용</v-btn>
+                <v-btn color="secondary" @click="cancelTeamDateRange">취소</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
+        <v-row>
+          <v-card-title> {{ startTeamDate }}</v-card-title>
+        </v-row>
 
 
-              <!-- ListComponent에 데이터를 표시하는 부분 -->
-      <ListComponent
-        v-if="model === '개인'"
-        :columns="headers"
-        :rows="formattedItems"
-      />
+        <v-row>
+          <v-col cols="12" md="5">
+            <v-card class="p-20">
+              <SalesPageTeamTarget></SalesPageTeamTarget>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="5">
+            <VCard title="판매 실적">
+              <VCardText class="pt-10">
+                <VRow>
+                  <VCol cols="12" sm="6" md="6" class="mb-5">
+                    <VCard color="primary" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ teamStatistics[0].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ teamStatistics[0].stats }}
+                          </h5>
+                        </div>
+                      </div>
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6" class="mb-5">
+                    <VCard color="success" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ teamStatistics[1].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ teamStatistics[1].stats }}
+                          </h5>
+                        </div>
+                      </div>
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6" class="mb-8">
+                    <VCard color="warning" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ teamStatistics[2].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ teamStatistics[2].stats }}
+                          </h5>
+                        </div>
+                      </div>
+                    </VCard>
+                  </VCol>
+                  <VCol cols="12" sm="6" md="6">
+                    <VCard color="info" class="text-center">
+                      <div class="d-flex align-center justify-center gap-x-3 py-4">
+                        <div class="d-flex flex-column">
+                          <div class="text-body-1">
+                            {{ teamStatistics[3].title }}
+                          </div>
+                          <h5 class="text-h5">
+                            {{ teamStatistics[3].stats }}
+                          </h5>
+                        </div>
+                      </div>
+                    </VCard>
+                  </VCol>
+                </VRow>
+              </VCardText>
+            </VCard>
+          </v-col>
+        </v-row>
+
+      </v-card>
+
+
+      <v-divider></v-divider>
+      <v-divider></v-divider>
+
+
+
 
 
     </v-container>
@@ -146,6 +262,9 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import SalesPagePieChart from "@/pages/sales/charts/SalesPagePieChart"
 import SalesPageCountPieChart from "@/pages/sales/charts/SalesPageCountPieChart"
 import SalesPageTargetChart from "@/pages/sales/charts/SalesPageTarget"
+
+import SalesPageTeamTarget from "@/pages/sales/charts/SalesPageTeamTarget"
+
 import SalesTransChart from "@/pages/sales/charts/SalesAnalytics.vue"
 import { useSalesStore } from '@/stores/SalesStore';
 import { useLoginInfoStore } from '@/stores/loginInfo';
@@ -154,15 +273,20 @@ import ListComponent from "@/layouts/ListComponent.vue";
 
 export default {
   components: {
-    AppHeader, AppSidebar, SalesPagePieChart, SalesPageCountPieChart, SalesPageTargetChart,
-    SalesTransChart, ListComponent
+    AppHeader, AppSidebar, SalesPagePieChart,
+    SalesPageCountPieChart, SalesPageTargetChart,
+    SalesTransChart, ListComponent,
+
+    SalesPageTeamTarget,
   },
   setup() {
     const loaded_CountPie = ref(false);
     const loaded_PricePie = ref(false);
-    const model = ref('개인'); // 리액티브 변수로 선언
+    const model = ref(useLoginInfoStore().getMemberRank); // 리액티브 변수로 선언
     let datePickerDialog = ref(false);
     let startDate = ref("");
+    let datePickerTeamDialog = ref(false);
+    let startTeamDate = ref("");
     const SalesStore = useSalesStore();
 
     // 데이터 로딩 후 loaded 상태 변경
@@ -182,10 +306,21 @@ export default {
       datePickerDialog.value = false; // 모달 닫기
     };
 
+    const showDatePickerTeamDialog = () => {
+      datePickerTeamDialog.value = true;
+    };
+
+    const cancelTeamDateRange = () => {
+      datePickerTeamDialog.value = false; // 모달 닫기
+    };
+
     return {
       loaded_CountPie, loaded_PricePie, model,
       datePickerDialog, startDate, SalesStore,
       showDatePickerDialog, cancelDateRange,
+
+      startTeamDate, datePickerTeamDialog, cancelTeamDateRange,
+      showDatePickerTeamDialog,
     }
   },
   data() {
@@ -224,6 +359,28 @@ export default {
           color: 'info',
         }
       ],
+      teamStatistics: [
+        {
+          title: '매출',
+          stats: '-',
+          color: 'primary',
+        },
+        {
+          title: '계약건수',
+          stats: '-',
+          color: 'success',
+        },
+        {
+          title: '해약 매출',
+          stats: '-',
+          color: 'warning',
+        },
+        {
+          title: '해약 건수',
+          stats: '-',
+          color: 'info',
+        }
+      ],
     };
   },
   computed: {
@@ -233,13 +390,19 @@ export default {
   },
   methods: {
     applyDate() {
-      console.log("매출메인 선택날짜:", this.startDate);
+      console.log("매출메인 개인 선택날짜:", this.startDate);
       this.memberList();
       this.memberShot();
 
       useSalesStore().startDate = this.startDate;
 
       this.datePickerDialog = !this.datePickerDialog; // 모달 닫기
+    },
+    applyTeamDate() {
+      useSalesStore().startTeamDate = this.startTeamDate;
+      this.teamShot();
+
+      this.datePickerTeamDialog = !this.datePickerTeamDialog; // 모달 닫기
     },
 
     async memberList() {
@@ -276,16 +439,34 @@ export default {
           const result = response.data.result || "-";
           //this.statistics[0].stats = result.contractPrice + "원" || "-";
           this.statistics[0].stats = Number(result.contractPrice).toLocaleString() + "원" || "-";
-          this.statistics[1].stats = Number(result.contractCount) + "건" || "-";
-          this.statistics[2].stats = Number(result.cancelPrice) + "원" || "-";
-          this.statistics[3].stats = Number(result.cancelCount) + "건" || "-";
+          this.statistics[1].stats = Number(result.contractCount).toLocaleString() + "건" || "-";
+          this.statistics[2].stats = Number(result.cancelPrice).toLocaleString() + "원" || "-";
+          this.statistics[3].stats = Number(result.cancelCount).toLocaleString() + "건" || "-";
         })
         .catch(error => {
           console.log("요청할 수 없습니다. : ", error);
         });
     },
-    async memberTarget() {
+    async teamShot() {
+      const memberTeamCode = this.loginStore.memberTeamCode;
+      const date = this.startTeamDate;
 
+      let url = `http://localhost:8081/statistics/api/sales/${memberTeamCode}/${date}/price`;
+      console.log(url);
+
+      await axios.get(url)
+        .then(response => {
+          console.log("팀 결과 응답결과 : ", response.data.result);
+          const result = response.data.result || "-";
+
+          this.teamStatistics[0].stats = Number(result.contractPrice).toLocaleString() + "원" || "-";
+          this.teamStatistics[1].stats = Number(result.contractCount).toLocaleString() + "건" || "-";
+          this.teamStatistics[2].stats = Number(result.cancelPrice).toLocaleString() + "원" || "-";
+          this.teamStatistics[3].stats = Number(result.cancelCount).toLocaleString() + "건" || "-";
+        })
+        .catch(error => {
+          console.log("요청할 수 없습니다. : ", error);
+        });
     },
   },
 }

@@ -37,16 +37,12 @@
         <v-divider></v-divider>
 
         <!-- ListComponent에 데이터를 표시하는 부분 -->
+
         <ListComponent
           v-if="model === '개인'"
           :columns="headers"
           :rows="formattedItems"
         />
-        <!-- <ListComponent
-          v-if="model === '개인'"
-          :columns="teamHeaders"
-          :rows="formattedTeamItems"
-        /> -->
 
         <v-row class="mt-10">
           <v-col cols="12" md="6">
@@ -76,6 +72,7 @@ import ListComponent from "@/layouts/ListComponent.vue";
 import SalesPagePieChart from "@/pages/sales/charts/SalesPagePieChart"
 import SalesPageCountPieChart from "@/pages/sales/charts/SalesPageCountPieChart"
 import { useSalesRankingStore } from '@/stores/SalesRankingStore';
+import { useLoginInfoStore } from '@/stores/loginInfo';
 import axios from 'axios';
 
 export default {
@@ -85,7 +82,7 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const model = ref('개인'); // 리액티브 변수로 선언
+    const model = ref("개인"); // 리액티브 변수로 선언
     let datePickerDialog = ref(false);
     let startDate = ref(null);
     let endDate = ref(null);
