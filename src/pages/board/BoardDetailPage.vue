@@ -4,48 +4,28 @@
     <v-main>
       <AppHeader></AppHeader>
       <v-card class="mt-5" outlined>
-        <v-row>
-          <v-card-title class="headline" style="margin-top: 0.5vw; font-family: 'Spoqa Han Sans Neo'">{{
-              board.title
-            }}
-          </v-card-title>
-          <v-col class="text-right">
-            <v-btn variant="tonal" color="#2979FF" style="margin-right: 0.5vw; margin-top: 0.5vw" @click="editBoard">수정</v-btn>
-            <v-btn variant="tonal" color="primary" style="margin-right: 1vw; margin-top: 0.5vw" @click="deleteBoard">삭제</v-btn>
-          </v-col>
-        </v-row>
-        <v-card-subtitle class="text-right" style="margin-top: 0.5vw;">
-          <span> 작성자 {{ board.salesMemberName}}</span>
+        <v-card-title class="headline">{{ board.title }}</v-card-title>
+        <v-card-subtitle>
+          <span> 작성자 {{ board.writerName }}</span>
           <span class="grey--text"> | 작성일 {{ board.created_at }}</span>
         </v-card-subtitle>
         <v-card-text v-html="board.content"></v-card-text>
-      </v-card>
 
-      <v-card style="margin-top: 1vw" class="answers" v-if="board.boardType === 'SUGGESTION'">
-        <div v-for="answer in answers" :key="answer.answer_id" class="answer">
-          <v-row>
-            <v-col>
-              <v-card-title style="font-family: 'Spoqa Han Sans Neo'">{{ answer.title }}</v-card-title>
-            </v-col>
-            <v-col>
-              <v-col class="text-right">
-                <v-btn small class="small-btn" variant="tonal" color="#2979FF" @click="openEditModal(answers)"
-                       style="margin-top: 0.5vw; margin-right: 0.5vw"
-                       v-if="loginStore.memberCode.toString()===answer.memberCode.toString()"> 답변 수정
-                </v-btn>
-                <v-btn small class="small-btn" variant="tonal" color="primary" style="margin-top: 0.5vw;"
-                       v-if="loginStore.memberCode.toString()===answer.memberCode.toString()" @click="deleteAnswer">답변 삭제
-                </v-btn>
-              </v-col>
-            </v-col>
-          </v-row>
-          <v-divider></v-divider>
-          <v-card-subtitle class="text-right" style="margin-bottom: 1vw">
-            <span> 작성자 사번 {{ answer.salesMemberCode }} |  작성시간 {{ answer.created_at }}</span>
-          </v-card-subtitle>
+        <div class="answers" v-if="board.boardType === 'SUGGESTION'">
+          <div v-for="answer in answers" :key="answer.answer_id" class="answer">
+            <v-divider></v-divider>
 
-          <div v-html="answer.content"></div>
-
+            <h3>답변</h3>
+            <v-divider></v-divider>
+            <v-card-subtitle>
+              <span> 작성자 {{ answer.answer_name }}</span>
+              <p><span> 작성시간 {{ answer.created_at }}</span></p>
+            </v-card-subtitle>
+            <div v-html="answer.content"></div>
+            <v-btn small class="small-btn" @click="openEditModal(answer)"
+                   style="margin-bottom: 10px; margin-left: 10px;">답변 수정
+            </v-btn>
+          </div>
           <v-dialog v-model="showModal" persistent max-width="600px">
             <v-card>
               <v-row>
@@ -105,12 +85,16 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-btn color="#424242" variant="tonal" style="margin-top:1vw" @click="goBack">목록으로</v-btn>
-      <v-col class="text-right">
-        <v-btn variant="tonal" color="#1A237E" v-if="answers.length === 0 && !showModal" @click="showModal = true">답글
-          작성
-        </v-btn>
-      </v-col>
+      <v-row>
+        <v-col>
+          <v-btn color="#424242" variant="tonal" style="margin-top:1vw" @click="goBack">목록으로</v-btn>
+        </v-col>
+        <v-col class="text-right">
+          <v-btn variant="tonal" color="#1A237E" style="margin-top:1vw" v-if="answers.length === 0 && !showModal && this.board.boardType === 'SUGGESTION'" @click="showModal = true">답글
+            작성
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-main>
   </v-container>
 </template>
@@ -120,7 +104,7 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
-import {useLoginInfoStore} from "@/stores/loginInfo";
+
 
 export default {
   components: {AppHeader, AppSidebar, Editor},
@@ -138,8 +122,7 @@ export default {
       editContent: '',
       currentEditingId: null,
       editTitle: '',
-      submitting: false,
-      loginStore: useLoginInfoStore
+      submitting: false
     };
   },
   computed: {
@@ -148,10 +131,11 @@ export default {
     }
   },
   methods: {
+
     openEditModal(answer) {
       this.editTitle = answer.title;
       this.editContent = answer.content;
-      this.currentEditingId = answer.answerId;
+      this.currentEditingId = answer.answer_id;
       this.editModalVisible = true;
     },
     closeEditModal() {
@@ -173,7 +157,7 @@ export default {
         .then(response => {
           this.board = response.data.result;
           this.fetchAnswers(boardId);
-          this.showSuccess = false;
+          tihs.showSuccess = false;
         }).catch(error => {
         console.error('Error fetching board details:', error);
       });
@@ -201,7 +185,7 @@ export default {
       const boardId = this.board.boardId;
       if (confirm("게시글을 정말 삭제하시겠습니까?")) {
         axiosInstance.delete(`${this.baseUrl}/api/board/delete/${boardId}`)
-          .then(() => {
+          .then(response => {
             alert('게시글이 삭제되었습니다.');
             this.$router.push('/BoardList');
           }).catch(error => {

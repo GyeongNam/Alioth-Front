@@ -26,8 +26,8 @@
                 <v-text-field
 
                   readonly
-                  v-model="form.insuranceProductId"
-                  label="보험상품ID"
+                  v-model="form.selectedInsuranceProductName"
+                  label="보험상품명"
                   @click="showInsuranceDialog = true"
                   required>
                   <template v-slot:append>
@@ -38,7 +38,7 @@
                 <!-- 계약사원 선택 모달 -->
                 <v-text-field
                   readonly
-                  v-model="form.contractMemberId"
+                  v-model="form.selectedContractMemberName"
                   label="계약사원 선택"
                   @click="showContractMemberDialog = true"
                   required>
@@ -50,7 +50,7 @@
                 <!-- 고객 선택 모달 -->
                 <v-text-field
                   readonly
-                  v-model="form.customId"
+                  v-model="form.selectedCustomerName"
                   label="고객 선택"
                   @click="showCustomerDialog = true"
                   required>
@@ -71,17 +71,11 @@
               <v-card-title>보험상품 선택</v-card-title>
               <v-card-text>
                 <v-list>
-                  <v-list-item
-                    v-for="product in insuranceProducts"
-                    :key="product.id"
-                    @click="selectInsuranceProduct(product)">
-                    <!-- Directly use the slot for text without v-list-item-content or v-list-item-title -->
-                    {{ product.name }}
-                  </v-list-item>
+                  <v-list-item v-for="product in insuranceProducts" :key="product.id" @click="selectInsuranceProduct(product)">{{ product.name }}</v-list-item>
                 </v-list>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="grey" @click="showInsuranceDialog = false">닫기</v-btn>
+                <v-btn color="#2C3E50" @click="showInsuranceDialog = false">닫기</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -163,7 +157,7 @@ export default {
       },
       paymentFrequencies: ['Monthly', 'Quarter', 'Yearly'],
       paymentMethods: ['계좌', '신용카드'],
-      contractStatuses: ['New', 'Renewals', 'Cancellation'],
+      contractStatuses: ['New', 'Renewals'],
       insuranceProducts: [],
       contractMembers: [],
       customers: [],
@@ -204,17 +198,17 @@ export default {
     },
     selectInsuranceProduct(product) {
       this.form.insuranceProductId = product.id;
-      this.selectedInsuranceProductName = product.name;
+      this.form.selectedInsuranceProductName = product.name;
       this.showInsuranceDialog = false;
     },
     selectContractMember(member) {
       this.form.contractMemberId = member.id;
-      this.selectedContractMemberName = member.name;
+      this.form.selectedContractMemberName = member.name;
       this.showContractMemberDialog = false;
     },
     selectCustomer(customer) {
       this.form.customId = customer.id;
-      this.selectedCustomerName = customer.name;
+      this.form.selectedCustomerName = customer.name;
       this.showCustomerDialog = false;
     },
     formatDateTime(date) {
@@ -229,7 +223,7 @@ export default {
           contractExpireDate: this.formatDateTime(this.form.contractExpireDate)
         };
         axiosInstance.post('/api/contract/create', formData)
-          .then(response => {
+          .then(() => {
             alert('계약이 성공적으로 생성되었습니다.');
             router.push('/ContractList');
           }).catch(error => {
