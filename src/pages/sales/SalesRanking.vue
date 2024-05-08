@@ -104,7 +104,9 @@ export default {
       // 날짜 범위 적용 로직 추가
       console.log("시작 날짜:", startDate.value);
       // fetchData 함수 호출 또는 직접 데이터를 업데이트하는 로직 추가
-      let url = `http://localhost:8081/api/stat/sales-ranking/member/${startDate.value}`;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
+      let url = `${baseUrl}/api/stat/sales-ranking/member/${startDate.value}`;
+      // let url = `http://localhost:8081/api/stat/sales-ranking/member/${startDate.value}`;
       console.log(url);
       axios.get(url)
         .then(response => {
@@ -182,7 +184,9 @@ export default {
       console.log("시작 날짜:", this.startDate);
       useSalesRankingStore().startDate = this.startDate;
       // fetchData 함수 호출 또는 직접 데이터를 업데이트하는 로직 추가
-      let url = `http://localhost:8081/api/stat/sales-ranking/member/${this.startDate}`;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      let url = `${baseUrl}/api/stat/sales-ranking/member/${this.startDate}`;
+      // let url = `http://localhost:8081/api/stat/sales-ranking/member/${this.startDate}`;
       console.log(url);
       axios.get(url)
         .then(response => {
