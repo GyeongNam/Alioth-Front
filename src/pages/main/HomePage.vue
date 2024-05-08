@@ -100,8 +100,6 @@ import AppHeader from "@/layouts/AppHeader.vue";
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import { ref } from 'vue';
 import axios from 'axios';
-// import { useSalesStore } from '@/stores/SalesStore';
-// import { useLoginInfoStore } from '@/stores/loginInfo';
 import ListComponent from "@/layouts/ListComponent.vue";
 
 export default {

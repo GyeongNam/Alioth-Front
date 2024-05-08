@@ -134,11 +134,16 @@
         </v-col>
       </v-row>
 
-        <ListComponent
-          v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
-          :columns="headers"
-          :rows="formattedItems"
-        />
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">계약 리스트</h2>
+        </v-row>
+      </v-card>
+      <ListComponent
+        v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
+        :columns="headers"
+        :rows="formattedItems"
+      />
 
       <v-divider></v-divider>
       <v-divider></v-divider>
@@ -360,9 +365,17 @@
             </VCardText>
           </VCard>
         </v-col>
-
       </v-card>
-
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">팀 실적 리스트</h2>
+        </v-row>
+      </v-card>
+      <ListComponent
+        v-if="model === 'HQ'"
+        :columns="teamHeaders"
+        :rows="formattedTeamItems"
+      />
 
 
     </v-container>
@@ -457,8 +470,15 @@ export default {
       items: [],
       headers: [
         { title: 'No', key: 'id' },
-        // { title: '사원 이름', key: 'salesMemberName' },
-        // { title: '사원 코드', key: 'salesMemberCode' },
+        { title: '계약 총금액', key: 'contractPrice' },
+        { title: '계약 건수', key: 'contractCount' },
+        { title: '해약 총금액', key: 'cancelPrice' },
+        { title: '해약 건수', key: 'cancelCount' },
+      ],
+      teamItems: [],
+      teamHeaders: [
+        { title: 'No', key: 'id' },
+        { title: '팀 이름', key: 'teamName' },
         { title: '계약 총금액', key: 'contractPrice' },
         { title: '계약 건수', key: 'contractCount' },
         { title: '해약 총금액', key: 'cancelPrice' },
@@ -536,6 +556,9 @@ export default {
     formattedItems() {
       return this.items.map(item => ({ ...item }));
     },
+    formattedTeamItems() {
+      return this.teamItems.map(teamItems => ({ ...teamItems }));
+    },
   },
   methods: {
     applyDate() {
@@ -557,10 +580,11 @@ export default {
     },
     applyHQDate() {
       useSalesStore().startHQDate = this.startHQDate;
+      console.log("전사 날짜 선택: ", this.startHQDate);
       if(this.startHQDate !== "") {
         this.hqShot();
+        this.hqList();
       }
-
 
       this.datePickerHQDialog = !this.datePickerHQDialog; // 모달 닫기
     },
@@ -633,7 +657,7 @@ export default {
       const date = this.startHQDate;
 
       let url = `http://localhost:8081/statistics/api/sales/hq/${date}/price`;
-      console.log(url);
+      console.log("hqShot() : ", url);
 
       await axios.get(url)
         .then(response => {
@@ -644,6 +668,25 @@ export default {
           this.hqStatistics[1].stats = Number(result.contractCount).toLocaleString() + "건" || "-";
           this.hqStatistics[2].stats = Number(result.cancelPrice).toLocaleString() + "원" || "-";
           this.hqStatistics[3].stats = Number(result.cancelCount).toLocaleString() + "건" || "-";
+        })
+        .catch(error => {
+          console.log("요청할 수 없습니다. : ", error);
+        });
+    },
+    async hqList() {
+      const date = this.startHQDate;
+
+      let url = `http://localhost:8081/statistics/api/sales/hq/${date}/team-price`;
+      console.log("hqList() ", url);
+
+      await axios.get(url)
+        .then(response => {
+          console.log("전사 팀 리스트 응답결과 : ", response.data.result);
+          this.teamItems = response.data.result || [];
+          this.teamItems = this.teamItems.map((teamItems, index) => ({
+            ...teamItems,
+            id: index + 1,
+          }));
         })
         .catch(error => {
           console.log("요청할 수 없습니다. : ", error);
