@@ -23,7 +23,9 @@ export default defineComponent({
       try {
         const teamCode = useLoginInfoStore().memberTeamCode;
         const teamDate = useSalesStore().startTeamDate;
-        const url = `http://localhost:8081/statistics/api/sales/${teamCode}/${teamDate}/target`;
+        const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
+        const url = `${baseUrl}/api/sales/${teamCode}/${teamDate}/target`;
+        // const url = `http://localhost:8081/statistics/api/sales/${teamCode}/${teamDate}/target`;
         console.log(url);
         const response = await axios.get(url);
         const result = response.data.result || {};

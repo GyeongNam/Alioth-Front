@@ -69,8 +69,8 @@
               <h2 class="headline white--text">개인 판매 실적</h2>
             </v-row>
           </v-card>
-          <VCard height="24vw" title="">
-            <VCardText class="pt-10">
+          <VCard>
+            <VCardText class="pt-10 mt-14">
               <VRow>
                 <VCol cols="12" sm="6" md="6" class="mb-5">
                   <VCard color="primary" class="text-center">
@@ -150,7 +150,7 @@
 
       <!-- 팀 데이터를 표시하는 부분 -->
       <!-- 팀 데이터를 표시하는 부분 -->
-      <v-card class="mt-12" v-if="model === 'MANAGER'">
+      <v-card class="mt-12" v-if="model === 'MANAGER' && teamCode !== ''">
         <v-row class="mt-12">
           <v-card-title> 팀 매출</v-card-title>
         </v-row>
@@ -366,7 +366,7 @@
           </VCard>
         </v-col>
       </v-card>
-      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+      <v-card v-if="model === 'HQ'" class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
         <v-row align="center" justify="center">
           <h2 class="headline white--text">팀 실적 리스트</h2>
         </v-row>
@@ -384,6 +384,7 @@
 <script>
 import {ref} from 'vue';
 import axios from 'axios';
+import axiosInstance from '@/plugins/loginaxios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import SalesPagePieChart from "@/pages/sales/charts/SalesPagePieChart"
@@ -410,6 +411,7 @@ export default {
     const loaded_CountPie = ref(false);
     const loaded_PricePie = ref(false);
     const model = ref(useLoginInfoStore().getMemberRank); // 리액티브 변수로 선언
+    const teamCode = ref(useLoginInfoStore().memberTeamCode); // 리액티브 변수로 선언
     let datePickerDialog = ref(false);
     let startDate = ref("");
     let datePickerTeamDialog = ref(false);
@@ -417,6 +419,7 @@ export default {
     let datePickerHQDialog = ref(false);
     let startHQDate = ref("");
     const SalesStore = useSalesStore();
+
 
     // 데이터 로딩 후 loaded 상태 변경
     setTimeout(() => {
@@ -596,10 +599,10 @@ export default {
     async memberList() {
       const memberCode = this.loginStore.getMemberCode;
       const date = this.startDate;
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
 
       // let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}`;
-      let url = `${baseUrl}api/stat/sales/${memberCode}/${date}`;
+      let url = `${baseUrl}/api/stat/sales/${memberCode}/${date}`;
       console.log(url);
 
       await axios.get(url)
@@ -619,7 +622,7 @@ export default {
     async memberShot() {
       const memberCode = this.loginStore.getMemberCode;
       const date = this.startDate;
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
 
       //let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}/price`;
       let url = `${baseUrl}/api/stat/sales/${memberCode}/${date}/price`;
@@ -643,7 +646,7 @@ export default {
       const memberTeamCode = this.loginStore.memberTeamCode;
       const date = this.startTeamDate;
 
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
       let url = `${baseUrl}/api/sales/${memberTeamCode}/${date}/price`;
       //let url = `http://localhost:8081/statistics/api/sales/${memberTeamCode}/${date}/price`;
       console.log(url);
@@ -666,7 +669,7 @@ export default {
       // const memberTeamCode = this.loginStore.memberTeamCode;
       const date = this.startHQDate;
 
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
       let url = `${baseUrl}/api/sales/hq/${date}/price`;
       //let url = `http://localhost:8081/statistics/api/sales/hq/${date}/price`;
       console.log("hqShot() : ", url);
@@ -687,7 +690,7 @@ export default {
     },
     async hqList() {
       const date = this.startHQDate;
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081/statistics';
       let url = `${baseUrl}/api/sales/hq/${date}/team-price`;
       //let url = `http://localhost:8081/statistics/api/sales/hq/${date}/team-price`;
       console.log("hqList() ", url);
