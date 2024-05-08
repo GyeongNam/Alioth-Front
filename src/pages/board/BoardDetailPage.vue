@@ -1,30 +1,45 @@
 <template>
+  <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
   <AppSidebar></AppSidebar>
   <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
       <v-card class="mt-5" outlined>
-        <v-card-title class="headline">{{ board.title }}</v-card-title>
-        <v-card-subtitle>
-          <span> 작성자 {{ board.writerName }}</span>
-          <span class="grey--text"> | 작성일 {{ board.created_at }}</span>
-        </v-card-subtitle>
+        <v-row>
+          <v-card-title class="headline" style="margin-top: 1vw; margin-left:1vw; margin-bottom:1vw; font-family: 'Spoqa Han Sans Neo'">{{board.title }}
+          </v-card-title>
+          <v-col class="text-right" style="margin-bottom:1vw" >
+            <v-btn v-if="loginStore.memberCode===board.salesMemberCode || loginStore.memberRank!=='FP'" small class="small-btn" variant="tonal" color="#2979FF" style="margin-right: 0.5vw; margin-top: 0.5vw; margin-bottom: 0.75vw" @click="editBoard">수정</v-btn>
+            <v-btn v-if="loginStore.memberCode===board.salesMemberCode || loginStore.memberRank!=='FP'" small class="small-btn" variant="tonal" color="primary" style="margin-right: 1vw; margin-top: 0.5vw; margin-bottom: 0.75vw" @click="deleteBoard">삭제</v-btn>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-col class="text-right">
+          <v-card-subtitle style="margin-top: 0.5vw;">
+            <span> 작성자 {{ board.writerName}}</span>
+            <span class="grey--text"> | 작성일자 {{ formatDate(board.created_at) }}</span>
+          </v-card-subtitle>
+        </v-col>
         <v-card-text v-html="board.content"></v-card-text>
+      </v-card>
 
-        <div class="answers" v-if="board.boardType === 'SUGGESTION'">
+        <v-card style="margin-top:1vw" v-if="board.boardType === 'SUGGESTION'">
           <div v-for="answer in answers" :key="answer.answer_id" class="answer">
+            <v-card-title style="font-family: 'Spoqa Han Sans Neo'">RE:</v-card-title>
             <v-divider></v-divider>
-
-            <h3>답변</h3>
-            <v-divider></v-divider>
-            <v-card-subtitle>
+            <v-card-subtitle class="text-right" style="margin-top: 0.5vw">
               <span> 작성자 {{ answer.answer_name }}</span>
-              <p><span> 작성시간 {{ answer.created_at }}</span></p>
+              <span> | 작성일자 {{ formatDate(answer.created_at) }}</span>
             </v-card-subtitle>
-            <div v-html="answer.content"></div>
-            <v-btn small class="small-btn" @click="openEditModal(answer)"
-                   style="margin-bottom: 10px; margin-left: 10px;">답변 수정
-            </v-btn>
+            <v-card-text v-html="answer.content"></v-card-text>
+            <v-col class="text-right" v-if="loginStore.memberRank!=='FP'">
+              <v-btn small class="small-btn" variant="tonal" color="#2979FF" @click="openEditModal(answers)"
+                     style="margin-top: 0.5vw; margin-right: 0.5vw"> 답변 수정
+              </v-btn>
+              <v-btn small class="small-btn" variant="tonal" color="primary" v-if="loginStore.memberRank!=='FP'" style="margin-top: 0.5vw;" @click="deleteAnswer">답변 삭제
+              </v-btn>
+            </v-col>
+
           </div>
           <v-dialog v-model="showModal" persistent max-width="600px">
             <v-card>
@@ -56,8 +71,7 @@
               답변이 완료된 게시글입니다.
             </v-alert>
           </div>
-        </div>
-      </v-card>
+        </v-card>
       <v-dialog v-model="editModalVisible" persistent max-width="600px">
         <v-card>
           <v-row>
@@ -104,7 +118,8 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
-
+import {parseISO, format} from "date-fns";
+import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
   components: {AppHeader, AppSidebar, Editor},
@@ -122,7 +137,8 @@ export default {
       editContent: '',
       currentEditingId: null,
       editTitle: '',
-      submitting: false
+      submitting: false,
+      loginStore: useLoginInfoStore()
     };
   },
   computed: {
@@ -131,7 +147,10 @@ export default {
     }
   },
   methods: {
-
+    formatDate(dateString) {
+      if (!dateString) return '';
+      return format(parseISO(dateString), 'yyyy-MM-dd HH:mm:ss');
+    },
     openEditModal(answer) {
       this.editTitle = answer.title;
       this.editContent = answer.content;
@@ -157,7 +176,7 @@ export default {
         .then(response => {
           this.board = response.data.result;
           this.fetchAnswers(boardId);
-          tihs.showSuccess = false;
+          this.showSuccess = false;
         }).catch(error => {
         console.error('Error fetching board details:', error);
       });
@@ -181,6 +200,7 @@ export default {
     editBoard() {
       this.$router.push(`/BoardList/Modify/${this.board.boardId}`);
     },
+
     deleteBoard() {
       const boardId = this.board.boardId;
       if (confirm("게시글을 정말 삭제하시겠습니까?")) {

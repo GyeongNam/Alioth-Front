@@ -13,7 +13,7 @@
         <v-col cols="4">
           <v-card class="myimage pa-3">
             <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
-            <img class="default-image" :src="imageUrl" @click="openImageUploader" v-if="(loginStore.memberCode.toString()===salesMembersCode)">
+            <img class="default-image" :src="imageUrl" @click="openImageUploader"  >
           </v-card>
         </v-col>
         <v-col cols="7">
@@ -361,7 +361,11 @@ export default {
 
    }
     function openImageUploader() {
-      imageInput.value.click();
+      if(loginStore.memberCode.toString()===props.salesMembersCode){
+        imageInput.value.click();
+      } else {
+        alert("이미지를 업로드할 수 있는 권한이 없습니다.");
+      }
     }
 
     function openPostCode() {

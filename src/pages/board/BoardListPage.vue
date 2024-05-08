@@ -5,7 +5,7 @@
       <AppHeader></AppHeader>
       <v-divider></v-divider>
       <v-card style="margin-top: 10px;">
-        <v-toolbar flat>
+        <v-toolbar flat color="white">
           <v-switch
             v-model="model"
             :label="`${model === 'Announcement' ? '공지사항' : '건의사항'}`"
@@ -14,10 +14,13 @@
             hide-details
             @change="fetchData"
             class="flex-grow-1"
+            style="margin-left: 1vw"
           ></v-switch>
-          <v-btn color="primary" @click="navigateToAddPage">
-            글쓰기
-          </v-btn>
+          <v-col class="text-right">
+            <v-btn variant="tonal" color="#2979FF" @click="navigateToAddPage" v-if="shouldShowWriteButton">
+              글쓰기
+            </v-btn>
+          </v-col>
         </v-toolbar>
         <ListComponent
           :columns="headers"
@@ -53,26 +56,11 @@ export default {
     const salesMemberRank = ref(loginInfoStore.getMemberRank);
     const boardTypeStore = useBoardTypeStore();
     const model = ref('Announcement');
-
-    // onBeforeRouteEnter((to, from, next) => {
-    //     // URL에서 type 쿼리를 읽어 상태를 업데이트
-    //     model.value = to.query.type || 'Announcement';
-    //     next();
-    //   });
-
-    //   onBeforeRouteUpdate((to, from, next) => {
-    //     // URL에서 type 쿼리를 읽어 상태를 업데이트
-    //     model.value = to.query.type || 'Announcement';
-    //     next();
-    //   });
-
     watchEffect(() => {
       const type = router.currentRoute.value.query.type || 'Announcement';
       model.value = type;
       boardTypeStore.setBoardType(type);
     });
-
-
 
     const shouldShowWriteButton = computed(() => {
       // 'Suggestion' 상태일 때는 항상 true를 반환하여 글쓰기 버튼이 보이도록 함
@@ -91,6 +79,7 @@ export default {
     return {
       // model: 'Announcement',
       items: [],
+      loginStore: useLoginInfoStore(),
       currentPage: 1,
       pageCount: 0,
       headers: [
