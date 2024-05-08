@@ -107,12 +107,12 @@ export default {
     AppSidebar, AppHeader, ListComponent,
   },
   setup() {
-    const godMember = "-";
-    const godPrice = "-";
-    const godCount = "-";
-    const bestTeamName = "-";
-    const bestTeamPrice = "-";
-    const bestTeamCount = "-";
+    const godMember = ref("-");
+    const godPrice = ref("-");
+    const godCount = ref("-");
+    const bestTeamName = ref("-");
+    const bestTeamPrice = ref("-");
+    const bestTeamCount = ref("-");
 
     return {
       godMember, godPrice, godCount,
