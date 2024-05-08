@@ -36,11 +36,15 @@
             </v-row>
             <v-row>
               <v-col cols="4">
-                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">팀명</v-card-subtitle>
+                <v-row>
+                  <v-col>
+                    <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">팀명</v-card-subtitle>
+                  </v-col>
+                  <v-col class="text-right">
+                    <v-btn color="#1A237E" variant="tonal" @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'" class="btn-small">팀 목록</v-btn>
+                  </v-col>
+                </v-row>
                 <v-card-title class="mr-2" style=" font-family: 'Spoqa Han Sans Neo';"> {{ teamName }}</v-card-title>
-                <div class="d-flex align-center justify-end">
-                  <v-btn @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'" class="btn-small">팀 목록</v-btn>
-                </div>
               </v-col>
               <v-col cols="4">
                 <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">고과평가</v-card-subtitle>
@@ -54,13 +58,13 @@
                   <v-card-title style=" font-family: 'Spoqa Han Sans Neo';"> 상세 설명 </v-card-title>
                 </v-col>
                 <v-col class="text-right">
-                  <v-btn variant="tonal" color="#2979FF" class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode"> 수정 </v-btn>
+                  <v-btn variant="tonal" color="#2979FF" class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode.toString()"> 수정 </v-btn>
                 </v-col>
               </v-row>
               <div class="divider"></div>
               <div class="d-flex align-start mb-2">
                 <h4 class="ma-2 pa-2">회사 주소</h4>
-                <div>{{ officeAddress }}</div>
+                <h4 class="ma-2 pa-2">{{ officeAddress }}</h4>
               </div>
               <div class="d-flex align-start mb-2">
                 <h4 class="ma-2 pa-2">집 주소</h4>
@@ -123,7 +127,7 @@
             <v-text-field label="생년월일" type="date" v-model="birthDay"></v-text-field>
           </v-col>
           <v-col cols="12" md="8" sm="6">
-            <v-text-field label="사무실"></v-text-field>
+            <v-text-field label="사무실" v-model="officeAddress"></v-text-field>
           </v-col>
           <v-col cols="12" md="12" sm="12">
             <span>자택주소</span>
@@ -195,6 +199,7 @@ export default {
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/details/${props.salesMembersCode}`)
         .then(response => {
+          console.log(response);
           if (response.data && response.data.result) {
             const {
               profile: profileImageUrl,
@@ -257,6 +262,9 @@ export default {
       }
 
       if (confirm("수정하시겠습니까?")) {
+        console.log("확인")
+        console.log(rank.value)
+        console.log(rank.value.toString())
         axiosInstance.patch(`${baseUrl}/api/members/admin/update/${props.salesMembersCode}`, data)
           .then(res => {
             console.log(res)
@@ -351,7 +359,6 @@ export default {
        roadAddress:roadAddress.value,
        detailAddress:detailAddress.value
      };
-     console.log(data);
      axiosInstance.patch(`${baseUrl}/api/members/details/update`, data)
        .then(response => {
          console.error("res결과: " + response);

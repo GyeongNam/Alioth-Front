@@ -64,29 +64,28 @@
         </v-col>
 
         <v-col cols="12" md="5">
-            <v-card class="pa-5 text-center" color="#C8E6C9" dark>
-              <v-row align="center" justify="center">
-                <h2 class="headline white--text">개인 판매 실적</h2>
-              </v-row>
-            </v-card>
-            <VCard height="24vw" title="">
-              <VCardText class="pt-10">
-                <VRow>
-                  <VCol cols="12" sm="6" md="6" class="mb-5">
-                    <VCard color="primary" class="text-center">
-                      <div class="d-flex align-center justify-center gap-x-3 py-4">
-                        <div class="d-flex flex-column">
-                          <div class="text-body-1">
-                            {{ statistics[0].title }}
-                          </div>
-                          <h5 class="text-h5">
-                            {{ statistics[0].stats }}
-                          </h5>
+          <v-card class="pa-5 text-center" color="#C8E6C9" dark>
+            <v-row align="center" justify="center">
+              <h2 class="headline white--text">개인 판매 실적</h2>
+            </v-row>
+          </v-card>
+          <VCard height="24vw" title="">
+            <VCardText class="pt-10">
+              <VRow>
+                <VCol cols="12" sm="6" md="6" class="mb-5">
+                  <VCard color="primary" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ statistics[0].title }}
                         </div>
                         <h5 class="text-h5">
                           {{ statistics[0].stats }}
                         </h5>
                       </div>
+                      <h5 class="text-h5">
+                        {{ statistics[0].stats }}
+                      </h5>
                     </div>
                   </VCard>
                 </VCol>
@@ -129,11 +128,12 @@
                           {{ statistics[3].stats }}
                         </h5>
                       </div>
-                    </VCard>
-                  </VCol>
-                </VRow>
-              </VCardText>
-            </VCard>
+                    </div>
+                  </VCard>
+                </VCol>
+              </VRow>
+            </VCardText>
+          </VCard>
         </v-col>
       </v-row>
 
@@ -270,13 +270,13 @@
       <!-- 전사 데이터 보여주는 부분 -->
       <v-card class="mt-12" v-if="model === 'HQ'">
         <v-row class="mt-12">
-          <v-card-title> 전사 매출 </v-card-title>
+          <v-card-title> 전사 매출</v-card-title>
         </v-row>
 
         <v-col cols="2">
           <v-btn class="mt-1" @click="showDatePickerHQDialog">
-              <v-icon left>mdi-calendar</v-icon>
-              날짜 선택
+            <v-icon left>mdi-calendar</v-icon>
+            날짜 선택
           </v-btn>
         </v-col>
 
@@ -380,9 +380,8 @@
         :rows="formattedTeamItems"
       />
 
-
-    </v-container>
-  </v-main>
+    </v-main>
+  </v-container>
 </template>
 
 <script>
@@ -479,20 +478,20 @@ export default {
         {title: '계약 건수', key: 'contractCount'},
         {title: '해약 총금액', key: 'cancelPrice'},
         {title: '해약 건수', key: 'cancelCount'},
-        { title: 'No', key: 'id' },
-        { title: '계약 총금액', key: 'contractPrice' },
-        { title: '계약 건수', key: 'contractCount' },
-        { title: '해약 총금액', key: 'cancelPrice' },
-        { title: '해약 건수', key: 'cancelCount' },
+        {title: 'No', key: 'id'},
+        {title: '계약 총금액', key: 'contractPrice'},
+        {title: '계약 건수', key: 'contractCount'},
+        {title: '해약 총금액', key: 'cancelPrice'},
+        {title: '해약 건수', key: 'cancelCount'},
       ],
       teamItems: [],
       teamHeaders: [
-        { title: 'No', key: 'id' },
-        { title: '팀 이름', key: 'teamName' },
-        { title: '계약 총금액', key: 'contractPrice' },
-        { title: '계약 건수', key: 'contractCount' },
-        { title: '해약 총금액', key: 'cancelPrice' },
-        { title: '해약 건수', key: 'cancelCount' },
+        {title: 'No', key: 'id'},
+        {title: '팀 이름', key: 'teamName'},
+        {title: '계약 총금액', key: 'contractPrice'},
+        {title: '계약 건수', key: 'contractCount'},
+        {title: '해약 총금액', key: 'cancelPrice'},
+        {title: '해약 건수', key: 'cancelCount'},
       ],
       statistics: [
         {
@@ -567,7 +566,7 @@ export default {
       return this.items.map(item => ({...item}));
     },
     formattedTeamItems() {
-      return this.teamItems.map(teamItems => ({ ...teamItems }));
+      return this.teamItems.map(teamItems => ({...teamItems}));
     },
   },
   methods: {
@@ -582,7 +581,7 @@ export default {
     },
     applyTeamDate() {
       useSalesStore().startTeamDate = this.startTeamDate;
-      if(this.startTeamDate !== "") {
+      if (this.startTeamDate !== "") {
         this.teamShot();
       }
 
@@ -591,7 +590,7 @@ export default {
     applyHQDate() {
       useSalesStore().startHQDate = this.startHQDate;
       console.log("전사 날짜 선택: ", this.startHQDate);
-      if(this.startHQDate !== "") {
+      if (this.startHQDate !== "") {
         this.hqShot();
         this.hqList();
       }
