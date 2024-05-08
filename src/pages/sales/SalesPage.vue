@@ -43,7 +43,11 @@
       </v-row>
 
       <v-row>
-        <v-card-title> {{ startDate }}</v-card-title>
+        <v-card class="pa-8 ml-3 text-center" color="#E1BEE7" dark>
+          <v-row align="center" justify="center">
+            <h2 class="headline white--text">{{ startDate }}</h2>
+          </v-row>
+        </v-card>
       </v-row>
 
 
@@ -62,7 +66,7 @@
         <v-col cols="12" md="5">
             <v-card class="pa-5 text-center" color="#C8E6C9" dark>
               <v-row align="center" justify="center">
-                <h2 class="headline white--text">판매 실적</h2>
+                <h2 class="headline white--text">개인 판매 실적</h2>
               </v-row>
             </v-card>
             <VCard height="24vw" title="">
@@ -250,9 +254,7 @@
             </VCard>
           </v-col>
         </v-row>
-
       </v-card>
-
 
       <v-divider></v-divider>
       <v-divider></v-divider>
