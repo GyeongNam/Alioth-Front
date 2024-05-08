@@ -1,44 +1,44 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <AppHeader></AppHeader>
-    <v-container fluid>
+  <v-container fluid>
+    <v-main>
+      <AppHeader></AppHeader>
       <div>
         <v-divider></v-divider>
-        <h2>매출 메인 화면</h2>
-        <v-divider></v-divider>
         <v-col align="center" class="text-center">
-          <v-btn variant="tonal" color="#1A237E" onclick="location.href=`/Sales/Ranking`" style="margin-right: 1vw">매출순위</v-btn>
+          <v-btn variant="tonal" color="#1A237E" onclick="location.href=`/Sales/Ranking`" style="margin-right: 1vw">
+            매출순위
+          </v-btn>
         </v-col>
       </div>
       <v-row align="center">
         <v-col cols="2">
           <v-btn class="mt-1" @click="showDatePickerDialog">
-              <v-icon left>mdi-calendar</v-icon>
-              날짜 선택
+            <v-icon left>mdi-calendar</v-icon>
+            날짜 선택
           </v-btn>
         </v-col>
 
         <v-col cols="12">
-            <!-- <v-text-field v-model="startDate" class="mt-3" readonly></v-text-field> -->
-            <v-dialog v-model="datePickerDialog" persistent max-width="300px">
-              <v-card>
-                <v-card-title>날짜 선택</v-card-title>
+          <!-- <v-text-field v-model="startDate" class="mt-3" readonly></v-text-field> -->
+          <v-dialog v-model="datePickerDialog" persistent max-width="300px">
+            <v-card>
+              <v-card-title>날짜 선택</v-card-title>
 
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-text-field v-model="startDate" label="선택 날짜" type="month"></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field v-model="startDate" label="선택 날짜" type="month"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
 
-                <v-card-actions>
-                  <v-btn color="primary" @click="applyDate">적용</v-btn>
-                  <v-btn color="secondary" @click="cancelDateRange">취소</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+              <v-card-actions>
+                <v-btn color="primary" @click="applyDate">적용</v-btn>
+                <v-btn color="secondary" @click="cancelDateRange">취소</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
 
@@ -54,76 +54,76 @@
         </v-col>
 
         <v-col cols="12" md="5">
-            <VCard title="판매 실적">
-              <VCardText class="pt-10">
-                <VRow>
-                  <VCol cols="12" sm="6" md="6" class="mb-5">
-                    <VCard color="primary" class="text-center">
-                      <div class="d-flex align-center justify-center gap-x-3 py-4">
-                        <div class="d-flex flex-column">
-                          <div class="text-body-1">
-                            {{ statistics[0].title }}
-                          </div>
-                          <h5 class="text-h5">
-                            {{ statistics[0].stats }}
-                          </h5>
+          <VCard title="판매 실적">
+            <VCardText class="pt-10">
+              <VRow>
+                <VCol cols="12" sm="6" md="6" class="mb-5">
+                  <VCard color="primary" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ statistics[0].title }}
                         </div>
+                        <h5 class="text-h5">
+                          {{ statistics[0].stats }}
+                        </h5>
                       </div>
-                    </VCard>
-                  </VCol>
-                  <VCol cols="12" sm="6" md="6" class="mb-5">
-                    <VCard color="success" class="text-center">
-                      <div class="d-flex align-center justify-center gap-x-3 py-4">
-                        <div class="d-flex flex-column">
-                          <div class="text-body-1">
-                            {{ statistics[1].title }}
-                          </div>
-                          <h5 class="text-h5">
-                            {{ statistics[1].stats }}
-                          </h5>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6" class="mb-5">
+                  <VCard color="success" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ statistics[1].title }}
                         </div>
+                        <h5 class="text-h5">
+                          {{ statistics[1].stats }}
+                        </h5>
                       </div>
-                    </VCard>
-                  </VCol>
-                  <VCol cols="12" sm="6" md="6" class="mb-8">
-                    <VCard color="warning" class="text-center">
-                      <div class="d-flex align-center justify-center gap-x-3 py-4">
-                        <div class="d-flex flex-column">
-                          <div class="text-body-1">
-                            {{ statistics[2].title }}
-                          </div>
-                          <h5 class="text-h5">
-                            {{ statistics[2].stats }}
-                          </h5>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6" class="mb-8">
+                  <VCard color="warning" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ statistics[2].title }}
                         </div>
+                        <h5 class="text-h5">
+                          {{ statistics[2].stats }}
+                        </h5>
                       </div>
-                    </VCard>
-                  </VCol>
-                  <VCol cols="12" sm="6" md="6">
-                    <VCard color="info" class="text-center">
-                      <div class="d-flex align-center justify-center gap-x-3 py-4">
-                        <div class="d-flex flex-column">
-                          <div class="text-body-1">
-                            {{ statistics[3].title }}
-                          </div>
-                          <h5 class="text-h5">
-                            {{ statistics[3].stats }}
-                          </h5>
+                    </div>
+                  </VCard>
+                </VCol>
+                <VCol cols="12" sm="6" md="6">
+                  <VCard color="info" class="text-center">
+                    <div class="d-flex align-center justify-center gap-x-3 py-4">
+                      <div class="d-flex flex-column">
+                        <div class="text-body-1">
+                          {{ statistics[3].title }}
                         </div>
+                        <h5 class="text-h5">
+                          {{ statistics[3].stats }}
+                        </h5>
                       </div>
-                    </VCard>
-                  </VCol>
-                </VRow>
-              </VCardText>
-            </VCard>
-          </v-col>
-        </v-row>
+                    </div>
+                  </VCard>
+                </VCol>
+              </VRow>
+            </VCardText>
+          </VCard>
+        </v-col>
+      </v-row>
 
-        <ListComponent
-          v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
-          :columns="headers"
-          :rows="formattedItems"
-        />
+      <ListComponent
+        v-if="model === 'FP' || model === 'MANAGER' || model === 'HQ'"
+        :columns="headers"
+        :rows="formattedItems"
+      />
 
       <v-divider></v-divider>
       <v-divider></v-divider>
@@ -132,13 +132,13 @@
       <!-- 팀 데이터를 표시하는 부분 -->
       <v-card class="mt-12" v-if="model === 'MANAGER'">
         <v-row class="mt-12">
-          <v-card-title> 팀 매출 </v-card-title>
+          <v-card-title> 팀 매출</v-card-title>
         </v-row>
 
         <v-col cols="2">
           <v-btn class="mt-1" @click="showDatePickerTeamDialog">
-              <v-icon left>mdi-calendar</v-icon>
-              날짜 선택
+            <v-icon left>mdi-calendar</v-icon>
+            날짜 선택
           </v-btn>
         </v-col>
 
@@ -247,15 +247,12 @@
       <v-divider></v-divider>
 
 
-
-
-
-    </v-container>
-  </v-main>
+    </v-main>
+  </v-container>
 </template>
 
 <script>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
@@ -266,8 +263,8 @@ import SalesPageTargetChart from "@/pages/sales/charts/SalesPageTarget"
 import SalesPageTeamTarget from "@/pages/sales/charts/SalesPageTeamTarget"
 
 import SalesTransChart from "@/pages/sales/charts/SalesAnalytics.vue"
-import { useSalesStore } from '@/stores/SalesStore';
-import { useLoginInfoStore } from '@/stores/loginInfo';
+import {useSalesStore} from '@/stores/SalesStore';
+import {useLoginInfoStore} from '@/stores/loginInfo';
 import ListComponent from "@/layouts/ListComponent.vue";
 
 
@@ -329,13 +326,13 @@ export default {
       loginStore: useLoginInfoStore(),
       items: [],
       headers: [
-        { title: 'No', key: 'id' },
+        {title: 'No', key: 'id'},
         // { title: '사원 이름', key: 'salesMemberName' },
         // { title: '사원 코드', key: 'salesMemberCode' },
-        { title: '계약 총금액', key: 'contractPrice' },
-        { title: '계약 건수', key: 'contractCount' },
-        { title: '해약 총금액', key: 'cancelPrice' },
-        { title: '해약 건수', key: 'cancelCount' },
+        {title: '계약 총금액', key: 'contractPrice'},
+        {title: '계약 건수', key: 'contractCount'},
+        {title: '해약 총금액', key: 'cancelPrice'},
+        {title: '해약 건수', key: 'cancelCount'},
       ],
       statistics: [
         {
@@ -385,7 +382,7 @@ export default {
   },
   computed: {
     formattedItems() {
-      return this.items.map(item => ({ ...item }));
+      return this.items.map(item => ({...item}));
     },
   },
   methods: {

@@ -88,7 +88,7 @@ export default {
         { title: '제목', key: 'title' },
         // { title: '글내용', key: 'content' },
         { title: '작성일자', key: 'created_at' },
-        { title: '수정일자', key: 'updated_at' },
+        // { title: '수정일자', key: 'updated_at' },
       ],
     };
   },

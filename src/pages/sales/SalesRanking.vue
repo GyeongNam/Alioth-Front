@@ -3,10 +3,8 @@
     <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
-
         <v-row align="center">
           <v-col cols="2">
-            <h2>매출 순위</h2>
             <v-btn class="mt-1" @click="showDatePickerDialog">
                 <v-icon left>mdi-calendar</v-icon> <!-- 날짜 아이콘 -->
                 날짜 선택
