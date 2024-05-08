@@ -592,8 +592,10 @@ export default {
     async memberList() {
       const memberCode = this.loginStore.getMemberCode;
       const date = this.startDate;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
 
-      let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}`;
+      // let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}`;
+      let url = `${baseUrl}api/stat/sales/${memberCode}/${date}`;
       console.log(url);
 
       await axios.get(url)
@@ -613,8 +615,10 @@ export default {
     async memberShot() {
       const memberCode = this.loginStore.getMemberCode;
       const date = this.startDate;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
 
-      let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}/price`;
+      //let url = `http://localhost:8081/api/stat/sales/${memberCode}/${date}/price`;
+      let url = `${baseUrl}/api/stat/sales/${memberCode}/${date}/price`;
       console.log(url);
 
       await axios.get(url)
@@ -635,7 +639,9 @@ export default {
       const memberTeamCode = this.loginStore.memberTeamCode;
       const date = this.startTeamDate;
 
-      let url = `http://localhost:8081/statistics/api/sales/${memberTeamCode}/${date}/price`;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      let url = `${baseUrl}/api/sales/${memberTeamCode}/${date}/price`;
+      //let url = `http://localhost:8081/statistics/api/sales/${memberTeamCode}/${date}/price`;
       console.log(url);
 
       await axios.get(url)
@@ -656,7 +662,9 @@ export default {
       // const memberTeamCode = this.loginStore.memberTeamCode;
       const date = this.startHQDate;
 
-      let url = `http://localhost:8081/statistics/api/sales/hq/${date}/price`;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      let url = `${baseUrl}/api/sales/hq/${date}/price`;
+      //let url = `http://localhost:8081/statistics/api/sales/hq/${date}/price`;
       console.log("hqShot() : ", url);
 
       await axios.get(url)
@@ -675,8 +683,9 @@ export default {
     },
     async hqList() {
       const date = this.startHQDate;
-
-      let url = `http://localhost:8081/statistics/api/sales/hq/${date}/team-price`;
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      let url = `${baseUrl}/api/sales/hq/${date}/team-price`;
+      //let url = `http://localhost:8081/statistics/api/sales/hq/${date}/team-price`;
       console.log("hqList() ", url);
 
       await axios.get(url)

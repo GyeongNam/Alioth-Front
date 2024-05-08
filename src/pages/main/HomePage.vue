@@ -153,7 +153,9 @@ export default {
   },
   methods: {
     async getMemberGod() {
-      let url = "http://localhost:8081/statistics/api/dashboard/god";
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      //let url = "http://localhost:8081/statistics/api/dashboard/god";
+      const url = `${baseUrl}/api/dashboard/god`;
       console.log(url);
       await axios.get(url)
         .then(response => {
@@ -169,7 +171,10 @@ export default {
         });
     },
     async getBestTeam() {
-      let url = "http://localhost:8081/statistics/api/dashboard/best-team";
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
+      //let url = "http://localhost:8081/statistics/api/dashboard/best-team";
+      const url = `${baseUrl}/api/dashboard/best-team`;
+
       console.log(url);
       await axios.get(url)
         .then(response => {
@@ -185,7 +190,7 @@ export default {
         });
     },
     async getSugBoard() {
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
       const url = `${baseUrl}/api/dashboard/board/sug`;
       console.log(url);
       axios.get(url)
@@ -204,7 +209,7 @@ export default {
         });
     },
     async getAnnBoard() {
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
+      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL || 'http://localhost:8081';
       const url = `${baseUrl}/api/dashboard/board/ann`;
       console.log(url);
       axios.get(url)
