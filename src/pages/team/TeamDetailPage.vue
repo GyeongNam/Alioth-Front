@@ -27,7 +27,7 @@
           <v-col cols="3">
             <v-col class="d-flex align-center">
               <v-card-title class="mr-2 custom-font">고과평가</v-card-title>
-              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" class="custom-font">
+              <v-card-title v-if="!modify" class="custom-font">
                 {{ state.performanceReview }}
               </v-card-title>
               <v-select v-if="modify" v-model="state.performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>

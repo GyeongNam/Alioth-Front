@@ -1,8 +1,8 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-main>
-    <v-container fluid>
-    <AppHeader></AppHeader>
+  <v-container fluid>
+    <v-main>
+      <AppHeader></AppHeader>
       <v-card>
         <v-card-text>
           <div v-if="contract">
@@ -52,16 +52,16 @@
           <v-btn variant="tonal" color="primary" @click="navigateToCancel">해약</v-btn>
         </v-card-text>
       </v-card>
-    </v-container>
-  </v-main>
+    </v-main>
+  </v-container>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import { useRouter, useRoute } from 'vue-router';
-import { format, parseISO } from 'date-fns';
+import {useRouter, useRoute} from 'vue-router';
+import {format, parseISO} from 'date-fns';
 import axiosInstance from '@/plugins/loginaxios';
 
 export default {
@@ -76,15 +76,13 @@ export default {
     const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL
     const fetchContractDetail = () => {
       const contractId = route.params.id;
-
-
       axiosInstance.get(`${baseUrl}/api/contract/detail/${contractId}`)
-      .then(response => {
-        contract.value = response.data.result;
-      })
-      .catch(error => {
-        console.error("Failed to fetch contract details:", error);
-      });
+        .then(response => {
+          contract.value = response.data.result;
+        })
+        .catch(error => {
+          console.error("Failed to fetch contract details:", error);
+        });
     };
 
     const formatDate = (dateString) => {
@@ -111,7 +109,7 @@ export default {
 }
 
 .v-card {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 추가 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
   border-radius: 13px; /* 모서리 둥글게 처리 */
   overflow: hidden; /* 내부 요소가 카드 밖으로 나가지 않도록 처리 */
 }

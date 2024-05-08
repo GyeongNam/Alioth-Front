@@ -8,13 +8,13 @@
           <v-card>
             <v-card-text>
               <v-form @submit.prevent="submitForm">
-              <span>사진</span>
-                <v-card class="pa-3">
-                  <div class="image-container">
-                    <v-img v-if="form.imageUrl" :width="300" aspect-ratio="16/9" cover :src="form.imageUrl"></v-img>
-                    <input type="file" @change="handleFileUpload">
-                  </div>
-                </v-card>
+<!--              <span>사진</span>-->
+<!--                <v-card class="pa-3">-->
+<!--                  <div class="image-container">-->
+<!--                    <v-img v-if="form.imageUrl" :width="300" aspect-ratio="16/9" cover :src="form.imageUrl"></v-img>-->
+<!--                    <input type="file" @change="handleFileUpload">-->
+<!--                  </div>-->
+<!--                </v-card>-->
               <v-spacer></v-spacer>
               <span>이름</span>
               <v-text-field v-model="form.name" label="이름을 입력하세요" required></v-text-field>

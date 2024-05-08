@@ -1,51 +1,47 @@
 <template>
+  <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'>
   <AppSidebar></AppSidebar>
   <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
       <v-card class="mt-5" outlined>
         <v-row>
-          <v-card-title class="headline" style="margin-top: 0.5vw; font-family: 'Spoqa Han Sans Neo'">{{
-              board.title
-            }}
+          <v-card-title class="headline" style="margin-top: 1vw; margin-left:1vw; margin-bottom:1vw; font-family: 'Spoqa Han Sans Neo'">{{board.title }}
           </v-card-title>
-          <v-col class="text-right">
-            <v-btn variant="tonal" color="#2979FF" style="margin-right: 0.5vw; margin-top: 0.5vw" @click="editBoard">수정</v-btn>
-            <v-btn variant="tonal" color="primary" style="margin-right: 1vw; margin-top: 0.5vw" @click="deleteBoard">삭제</v-btn>
+          <v-col class="text-right" style="margin-bottom:1vw" >
+            <v-btn v-if="loginStore.memberCode===board.salesMemberCode " small class="small-btn" variant="tonal" color="#2979FF" style="margin-right: 0.5vw; margin-top: 0.5vw; margin-bottom: 0.75vw" @click="editBoard">수정</v-btn>
+            <v-btn v-if="loginStore.memberCode===board.salesMemberCode " small class="small-btn" variant="tonal" color="primary" style="margin-right: 1vw; margin-top: 0.5vw; margin-bottom: 0.75vw" @click="deleteBoard">삭제</v-btn>
           </v-col>
         </v-row>
-        <v-card-subtitle class="text-right" style="margin-top: 0.5vw;">
-          <span> 작성자 {{ board.salesMemberName}}</span>
-          <span class="grey--text"> | 작성일 {{ board.created_at }}</span>
-        </v-card-subtitle>
+        <v-divider></v-divider>
+        <v-col class="text-right">
+          <v-card-subtitle style="margin-top: 0.5vw;">
+            <span> 작성자 {{ board.writerName}}</span>
+            <span class="grey--text"> | 작성일자 {{ formatDate(board.created_at) }}</span>
+          </v-card-subtitle>
+        </v-col>
         <v-card-text v-html="board.content"></v-card-text>
       </v-card>
 
-      <v-card style="margin-top: 1vw" class="answers" v-if="board.boardType === 'SUGGESTION'">
-        <div v-for="answer in answers" :key="answer.answer_id" class="answer">
-          <v-row>
-            <v-col>
-              <v-card-title style="font-family: 'Spoqa Han Sans Neo'">{{ answer.title }}</v-card-title>
-            </v-col>
-            <v-col>
-              <v-col class="text-right">
-                <v-btn small class="small-btn" variant="tonal" color="#2979FF" @click="openEditModal(answers)"
-                       style="margin-top: 0.5vw; margin-right: 0.5vw"
-                       v-if="loginStore.memberCode.toString()===answer.memberCode.toString()"> 답변 수정
-                </v-btn>
-                <v-btn small class="small-btn" variant="tonal" color="primary" style="margin-top: 0.5vw;"
-                       v-if="loginStore.memberCode.toString()===answer.memberCode.toString()" @click="deleteAnswer">답변 삭제
-                </v-btn>
-              </v-col>
-            </v-col>
-          </v-row>
-          <v-divider></v-divider>
-          <v-card-subtitle class="text-right" style="margin-bottom: 1vw">
-            <span> 작성자 사번 {{ answer.salesMemberCode }} |  작성시간 {{ answer.created_at }}</span>
-          </v-card-subtitle>
+        <v-card style="margin-top:1vw" v-if="board.boardType === 'SUGGESTION'">
+          <div v-for="answer in answers" :key="answer.answer_id" class="answer">
+            <v-card-title style="font-family: 'Spoqa Han Sans Neo'">RE:</v-card-title>
+            <v-divider></v-divider>
+            <v-card-subtitle class="text-right" style="margin-top: 0.5vw">
+              <span> 작성자 {{ answer.answer_name }}</span>
+              <span> | 작성일자 {{ formatDate(answer.created_at) }}</span>
+            </v-card-subtitle>
+            <v-card-text v-html="answer.content"></v-card-text>
+            <v-col class="text-right" v-if="loginStore.memberRank==='HQ' || answer.salesMemberCode === loginStore.getMemberCode">
+              <v-btn small class="small-btn" variant="tonal" color="#2979FF" @click="openEditModal(answer)"
+                     style="margin-top: 0.5vw; margin-right: 0.5vw"> 답변 수정
 
-          <div v-html="answer.content"></div>
+              </v-btn>
+              <v-btn small class="small-btn" variant="tonal" color="primary" v-if="loginStore.memberRank==='HQ' || answer.salesMemberCode === loginStore.getMemberCode" style="margin-top: 0.5vw;" @click="deleteAnswer(answer)">답변 삭제
+              </v-btn>
+            </v-col>
 
+          </div>
           <v-dialog v-model="showModal" persistent max-width="600px">
             <v-card>
               <v-row>
@@ -76,8 +72,7 @@
               답변이 완료된 게시글입니다.
             </v-alert>
           </div>
-        </div>
-      </v-card>
+        </v-card>
       <v-dialog v-model="editModalVisible" persistent max-width="600px">
         <v-card>
           <v-row>
@@ -100,17 +95,20 @@
           <v-card-actions>
             <v-col class="text-right">
               <v-btn variant="tonal" color="#2979FF" @click="confirmEdit">수정</v-btn>
-              <!--                <v-btn variant="tonal" color="#2C3E50" style="margin-right:1vw" @click="showModal = false"> 닫기 </v-btn>-->
             </v-col>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-btn color="#424242" variant="tonal" style="margin-top:1vw" @click="goBack">목록으로</v-btn>
-      <v-col class="text-right">
-        <v-btn variant="tonal" color="#1A237E" v-if="answers.length === 0 && !showModal" @click="showModal = true">답글
-          작성
-        </v-btn>
-      </v-col>
+      <v-row>
+        <v-col>
+          <v-btn color="#424242" variant="tonal" style="margin-top:1vw" @click="goBack">목록으로</v-btn>
+        </v-col>
+        <v-col class="text-right">
+          <v-btn variant="tonal" color="#1A237E" style="margin-top:1vw" v-if="answers.length === 0 && !showModal && this.board.boardType === 'SUGGESTION' && this.board.salesMemberCode !== loginStore.getMemberCode " @click="showModal = true">답글
+            작성
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-main>
   </v-container>
 </template>
@@ -120,14 +118,15 @@ import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
 import axiosInstance from '@/plugins/loginaxios'
 import Editor from "@/layouts/Editor.vue";
+import {parseISO, format} from "date-fns";
 import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
-  components: {AppHeader, AppSidebar, Editor},
+  components: { AppHeader, AppSidebar, Editor },
   data() {
     return {
       board: {},
-      answers: [],
+      answers: {},
       newAnswer: '',
       currentUser: localStorage.getItem('userId'),
       baseUrl: import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080',
@@ -139,7 +138,7 @@ export default {
       currentEditingId: null,
       editTitle: '',
       submitting: false,
-      loginStore: useLoginInfoStore
+      loginStore: useLoginInfoStore()
     };
   },
   computed: {
@@ -148,10 +147,15 @@ export default {
     }
   },
   methods: {
+    formatDate(dateString) {
+      if (!dateString) return '';
+      return format(parseISO(dateString), 'yyyy-MM-dd HH:mm:ss');
+    },
     openEditModal(answer) {
+      console.log(answer.answer_id)
       this.editTitle = answer.title;
       this.editContent = answer.content;
-      this.currentEditingId = answer.answerId;
+      this.currentEditingId = answer.answer_id;
       this.editModalVisible = true;
     },
     closeEditModal() {
@@ -182,7 +186,8 @@ export default {
       this.showInput = true;
       console.log('Input field should be showing now');
     },
-    fetchAnswers(boardId) {
+    fetchAnswers() {
+      const boardId = this.$route.params.boardId;
       axiosInstance.get(`${this.baseUrl}/api/answer/list/${boardId}`)
         .then(response => {
           this.answers = response.data.result || [];
@@ -197,6 +202,7 @@ export default {
     editBoard() {
       this.$router.push(`/BoardList/Modify/${this.board.boardId}`);
     },
+
     deleteBoard() {
       const boardId = this.board.boardId;
       if (confirm("게시글을 정말 삭제하시겠습니까?")) {
@@ -258,8 +264,7 @@ export default {
           this.editModalVisible = false;
         })
         .catch(error => {
-          console.error('답글 수정 실패:', error);
-          alert('답글 수정 실패: ' + error.message);
+          alert('답글 수정 실패: ' + error.response.data.message);
         });
     },
     deleteAnswer(answer) {
@@ -273,8 +278,7 @@ export default {
             this.showSuccess = false;
             this.newAnswer = '';
           }).catch(error => {
-          console.error('답글 삭제 실패:', error);
-          alert('답글 삭제 실패: ' + error.message);
+          alert('답글 삭제 실패: ' + error.error.response.data.message);
         });
       }
     },
@@ -282,9 +286,9 @@ export default {
     goBack() {
       // 건의사항 게시판에서 '뒤로가기'를 클릭했을 때
       if (this.board.boardType === 'SUGGESTION') {
-        this.$router.push({path: '/BoardList', query: {type: 'Suggestion'}});
+        this.$router.push({ path: '/BoardList', query: { type: 'Suggestion' } });
       } else {
-        this.$router.push({path: '/BoardList', query: {type: 'Announcement'}});
+        this.$router.push({ path: '/BoardList', query: { type: 'Announcement' } });
       }
     }
   },
@@ -294,6 +298,7 @@ export default {
     this.fetchBoardDetail();
   }
 }
+
 </script>
 
 <style scoped>

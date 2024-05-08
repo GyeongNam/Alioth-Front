@@ -121,20 +121,39 @@ export default {
           }
 
           if (useLoginInfoStore().memberRank === 'MANAGER') {
-            const newSalesMemberOptions = response.data.result
-              .filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode)
-              .map(contract => ({
-                'key': contract.salesMemberResDto.name,
-                'val': contract.salesMemberResDto.salesMemberCode
-              }));
-            const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
+            if(useLoginInfoStore().memberTeamCode === ''){
+              const newSalesMemberOptions = response.data.result
+                .filter(contract => contract.salesMemberResDto.salesMemberCode === useLoginInfoStore().memberCode)
+                .map(contract => ({
+                  'key': contract.salesMemberResDto.name,
+                  'val': contract.salesMemberResDto.salesMemberCode
+                }));
+              console.log(newSalesMemberOptions)
+              const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
 
-            salesMemberOptions.value = [
-              ...salesMemberOptions.value,
-              ...uniqueSalesMemberOptions
-            ];
+              salesMemberOptions.value = [
+                ...salesMemberOptions.value,
+                ...uniqueSalesMemberOptions
+              ];
 
-            data = data.filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode);
+              data = data.filter(contract => contract.salesMemberResDto.salesMemberCode === useLoginInfoStore().memberCode);
+            }else{
+              const newSalesMemberOptions = response.data.result
+                .filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode)
+                .map(contract => ({
+                  'key': contract.salesMemberResDto.name,
+                  'val': contract.salesMemberResDto.salesMemberCode
+                }));
+              const uniqueSalesMemberOptions = Array.from(new Set(newSalesMemberOptions.map(JSON.stringify))).map(JSON.parse);
+
+              salesMemberOptions.value = [
+                ...salesMemberOptions.value,
+                ...uniqueSalesMemberOptions
+              ];
+
+              data = data.filter(contract => contract.salesMemberResDto.teamCode === useLoginInfoStore().memberTeamCode);
+            }
+
           }
 
           // console.log(response.data.result)
