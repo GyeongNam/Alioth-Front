@@ -83,9 +83,6 @@
                           {{ statistics[0].stats }}
                         </h5>
                       </div>
-                      <h5 class="text-h5">
-                        {{ statistics[0].stats }}
-                      </h5>
                     </div>
                   </VCard>
                 </VCol>
