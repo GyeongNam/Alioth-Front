@@ -8,9 +8,9 @@
           <v-col cols="3" class="d-flex align-center">
             <v-card-title class="mr-2 custom-font">팀명</v-card-title>
             <div class="custom-font" v-if="!modify">{{ state.teamName }}</div>
-              <v-col v-if="modify" cols="6">
-                <v-text-field v-model="state.teamName"></v-text-field>
-              </v-col>
+            <v-col v-if="modify" cols="6">
+              <v-text-field v-model="state.teamName"></v-text-field>
+            </v-col>
           </v-col>
           <v-col cols="3" class="d-flex align-center">
             <v-card-title class="mr-2 custom-font">팀장</v-card-title>
@@ -19,13 +19,15 @@
           </v-col>
           <v-col cols="3" class="d-flex align-center">
             <v-card-title class="mr-2 custom-font">매출 목표</v-card-title>
-            <div class="custom-font" v-if="!modify">{{ state.monthlyTargetCount }}건 | {{ state.monthlyTargetPrice }}원</div>
-            <v-btn v-if="modify && loginStore.memberRank==='HQ'" variant="tonal" color="#1A237E" @click="showSalesModal()">매출 목표 입력</v-btn>
+            <div class="custom-font">{{ state.monthlyTargetCount }}건 | {{ state.monthlyTargetPrice }}원
+            </div>
+            <v-btn class="small-btn" v-if="modify && loginStore.memberRank==='HQ'" variant="tonal" color="#1A237E"
+                   style="margin-left:2vw" @click="showSalesModal()">입력</v-btn>
           </v-col>
           <v-col cols="3">
             <v-col class="d-flex align-center">
-              <v-card-title class="mr-2 custom-font" >고과평가</v-card-title>
-              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" class="custom-font" >
+              <v-card-title class="mr-2 custom-font">고과평가</v-card-title>
+              <v-card-title v-if="!modify && loginStore.getMemberRank==='HQ'" class="custom-font">
                 {{ state.performanceReview }}
               </v-card-title>
               <v-select v-if="modify" v-model="state.performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
@@ -57,9 +59,16 @@
         <v-spacer></v-spacer>
         <ListComponent :columns="state.tableColumns" :rows="state.tableRows" @click:row="navigateToDetail"/>
       </v-card>
-      <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& !modify" style="margin-top: 0.5vw; margin-right: 0.5vw" @click="isModify">정보 수정</v-btn>
-      <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& modify" style="margin-top: 0.5vw; margin-right: 0.5vw" @click="updateTeam">수정 완료</v-btn>
-      <v-btn color="primary" variant="tonal" v-if="loginStore.memberRank==='HQ'" style="margin-top: 0.5vw" @click="deleteTeam">팀 삭제</v-btn>
+      <v-row style="margin-top: 0.2vw">
+        <v-col>
+          <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& !modify" @click="isModify">정보 수정</v-btn>
+          <v-btn color="#2979FF" variant="tonal" v-if="loginStore.memberRank==='HQ'&& modify" @click="updateTeam">수정 완료
+          </v-btn>
+        </v-col>
+        <v-col class="text-right">
+          <v-btn color="primary" variant="tonal" v-if="loginStore.memberRank==='HQ'" @click="deleteTeam">팀 삭제 </v-btn>
+        </v-col>
+      </v-row>
     </v-main>
   </v-container>
 
@@ -103,15 +112,13 @@
       </v-card-text>
       <v-card-actions>
         <v-btn color="#2979FF" variant="tonal" @click="selectMembers">확인</v-btn>
-        <v-btn color="" @click="closeModal">닫기</v-btn>
+        <v-btn color="#2C3E50" variant="tonal" @click="closeModal">닫기</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 
   <v-dialog v-model="updateTeamManager" width="auto">
     <v-card>
-      <v-card-title>
-      </v-card-title>
       <v-card-text>
         <v-container>
           <div>
@@ -127,20 +134,27 @@
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="updateSales" >
-    <v-card title="매출 목표">
-        <v-row>
-          <v-col cols="4">
-            <v-text-field label="목표 건수" v-model="state.monthlyTargetCount"></v-text-field>
-          </v-col>
-          <v-col cols="4">
-            <v-text-field label="목표 금액" v-model="state.monthlyTargetPrice"></v-text-field>
-          </v-col>
-        </v-row>
-      <v-card-actions>
-        <v-btn color="grey" variant="tonal" @click="updateSales=false">닫기</v-btn>
-        <v-btn color="#2979FF" variant="tonal" @click="">저장</v-btn>
-      </v-card-actions>
+  <v-dialog v-model="updateSales" width="40vw">
+    <v-card align="center">
+      <v-card-title class="custom-font"> 매출 목표</v-card-title>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="6">
+              <v-text-field label="목표 건수" v-model="state.monthlyTargetCount"></v-text-field>
+            </v-col>
+            <v-col cols="6">
+              <v-text-field label="목표 금액" v-model="state.monthlyTargetPrice"></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="text-right">
+              <v-btn color="#2979FF" variant="tonal" @click="saveSalesTarget" style="margin-right: 0.25vw">저장</v-btn>
+              <v-btn color="#2C3E50" variant="tonal" @click="updateSales=false">닫기</v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -167,8 +181,8 @@ export default {
       teamName: '', // 초기값을 빈 문자열로 설정
       teamManagerName: '',
       performanceReview: '',
-      monthlyTargetPrice: '',
-      monthlyTargetCount: '',
+      monthlyTargetCount: null,
+      monthlyTargetPrice: null,
       salesMemberCode: 'salesMemberCode',
       modalOpen: false,
       tableColumns: [
@@ -279,8 +293,6 @@ export default {
       axiosInstance.get(`${baseUrl}/api/members/list/manager`)
         .then(response => {
           const data = response.data.result;
-          console.log(data)
-
           const filteredData = data.filter(item => {
             const name = item.name.toLowerCase();
             const salesMemberCode = item.salesMemberCode.toString().toLowerCase();
@@ -297,7 +309,6 @@ export default {
           console.log('Error fetching data:', error);
         });
     };
-
     let teamMemberList;
 
     function navigateToAdd() {
@@ -308,14 +319,25 @@ export default {
       state.modalOpen = false;
     }
 
-    function showModal(){
+    function showModal() {
       updateTeamManager.value = true;
     }
+
     function isModify() {
       modify.value = !modify.value
     }
-    function showSalesModal(){
-      updateSales.value = true;
+
+    function showSalesModal() {
+      updateSales.value = !updateSales.value;
+    }
+
+    function select(event, {item}) {
+      state.teamManagerName = item.name
+      updateTeamManager.value = false;
+    }
+
+    const saveSalesTarget=() => {
+      updateSales.value = false;
     }
 
     function toggleCheckbox(item) {
@@ -340,8 +362,27 @@ export default {
       }
     }
 
-    function updateTeam(){
-
+    const updateTeam = () => {
+      const data = {
+        teamName: state.teamName,
+        teamManagerName: state.teamManagerName,
+        performanceReview: state.performanceReview,
+        monthlyTargetPrice: state.monthlyTargetPrice,
+        monthlyTargetCount: state.monthlyTargetCount
+      }
+      if (confirm("수정하시겠습니까?")) {
+        axiosInstance.patch(`${baseUrl}/api/team/update/${props.teamCode}`, data)
+          .then(res => {
+            console.log(res)
+            alert("수정되었습니다.");
+            modify.value = false;
+            router.push({path: `/Team/Detail/${props.teamCode}`});
+          })
+          .catch(error => {
+            console.error('Error updating data:', error);
+            alert("수정할 수 없습니다. 다시 확인해주세요")
+          });
+      }
     }
 
 
@@ -401,6 +442,8 @@ export default {
       tableColumns,
       updateTeamManager,
       updateSales,
+      saveSalesTarget,
+      select,
       showSalesModal,
       showModal,
       toggleAll,

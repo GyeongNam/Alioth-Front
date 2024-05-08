@@ -338,7 +338,6 @@ export default {
       }
     }
    function updateMyPage() {
-     console.log("회원정보 업데이트 요청");
      const data = {
        email: email.value,
        phone: phone.value,
