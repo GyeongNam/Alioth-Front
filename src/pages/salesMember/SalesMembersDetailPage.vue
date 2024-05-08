@@ -10,54 +10,57 @@
       </v-col>
       <v-row>
         <!-- Image Upload -->
-        <v-col cols="4">
-          <v-card class="myimage pa-3">
+        <v-col cols="5">
+          <v-card flat class="myimage pa-3">
             <input type="file" style="display: none" ref="imageInput" @change="handleImageUpload">
-            <img class="default-image" :src="imageUrl" @click="openImageUploader"  >
+            <img class="default-image" :src="imageUrl" @click="openImageUploader" >
           </v-card>
         </v-col>
         <v-col cols="7">
-          <v-card class="pa-3">
+          <v-card flat class="pa-3">
             <!-- Name, Position, and Employee Number -->
             <v-row>
               <v-col cols="4">
-                <h5>이름</h5>
-                <h3>{{ name }}</h3>
+                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">이름</v-card-subtitle>
+                <v-card-title class="mr-2" style=" font-family: 'Spoqa Han Sans Neo';"> {{ name }}</v-card-title>
               </v-col>
               <v-col cols="4">
-                <h5>사원번호</h5>
-                <h3>{{ salesMembersCode }}</h3>
+                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">사원번호</v-card-subtitle>
+                <v-card-title class="mr-2" style=" font-family: 'Spoqa Han Sans Neo';"> {{ salesMembersCode }}</v-card-title>
               </v-col>
               <v-col cols="4">
-                <h5>직급</h5>
-                <div v-if="!modify">{{ rank }}</div>
+                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">직급</v-card-subtitle>
+                <v-card-title class="mr-2" style=" font-family: 'Spoqa Han Sans Neo';" v-if="!modify"> {{ rank }}</v-card-title>
                 <v-select v-if="modify" v-model="rank" :items="['FP', 'MANAGER', 'HQ']"></v-select>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="4">
-                <h5>팀명</h5>
+                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">팀명</v-card-subtitle>
+                <v-card-title class="mr-2" style=" font-family: 'Spoqa Han Sans Neo';"> {{ teamName }}</v-card-title>
                 <div class="d-flex align-center justify-end">
                   <v-btn @click="navigateToChangeTeam" v-if="modify && loginStore.getMemberRank==='HQ'" class="btn-small">팀 목록</v-btn>
                 </div>
-                <div>{{ teamName }}</div>
               </v-col>
               <v-col cols="4">
-                <h5>고과평가</h5>
-                <v-card-text v-if="!modify">{{ performanceReview }}</v-card-text>
+                <v-card-subtitle style=" font-family: 'Spoqa Han Sans Neo';">고과평가</v-card-subtitle>
+                <v-card-title v-if="!modify">{{ performanceReview }}</v-card-title>
                 <v-select v-if="modify" v-model="performanceReview" :items="['A', 'B', 'C', 'D']"></v-select>
               </v-col>
             </v-row>
-            <v-card class="pa-2 mt-3"> <!-- Added mt-3 for some margin-top -->
-              <h3>상세 설명</h3>
-              <div class="d-flex align-end mb-2">
-                <div class="flex-grow-1"></div>
-                <v-btn variant="tonal" color="#2979FF" class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode"> 수정 </v-btn>
-              </div>
+            <v-card class="pa-2 mt-3">
+              <v-row>
+                <v-col>
+                  <v-card-title style=" font-family: 'Spoqa Han Sans Neo';"> 상세 설명 </v-card-title>
+                </v-col>
+                <v-col class="text-right">
+                  <v-btn variant="tonal" color="#2979FF" class="detail-text ma-2 pa-2" @click="openDetailModal" v-if="loginStore.memberCode.toString()===salesMembersCode"> 수정 </v-btn>
+                </v-col>
+              </v-row>
               <div class="divider"></div>
               <div class="d-flex align-start mb-2">
                 <h4 class="ma-2 pa-2">회사 주소</h4>
-                <h4 class="ma-2 pa-2">{{ officeAddress }}</h4>
+                <div>{{ officeAddress }}</div>
               </div>
               <div class="d-flex align-start mb-2">
                 <h4 class="ma-2 pa-2">집 주소</h4>
@@ -361,10 +364,8 @@ export default {
 
    }
     function openImageUploader() {
-      if(loginStore.memberCode.toString()===props.salesMembersCode){
+      if(loginStore.memberCode.toString()===props.salesMemberCode){
         imageInput.value.click();
-      } else {
-        alert("이미지를 업로드할 수 있는 권한이 없습니다.");
       }
     }
 
@@ -432,13 +433,12 @@ export default {
   padding: 5px 5px; /* 원하는 크기로 조절 */
 }
 .default-image {
-  width: 350px;
-  height: 670px;
+  height: 40vw;
+  width: 32vw;
 }
 .myimage {
-  height: 698px;
-  width: 380px;
-  position:absolute;
+  height: 70vw;
+  width: 50vw;
 }
 </style>
 

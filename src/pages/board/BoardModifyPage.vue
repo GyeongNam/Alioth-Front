@@ -23,7 +23,7 @@
 import {ref} from 'vue';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import {useRoute, useRouter} from 'vue-router';
+import { useRouter} from 'vue-router';
 import axiosInstance from '@/plugins/loginaxios';
 import Editor from "@/layouts/Editor.vue"; // Editor 컴포넌트를 import
 

@@ -84,9 +84,9 @@ export default {
       pageCount: 0,
       headers: [
         { title: 'No', key: 'boardId' },
+        { title: '작성자', key: 'writerName' },
         { title: '제목', key: 'title' },
-        { title: '작성자', key: 'salesMemberCode' },
-        { title: '글내용', key: 'content' },
+        // { title: '글내용', key: 'content' },
         { title: '작성일자', key: 'created_at' },
         { title: '수정일자', key: 'updated_at' },
       ],

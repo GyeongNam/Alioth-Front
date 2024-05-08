@@ -94,7 +94,6 @@
           <v-card-actions>
             <v-col class="text-right">
               <v-btn variant="tonal" color="#2979FF" @click="confirmEdit">수정</v-btn>
-              <!--                <v-btn variant="tonal" color="#2C3E50" style="margin-right:1vw" @click="showModal = false"> 닫기 </v-btn>-->
             </v-col>
           </v-card-actions>
         </v-card>
@@ -122,7 +121,7 @@ import {parseISO, format} from "date-fns";
 import {useLoginInfoStore} from "@/stores/loginInfo";
 
 export default {
-  components: {AppHeader, AppSidebar, Editor},
+  components: { AppHeader, AppSidebar, Editor },
   data() {
     return {
       board: {},
@@ -185,7 +184,8 @@ export default {
       this.showInput = true;
       console.log('Input field should be showing now');
     },
-    fetchAnswers(boardId) {
+    fetchAnswers() {
+      const boardId = this.$route.params.boardId;
       axiosInstance.get(`${this.baseUrl}/api/answer/list/${boardId}`)
         .then(response => {
           this.answers = response.data.result || [];
@@ -205,7 +205,7 @@ export default {
       const boardId = this.board.boardId;
       if (confirm("게시글을 정말 삭제하시겠습니까?")) {
         axiosInstance.delete(`${this.baseUrl}/api/board/delete/${boardId}`)
-          .then(response => {
+          .then(() => {
             alert('게시글이 삭제되었습니다.');
             this.$router.push('/BoardList');
           }).catch(error => {
@@ -286,9 +286,9 @@ export default {
     goBack() {
       // 건의사항 게시판에서 '뒤로가기'를 클릭했을 때
       if (this.board.boardType === 'SUGGESTION') {
-        this.$router.push({path: '/BoardList', query: {type: 'Suggestion'}});
+        this.$router.push({ path: '/BoardList', query: { type: 'Suggestion' } });
       } else {
-        this.$router.push({path: '/BoardList', query: {type: 'Announcement'}});
+        this.$router.push({ path: '/BoardList', query: { type: 'Announcement' } });
       }
     }
   },
@@ -298,6 +298,7 @@ export default {
     this.fetchBoardDetail();
   }
 }
+
 </script>
 
 <style scoped>
