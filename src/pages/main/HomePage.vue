@@ -62,22 +62,28 @@
               <h2 class="headline white--text ml-5">{{ bestTeamCount }}</h2>
             </v-row>
           </v-card>
-
         </v-col>
       </v-row>
 
-      <v-row class="mt-10" align="center" justify="center">
-        <h2 class="headline white--text">공지사항 미리보기</h2>
-      </v-row>
+      <v-row class="mt-10" align="center" justify="center"/>
+      <v-row class="mt-10" align="center" justify="center"/>
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">공지사항 미리보기</h2>
+        </v-row>
+      </v-card>
       <ListComponent
           :columns="sugHeaders"
           :rows="formattedItems"
           @click="this.$router.push('/BoardList')"
         />
 
-      <v-row class="mt-10" align="center" justify="center">
-        <h2 class="headline white--text">건의사항 미리보기</h2>
-      </v-row>
+      <v-row class="mt-10" align="center" justify="center"/>
+      <v-card class="pa-5 mt-10 text-center" color="#C8E6C9" dark>
+        <v-row align="center" justify="center">
+          <h2 class="headline white--text">건의사항 미리보기</h2>
+        </v-row>
+      </v-card>
       <ListComponent
           :columns="annHeaders"
           :rows="formattedAnnItems"
@@ -143,7 +149,6 @@ export default {
     formattedItems() {
       return this.sugItems.map(sugItems => ({ ...sugItems }));
     },
-
     formattedAnnItems() {
       return this.annItems.map(annItems => ({ ...annItems }));
     },
