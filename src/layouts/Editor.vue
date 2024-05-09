@@ -23,7 +23,7 @@ export default {
     setup(props, { emit }) {
     const quillEditor = ref(null);
     let quill;
-    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
     onMounted(() => {
         const icons = Quill.import('ui/icons');
@@ -46,7 +46,7 @@ export default {
             [{ font: [] }],
             [{ align: [] }],
             ['clean'],
-            ['link', 'image', 'video']
+            ['link', 'image', 'video'] 
             ],
             imageResize: {}
         }
@@ -57,9 +57,9 @@ export default {
     console.log("Quill editor initialized");
 
     const Clipboard = Quill.import('modules/clipboard');
-
+    
     class CustomClipboard extends Clipboard {
-
+        
             onPaste(e) {
         if (!isUploading) { // isUploading 플래그가 false인 경우에만 이미지 처리
             super.onPaste(e);
@@ -139,7 +139,7 @@ export default {
         }
     }
 
-
+    
     // const dropContainer = quill.root;
         quill.root.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -147,7 +147,7 @@ export default {
                 console.log('Upload already in progress.');
                 return;
             }
-
+        
     // quill.root.addEventListener('drop', (e) => {
     // e.preventDefault();
     // // isUploading = true;  // 기본 드롭 이벤트 방지

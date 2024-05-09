@@ -1,8 +1,8 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-container fluid>
-    <v-main>
-      <AppHeader></AppHeader>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
       <div class="text-center">
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
@@ -12,21 +12,21 @@
             required
           ></v-text-field>
           <!-- Editor 컴포넌트 사용 -->
-          <Editor :initialContent="suggestion.content" @update:content="updateContent"/>
-          <v-btn style="margin-top: 0.5vw" color="#2979FF" variant="tonal" :disabled="!valid" @click="submitSuggestion">
+          <Editor :initialContent="suggestion.content" @update:content="updateContent" />
+          <v-btn :disabled="!valid" @click="submitSuggestion">
             건의사항 추가
           </v-btn>
         </v-form>
       </div>
-    </v-main>
-  </v-container>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
 
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import {useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
 import axiosInstance from '@/plugins/loginaxios';
 import Editor from "@/layouts/Editor.vue";
 
@@ -35,7 +35,7 @@ export default {
   components: {AppHeader, AppSidebar, Editor},
   setup() {
     const router = useRouter(); // 여기로 이동
-    return {router};
+    return { router };
   },
 
   data() {
@@ -60,10 +60,10 @@ export default {
     },
     submitSuggestion() {
       if (this.$refs.form.validate()) {
-        const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
+        const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
         const apiUrl = `${baseUrl}/api/board/create`;
-
-
+        
+        
         const payload = {
           title: this.suggestion.title,
           content: this.suggestion.content,
@@ -71,11 +71,11 @@ export default {
         };
 
         axiosInstance.post(apiUrl, payload)
-          .then(() => {
-            alert('건의사항이 추가되었습니다.');
-            this.resetForm();
-            this.router.push('/BoardList'); // this.router 사용
-          }).catch(error => {
+        .then(() => {
+          alert('건의사항이 추가되었습니다.');
+          this.resetForm();
+          this.router.push('/BoardList'); // this.router 사용
+        }).catch(error => {
           console.error('건의사항 추가에 실패했습니다:', error);
           alert('오류가 발생했습니다: ' + (error.response && error.response.data.message ? error.response.data.message : '서버 응답 없음'));
         });

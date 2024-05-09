@@ -47,7 +47,7 @@ export default {
   methods: {
     async login() {
       // 수정된 URL 참조 방식
-      const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080';
+      const baseUrl = import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080';
 
         const loginData = {
                             memberCode: this.memberCode,
@@ -69,7 +69,7 @@ export default {
           this.loginStore.memberName = data.name;
           this.loginStore.memberImage = data.image; // 이미지 생기면 출력 예정
 
-          alert(response.data.message);
+          alert("성공적으로 로그인 되었습니다.");
           this.$router.push("/")
         })
         .catch(error => {

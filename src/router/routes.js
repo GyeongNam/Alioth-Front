@@ -49,7 +49,6 @@ const routes = [
   {
     path: '/BoardList/Detail/:boardId',
     component: BoardDetailPage,
-    props:true,
     meta: {
       title: '게시글 상세',
       requiresAuth: true
@@ -66,7 +65,6 @@ const routes = [
   {
     path: '/BoardList/Modify/:boardId',
     component: BoardModifyPage,
-    props:true,
     meta: {
       title: '게시글 수정',
       requiresAuth: true
@@ -229,7 +227,6 @@ const routes = [
   {
     path: '/ContractList/Modify/:id',
     component: ContractModifyPage,
-    props: true,
     meta: {
       title: '계약 수정',
       requiresAuth: true
@@ -260,10 +257,6 @@ const routes = [
       requiresAuth: true
     }
   },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/'
-  }
 ]
 
 export default routes

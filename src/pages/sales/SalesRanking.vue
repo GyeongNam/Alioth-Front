@@ -3,58 +3,37 @@
     <v-container fluid>
     <v-main>
       <AppHeader></AppHeader>
+
         <v-row align="center">
-          <v-col cols="2">
-            <v-btn class="mt-1" @click="showDatePickerDialog">
-                <v-icon left>mdi-calendar</v-icon> <!-- 날짜 아이콘 -->
-                날짜 선택
-            </v-btn>
-
-          </v-col>
-
           <v-col cols="12">
-              <v-text-field v-model="startDate" class="mt-3"></v-text-field>
-              <v-dialog v-model="datePickerDialog" persistent max-width="300px">
-                <v-card>
-                  <v-card-title>날짜 선택</v-card-title>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-text-field v-model="startDate" label="선택 날짜" type="date"></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn color="primary" @click="applyDate">적용</v-btn>
-                    <v-btn color="secondary" @click="cancelDateRange">취소</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+            <h2>개인 및 팀 매출</h2>
+          </v-col>
+          <v-col cols="12">
+            <v-toolbar flat>
+              <v-switch v-model="model"
+                        :label="model === '개인' ? '개인' : '팀'"
+                        :color="model === '개인' ? 'success' : 'info'"
+                        :false-value="'개인'"
+                        :true-value="'팀'"
+                        hide-details
+                        @change="fetchData">
+              </v-switch>
+            </v-toolbar>
           </v-col>
         </v-row>
         <v-divider></v-divider>
 
         <!-- ListComponent에 데이터를 표시하는 부분 -->
-
         <ListComponent
           v-if="model === '개인'"
           :columns="headers"
           :rows="formattedItems"
         />
-
-        <v-row class="mt-10">
-          <v-col cols="12" md="6">
-            <v-card>
-              <SalesPagePieChart :loaded_PricePie="loaded_PricePie"></SalesPagePieChart>
-            </v-card>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-card>
-              <SalesPageCountPieChart :loaded_CountPie="loaded_CountPie"></SalesPageCountPieChart>
-            </v-card>
-          </v-col>
-      </v-row>
+        <ListComponent
+          v-if="model === '팀'"
+          :columns="teamHeaders"
+          :rows="formattedTeamItems"
+        />
 
       </v-main>
     </v-container>
@@ -66,18 +45,11 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import AppSidebar from "@/layouts/AppSidebar.vue";
 import AppHeader from "@/layouts/AppHeader.vue";
-import ListComponent from "@/layouts/ListComponent.vue";
-import SalesPagePieChart from "@/pages/sales/charts/SalesPagePieChart"
-import SalesPageCountPieChart from "@/pages/sales/charts/SalesPageCountPieChart"
-import { useSalesRankingStore } from '@/stores/SalesRankingStore';
-import { useLoginInfoStore } from '@/stores/loginInfo';
+import ListComponent from "@/layouts/ListComponent.vue"; // ListComponent를 임포트하세요.
 import axios from 'axios';
 
 export default {
-  components: {
-    AppHeader, AppSidebar, ListComponent,
-    SalesPageCountPieChart, SalesPagePieChart,
-  },
+  components: { AppHeader, AppSidebar, ListComponent },
   setup() {
     const router = useRouter();
     const model = ref("개인"); // 리액티브 변수로 선언
@@ -179,6 +151,7 @@ export default {
         this.getSalesTeamData();
       }
     },
+
     applyDate() {
       // 날짜 범위 적용 로직 추가
       console.log("시작 날짜:", this.startDate);
@@ -207,10 +180,9 @@ export default {
 
       this.datePickerDialog = !this.datePickerDialog; // 모달 닫기
     },
+
     getSalesMemberData() {
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
-      let url = `${baseUrl}/api/stat/sales-ranking/member`;
-      axios.get(url)
+      axios.get("http://localhost:8081/api/batch/sales-member/day")
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
           this.items = response.data.result || [];
@@ -225,17 +197,19 @@ export default {
         });
     },
     getSalesTeamData() {
-      const baseUrl = import.meta.env.VITE_API_STATISTICS_BASE_URL
-      axios.get(`${baseUrl}/api/batch/sales-team/day`)
+      axios.get("http://localhost:8081/api/batch/sales-team/day")
         .then(response => {
           console.log("SalesRanking 응답결과 : ");
-          //this.teamItems = response.data.result || [];
+          this.teamItems = response.data.result || [];
 
           this.teamItems = response.data.result || [];
           this.teamItems = this.teamItems.map((teamItems, index) => ({
             ...teamItems,
             id: index + 1,
           }));
+
+
+
           console.log(this.teamItems);
         })
         .catch(error => {

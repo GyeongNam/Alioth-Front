@@ -1,34 +1,36 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-container fluid>
-    <v-main>
-      <AppHeader></AppHeader>
-        <v-row align="center">
-          <v-col cols="2" class="pa-2 ma-2">
-            <v-select
-              clearable
-              label="팀 명"
-              v-model="selectedTeam"
-              :items="selectedTeamCode"
-              item-title="name"
-              item-value="value"
-              variant="filled"
-            ></v-select>
-          </v-col>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
+      <v-card flat>
+        <v-card-title class="d-flex align-center pe-2">
+          사원 목록
+          <v-spacer></v-spacer>
+          <v-text-field v-model="search" density="compact" label="Search" prepend-inner-icon="mdi-magnify"
+                        variant="solo-filled" flat hide-details single-line style="margin-right: 16px"></v-text-field>
+          <v-select
+            clearable
+            label="팀 명"
+            v-model="selectedTeam"
+            :items="selectedTeamCode"
+            item-title="name"
+            item-value="value"
+            variant="filled"
+          ></v-select>
 
-          <v-col class="text-right">
-            <v-btn variant="tonal" color="#2979FF" @click="navigateToAdd" class="button-margin">사원 추가</v-btn>
-            <v-btn variant="tonal" color="#558B2F" @click="downloadExcel" style="margin-right: 1vw;">엑셀 다운로드</v-btn>
-          </v-col>
-        </v-row>
-        <v-divider></v-divider>
+          <v-row>
+            <v-col class="text-right">
+              <v-btn variant="outlined" @click="navigateToAdd">사원 추가</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-title>
         <v-spacer></v-spacer>
-      <v-card style="margin-top: 1vw;">
         <ListComponent :columns="tableColumns" :rows="tableRows" @click:row="navigateToDetail"/>
       </v-card>
-
-    </v-main>
-  </v-container>
+      <v-btn variant="outlined"  @click="downloadExcel">엑셀다운로드</v-btn>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -62,7 +64,7 @@ export default {
     const selectedTeam = ref(null);
     const filteredTeamCodes = ref([]);
 
-    const baseUrl = import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
+    const baseUrl = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080'; // process.env를 사용하여 환경 변수에 접근
 
     const fetchData = () => {
       axiosInstance.get(`${baseUrl}/api/members/list`)
@@ -84,7 +86,7 @@ export default {
             ...teamCodes
           ];
           if (selectedTeam.value !== null) {
-            data = data.filter(item => item.teamCode === selectedTeam.value);
+            data = data.filter(item=> item.teamCode === selectedTeam.value);
           }
 
           tableRows.value = data.map((item, index) => ({
@@ -121,13 +123,13 @@ export default {
       };
       let url = null
       console.log(selectedTeam.value)
-      if (selectedTeam.value !== null) {
+      if(selectedTeam.value !== null){
         url = `${baseUrl}/api/excel/export/salesMembers/${selectedTeam.value}`
       } else {
         url = `${baseUrl}/api/excel/export/salesMembers`
       }
 
-      axiosInstance.post(url, requestData, {
+      axiosInstance.post(url,requestData, {
         responseType: 'blob'
       })
         .then(response => {
@@ -140,7 +142,6 @@ export default {
           window.URL.revokeObjectURL(url);
         })
     }
-
     return {
       navigateToDetail,
       navigateToAdd,
@@ -157,16 +158,5 @@ export default {
 </script>
 
 <style scoped>
-/*.multicolor-button {
-  background: linear-gradient(to right, #00C853, #F4511E,#FF3D00);
-  background-size: 200% auto;
-  color: white;
-  transition: 0.5s;
-}
-.multicolor-button:hover {
-  background-position: right center;
-}*/
-.button-margin {
-  margin-right: 10px; /* 원하는 간격 값으로 조정하세요 */
-}
+
 </style>

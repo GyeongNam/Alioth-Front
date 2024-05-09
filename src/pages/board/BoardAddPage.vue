@@ -1,8 +1,8 @@
 <template>
   <AppSidebar></AppSidebar>
-  <v-container fluid>
-    <v-main>
-      <AppHeader></AppHeader>
+  <v-main>
+    <AppHeader></AppHeader>
+    <v-container fluid>
       <div class="text-center">
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
@@ -12,13 +12,13 @@
             required
           ></v-text-field>
           <Editor @update:content="updateContent" :initialContent="announcement.content"/>
-          <v-btn variant="tonal" color="#2979FF" :disabled="!valid" @click="submitAnnouncement">
+          <v-btn :disabled="!valid" color="success" @click="submitAnnouncement">
             공지사항 추가
           </v-btn>
         </v-form>
       </div>
-    </v-main>
-  </v-container>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       valid: true,
-      baseUrl: import.meta.env.VITE_API_SERVER_BASE_URL || 'http://localhost:8080',
+      baseUrl: import.meta.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
       announcement: {
         title: '',
         content: ''
@@ -51,7 +51,7 @@ export default {
       this.announcement.content = htmlContent;
     },
     submitAnnouncement() {
-
+      
       if (!this.announcement.content) {
         alert('공지사항 내용을 입력해주세요.');
         return;
@@ -66,14 +66,14 @@ export default {
           boardType: 'ANNOUNCEMENT'
         };
         axiosInstance.post(apiUrl, payload)
-          .then(() => {
-            alert('공지사항이 추가되었습니다.');
-            this.resetForm();
-          })
-          .catch(error => {
-            console.error('공지사항 추가 중 오류가 발생했습니다', error);
-            alert('오류가 발생했습니다.');
-          });
+        .then(() => {
+          alert('공지사항이 추가되었습니다.');
+          this.resetForm();
+        })
+        .catch(error => {
+          console.error('공지사항 추가 중 오류가 발생했습니다', error);
+          alert('오류가 발생했습니다.');
+        });
       }
     },
     resetForm() {
